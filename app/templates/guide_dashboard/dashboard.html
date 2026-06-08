@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Guide - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container dashboard-container">
+        <div class="mb-4">
+            <h1 class="fw-black mb-2">
+                Welcome back, {{ current_user.first_name }}! 👋
+            </h1>
+            <p class="text-muted mb-0">
+                Here's an overview of your upcoming tours and reports.
+            </p>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-5 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="h4 fw-black mb-0">Upcoming Bookings</h2>
+
+                    <a href="#" class="small fw-bold text-decoration-none">
+                        View Calendar
+                        <i class="bi bi-calendar3 ms-1"></i>
+                    </a>
+                </div>
+
+                {% if dashboard_events %}
+                    <div class="vstack gap-3">
+                        {% for event in dashboard_events %}
+                            {% include "components/booking_row.html" %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">
+                            No upcoming bookings yet.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-5">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="h4 fw-black mb-0">Active Tours Management</h2>
+
+                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        New Tour
+                    </a>
+                </div>
+
+                {% if dashboard_tours %}
+                    <div class="row g-4">
+                        {% for tour in dashboard_tours %}
+                            <div class="col-md-6">
+                                {% set card_variant = "dashboard" %}
+                                {% include "components/tour_card.html" %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">
+                            You have not created any tours yet.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

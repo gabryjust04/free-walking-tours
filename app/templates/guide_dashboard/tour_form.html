@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container tour-form-container">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <a href="{{ url_for('guide_dashboard.dashboard') }}" class="small text-decoration-none fw-bold">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to dashboard
+                </a>
+
+                <h1 class="fw-black mt-3 mb-1">
+                    {{ page_title }}
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Manage the information shown to participants.
+                </p>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4">
+                            <h2 class="h4 fw-black mb-4">Tour Information</h2>
+
+                            <div class="mb-3">
+                                <label for="titleInput" class="form-label">Title</label>
+                                <input 
+                                    type="text"
+                                    class="form-control"
+                                    id="titleInput"
+                                    name="title"
+                                    value="{{ form_data.get('title', '') }}"
+                                    placeholder="Old Town Legends Walk"
+                                    required
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descriptionInput" class="form-label">Description</label>
+                                <textarea
+                                    class="form-control"
+                                    id="descriptionInput"
+                                    name="description"
+                                    rows="5"
+                                    placeholder="Describe the tour."
+                                    required
+                                >{{ form_data.get('description', '') }}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="meetingPointInput" class="form-label">Meeting Point</label>
+                                <input 
+                                    type="text"
+                                    class="form-control"
+                                    id="meetingPointInput"
+                                    name="meeting_point"
+                                    value="{{ form_data.get('meeting_point', '') }}"
+                                    placeholder="Piazza Sant'Oronzo"
+                                    required
+                                >
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="themeInput" class="form-label">Theme</label>
+                                    <select class="form-select" id="themeInput" name="theme_id" required>
+                                        <option value="">Select theme</option>
+
+                                        {% for theme in themes %}
+                                            <option 
+                                                value="{{ theme.id }}"
+                                                {% if form_data.get('theme_id') == theme.id|string %}selected{% endif %}
+                                            >
+                                                {{ theme.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="languageInput" class="form-label">Language</label>
+                                    <select class="form-select" id="languageInput" name="language_id" required>
+                                        <option value="">Select language</option>
+
+                                        {% for language in languages %}
+                                            <option 
+                                                value="{{ language.id }}"
+                                                {% if form_data.get('language_id') == language.id|string %}selected{% endif %}
+                                            >
+                                                {{ language.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="durationInput" class="form-label">Duration</label>
+                                    <div class="input-group">
+                                        <input 
+                                            type="number"
+                                            class="form-control"
+                                            id="durationInput"
+                                            name="duration"
+                                            min="1"
+                                            value="{{ form_data.get('duration', '') }}"
+                                            required
+                                        >
+                                        <span class="input-group-text">min</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="maxParticipantsInput" class="form-label">Max Participants</label>
+                                    <input 
+                                        type="number"
+                                        class="form-control"
+                                        id="maxParticipantsInput"
+                                        name="max_participants"
+                                        min="1"
+                                        value="{{ form_data.get('max_participants', '') }}"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-black mb-3">Tour Photos</h2>
+
+                            {% if photos %}
+                                <div class="row g-2 mb-3">
+                                    {% for photo in photos %}
+                                        <div class="col-6">
+                                            <div class="tour-photo-thumb">
+                                                <img 
+                                                    src="{{ url_for('static', filename='uploads/tours/' ~ photo.filename) }}"
+                                                    alt="Tour photo"
+                                                >
+
+                                                {% if mode == "update" %}
+                                                    <button 
+                                                        type="submit"
+                                                        class="btn btn-danger btn-sm tour-photo-delete"
+                                                        form="delete-photo-{{ photo.id }}"
+                                                    >
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="tour-form-placeholder rounded-4 mb-3">
+                                    <div>
+                                        <i class="bi bi-images"></i>
+                                        <span>No photos yet</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <label for="tourPhotosInput" class="form-label">Add photos</label>
+                            <input 
+                                type="file"
+                                class="form-control"
+                                id="tourPhotosInput"
+                                name="tour_photos"
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
+                                multiple
+                            >
+
+                            <p class="small text-muted mt-2 mb-0">
+                                You can upload multiple photos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-black mb-3">Actions</h2>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3 mb-2">
+                                {{ submit_label }}
+                            </button>
+
+                            <a href="{{ url_for('guide_dashboard.dashboard') }}" class="btn btn-light w-100 py-3">
+                                Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% if photos and mode == "update" %}
+            {% for photo in photos %}
+                <form 
+                    id="delete-photo-{{ photo.id }}"
+                    method="POST"
+                    action="{{ url_for('guide_dashboard.delete_tour_photo', tour_id=tour.id, photo_id=photo.id) }}"
+                ></form>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

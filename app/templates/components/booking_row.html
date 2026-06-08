@@ -1,0 +1,41 @@
+<div class="booking-row rounded-4 border bg-light p-3">
+    <div class="row align-items-center g-3">
+        <div class="col-auto">
+            <div class="date-box rounded-3 text-center bg-white border">
+                <div class="small fw-bold text-primary">
+                    {{ event.date_month }}
+                </div>
+                <div class="h4 fw-black mb-0">
+                    {{ event.date_day }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <span class="badge rounded-pill bg-soft-blue text-primary">
+                    {{ event.theme }}
+                </span>
+
+                <span class="small text-muted">
+                    <i class="bi bi-clock me-1"></i>
+                    {{ event.time_range }}
+                </span>
+            </div>
+
+            <h3 class="h6 fw-black mb-1">
+                {{ event.title }}
+            </h3>
+
+            <p class="small text-muted mb-0">
+                {{ event.participants }} participants · Starting at {{ event.meeting_point }}
+            </p>
+        </div>
+
+        <div class="col-auto">
+            <a href="#" class="btn btn-light btn-sm fw-bold">
+                Details
+            </a>
+        </div>
+    </div>
+</div>
