@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from flask_login import UserMixin
 
 
@@ -12,6 +12,7 @@ class User(UserMixin):
     first_name: str
     last_name: str
     profile_photo: str = "default.png"
+    guide_language_ids: list[int] = field(default_factory=list)
 
     @staticmethod
     def from_row(row):

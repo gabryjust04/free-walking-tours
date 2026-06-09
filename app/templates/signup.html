@@ -7,30 +7,42 @@
 {% block content %}
 <section class="auth-page py-5">
     <div class="container">
-        <div class="card auth-card border-0 shadow-lg rounded-5 mx-auto overflow-hidden">
-            <div class="row g-0">
-                <div class="col-lg-5 d-none d-lg-block">
-                    <div class="auth-cover h-100">
-                        <div class="p-4 d-flex flex-column h-100">
-                            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-white" href="{{ url_for('public.home') }}">
-                                <i class="bi bi-signpost-2-fill"></i>
-                                UrbanBuddy
-                            </a>
+        <div class="row g-4 align-items-start justify-content-center">
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="signup-cover-card position-sticky rounded-5 overflow-hidden shadow-lg">
+                    <img 
+                        src="{{ url_for('static', filename='img/auth-cover.jpg') }}"
+                        alt="UrbanBuddy Stockholm"
+                        class="signup-cover-img"
+                    >
 
-                            <div class="mt-auto">
-                                <h2 class="fw-black text-white">
-                                    Start your journey.
-                                </h2>
-                                <p class="text-white-50 mb-0">
-                                    Join tours or become a local guide in your city.
-                                </p>
-                            </div>
+                    <div class="signup-cover-overlay"></div>
+
+                    <div class="signup-cover-content p-4">
+                        <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-white mb-auto" href="{{ url_for('public.home') }}">
+                            <i class="bi bi-signpost-2-fill"></i>
+                            UrbanBuddy
+                        </a>
+
+                        <div>
+                            <span class="badge rounded-pill bg-primary text-dark mb-3">
+                                Stockholm walking tours
+                            </span>
+
+                            <h2 class="fw-black text-white mb-3">
+                                Start your journey.
+                            </h2>
+
+                            <p class="text-white-50 mb-0">
+                                Join tours or become a local guide in Stockholm.
+                            </p>
                         </div>
- 
                     </div>
                 </div>
+            </div>
 
-                <div class="col-lg-7">
+            <div class="col-lg-7 col-xl-6">
+                <div class="card border-0 shadow-lg rounded-5">
                     <div class="card-body p-4 p-md-5">
                         <div class="auth-tabs d-grid mb-4">
                             <a href="{{ url_for('auth.login') }}">Log In</a>
@@ -39,9 +51,10 @@
 
                         <h1 class="h2 fw-black mb-1">Create account</h1>
                         <p class="text-muted mb-4">Join UrbanBuddy in a few seconds.</p>
+
                         {% with messages = get_flashed_messages(with_categories=true) %}
                             {% if messages %}
-                                <div class="container mt-4">
+                                <div class="mt-4">
                                     {% for category, message in messages %}
                                         <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4" role="alert">
                                             {{ message }}
@@ -157,6 +170,72 @@
                                     </div>
                                 </div>
 
+                                <div class="col-12 d-none" id="guideLanguagesBox">
+                                    <div class="card border rounded-5 bg-light">
+                                        <div class="card-body p-4">
+                                            <div class="d-flex align-items-center gap-3 mb-4">
+                                                <div class="rounded-circle bg-primary bg-opacity-25 d-flex align-items-center justify-content-center"
+                                                     style="width: 44px; height: 44px;">
+                                                    <i class="bi bi-translate text-dark"></i>
+                                                </div>
+
+                                                <div>
+                                                    <label class="form-label h5 fw-black mb-1">
+                                                        Guide Languages
+                                                    </label>
+                                                    <p class="small text-muted mb-0">
+                                                        Select one or more languages you can use during tours.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {% if languages %}
+                                                <div class="row g-2">
+                                                    {% for language in languages %}
+                                                        <div class="col-sm-6">
+                                                            <input
+                                                                type="checkbox"
+                                                                class="btn-check guide-language-input"
+                                                                name="language_ids"
+                                                                id="language-{{ language.id }}"
+                                                                value="{{ language.id }}"
+                                                                disabled
+                                                            >
+
+                                                            <label class="btn language-choice w-100 rounded-4 p-3 text-start h-100"
+                                                                   for="language-{{ language.id }}">
+                                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                                    <div>
+                                                                        <span class="fw-bold d-block">
+                                                                            {{ language.name }}
+                                                                        </span>
+
+                                                                        {% if language.label %}
+                                                                            <span class="small opacity-75">
+                                                                                {{ language.label }}
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="small opacity-75">
+                                                                                Tour language
+                                                                            </span>
+                                                                        {% endif %}
+                                                                    </div>
+
+                                                                    <i class="bi bi-check-circle fs-5"></i>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-light border rounded-4 mb-0">
+                                                    No languages available yet.
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="col-12">
                                     <label for="profilePhotoInput" class="form-label">Profile Photo</label>
                                     <input 
@@ -186,4 +265,30 @@
         </div>
     </div>
 </section>
+
+<script>
+    const participantRole = document.getElementById("participantRole");
+    const guideRole = document.getElementById("guideRole");
+    const guideLanguagesBox = document.getElementById("guideLanguagesBox");
+    const guideLanguageInputs = document.querySelectorAll(".guide-language-input");
+
+    function updateGuideLanguagesVisibility() {
+        const isGuide = guideRole.checked;
+
+        guideLanguagesBox.classList.toggle("d-none", !isGuide);
+
+        guideLanguageInputs.forEach((input) => {
+            input.disabled = !isGuide;
+
+            if (!isGuide) {
+                input.checked = false;
+            }
+        });
+    }
+
+    participantRole.addEventListener("change", updateGuideLanguagesVisibility);
+    guideRole.addEventListener("change", updateGuideLanguagesVisibility);
+
+    updateGuideLanguagesVisibility();
+</script>
 {% endblock %}

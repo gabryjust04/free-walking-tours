@@ -5,6 +5,31 @@ from .domain import User
 class UsersDAO:
 
     @staticmethod
+    def _get_guide_language_ids(guide_id: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT language_id
+            FROM guide_languages
+            WHERE guide_id = ?
+            """,
+            (guide_id,)
+        ).fetchall()
+
+        return [row["language_id"] for row in rows]
+
+    @staticmethod
+    def _attach_guide_languages(user: User):
+        if user is None:
+            return None
+
+        if user.role == "guide":
+            user.guide_language_ids = UsersDAO._get_guide_language_ids(user.id)
+
+        return user
+
+    @staticmethod
     def get_user_by_id(user_id: str):
         db = get_db()
 
@@ -13,7 +38,8 @@ class UsersDAO:
             (user_id,)
         ).fetchone()
 
-        return User.from_row(row)
+        user = User.from_row(row)
+        return UsersDAO._attach_guide_languages(user)
 
     @staticmethod
     def get_user_by_email(email: str):
@@ -24,7 +50,8 @@ class UsersDAO:
             (email,)
         ).fetchone()
 
-        return User.from_row(row)
+        user = User.from_row(row)
+        return UsersDAO._attach_guide_languages(user)
 
     @staticmethod
     def get_user_by_username(username: str):
@@ -35,7 +62,8 @@ class UsersDAO:
             (username,)
         ).fetchone()
 
-        return User.from_row(row)
+        user = User.from_row(row)
+        return UsersDAO._attach_guide_languages(user)
 
     @staticmethod
     def add_user(user: User) -> bool:
@@ -59,6 +87,20 @@ class UsersDAO:
                     user.profile_photo
                 )
             )
+
+            if user.role == "guide":
+                for language_id in user.guide_language_ids:
+                    db.execute(
+                        """
+                        INSERT INTO guide_languages
+                        (guide_id, language_id, created_at)
+                        VALUES (?, ?, CURRENT_TIMESTAMP)
+                        """,
+                        (
+                            user.id,
+                            language_id
+                        )
+                    )
 
             db.commit()
             return True
@@ -102,5 +144,67 @@ class UsersDAO:
 
         except Exception as e:
             print(f"Errore DB durante aggiornamento utente: {e}")
+            db.rollback()
+            return False
+
+    @staticmethod
+    def replace_guide_languages(guide_id: str, language_ids: list[int]) -> bool:
+        db = get_db()
+
+        try:
+            db.execute(
+                "DELETE FROM guide_languages WHERE guide_id = ?",
+                (guide_id,)
+            )
+
+            for language_id in language_ids:
+                db.execute(
+                    """
+                    INSERT INTO guide_languages
+                    (guide_id, language_id, created_at)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                    """,
+                    (
+                        guide_id,
+                        language_id
+                    )
+                )
+
+            db.commit()
+            return True
+
+        except Exception as e:
+            print(f"Errore DB durante aggiornamento lingue guida: {e}")
+            db.rollback()
+            return False
+        
+    @staticmethod
+    def replace_guide_languages(guide_id: str, language_ids: list[int]) -> bool:
+        db = get_db()
+
+        try:
+            db.execute(
+                "DELETE FROM guide_languages WHERE guide_id = ?",
+                (guide_id,)
+            )
+
+            for language_id in language_ids:
+                db.execute(
+                    """
+                    INSERT INTO guide_languages
+                    (guide_id, language_id, created_at)
+                    VALUES (?, ?, CURRENT_TIMESTAMP)
+                    """,
+                    (
+                        guide_id,
+                        language_id
+                    )
+                )
+
+            db.commit()
+            return True
+
+        except Exception as e:
+            print(f"Errore DB durante aggiornamento lingue guida: {e}")
             db.rollback()
             return False

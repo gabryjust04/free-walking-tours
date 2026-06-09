@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -11,11 +11,13 @@ class TourPhoto:
     def from_row(row):
         if row is None:
             return None
+
         return TourPhoto(
             id=row["id"],
             tour_id=row["tour_id"],
             filename=row["filename"]
         )
+
 
 @dataclass
 class TourStop:
@@ -30,6 +32,7 @@ class TourStop:
     def from_row(row):
         if row is None:
             return None
+
         return TourStop(
             id=row["id"],
             stop_name=row["stop_name"],
@@ -38,6 +41,7 @@ class TourStop:
             longitude=row["longitude"],
             description=row["description"]
         )
+
 
 @dataclass
 class TourWeeklySlot:
@@ -49,6 +53,7 @@ class TourWeeklySlot:
     def from_row(row):
         if row is None:
             return None
+
         return TourWeeklySlot(
             id=row["id"],
             day_of_week=row["day_of_week"],
@@ -56,7 +61,6 @@ class TourWeeklySlot:
         )
 
 
-    
 @dataclass
 class TourEvents:
     id: str
@@ -68,11 +72,13 @@ class TourEvents:
     evicende_photos: str
     created_at: str
     updated_at: str
+    tour: object = None
 
     @staticmethod    
     def from_row(row):
         if row is None:
             return None
+
         return TourEvents(
             id=row["id"],
             tour_id=row["tour_id"],
@@ -84,7 +90,8 @@ class TourEvents:
             created_at=row["created_at"],
             updated_at=row["updated_at"]
         )
-    
+
+
 @dataclass
 class Theme:
     id: int
@@ -93,11 +100,11 @@ class Theme:
     icon: str
     created_at: str
 
-
     @staticmethod
     def from_row(row):
         if row is None:
             return None
+
         return Theme(
             id=row["id"],
             name=row["name"],
@@ -105,7 +112,6 @@ class Theme:
             icon=row["icon"],
             created_at=row["created_at"]
         )
-
 
 
 @dataclass
@@ -119,12 +125,14 @@ class Language:
     def from_row(row):
         if row is None:
             return None
+
         return Language(
             id=row["id"],
             name=row["name"],
-            created_at=row["created_at"],
-            label=row["label"]
+            label=row["label"],
+            created_at=row["created_at"]
         )
+
 
 @dataclass
 class Tour:
@@ -138,16 +146,18 @@ class Tour:
     duration: int
     max_participants: int
     is_deleted: bool = False
+
     theme: Theme = None
     language: Language = None
-    production_photos: list[TourPhoto] = None
-    stops: list[TourStop] = None
-    weekly_slots: list[TourWeeklySlot] = None
+    production_photos: list[TourPhoto] = field(default_factory=list)
+    stops: list[TourStop] = field(default_factory=list)
+    weekly_slots: list[TourWeeklySlot] = field(default_factory=list)
 
     @staticmethod
     def from_row(row):
         if row is None:
             return None
+
         return Tour(
             id=row["id"],
             guide_id=row["guide_id"],
@@ -158,12 +168,5 @@ class Tour:
             meeting_point=row["meeting_point"],
             duration=row["duration"],
             max_participants=row["max_participants"],
-            is_deleted=bool(row["is_deleted"]),
-            theme=Theme.from_row(row),
-            language=Language.from_row(row),
-            production_photos=[TourPhoto.from_row(r) for r in row.get("production_photos", [])],
-            stops=[TourStop.from_row(r) for r in row.get("stops", [])],
-            weekly_slots=[TourWeeklySlot.from_row(r) for r in row.get("weekly_slots", [])]
+            is_deleted=bool(row["is_deleted"])
         )
-
-

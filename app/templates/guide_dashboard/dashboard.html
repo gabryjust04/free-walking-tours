@@ -9,10 +9,23 @@
             <h1 class="fw-black mb-2">
                 Welcome back, {{ current_user.first_name }}! 👋
             </h1>
+
             <p class="text-muted mb-0">
                 Here's an overview of your upcoming tours and reports.
             </p>
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="container mt-4">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
         <div class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">

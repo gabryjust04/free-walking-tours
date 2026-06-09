@@ -5,6 +5,8 @@ from app.tours.dao import (
     ToursDAO,
     TourEventsDAO,
     TourPhotosDAO,
+    TourStopsDAO,
+    TourWeeklySlotsDAO,
     ThemesDAO,
     LanguagesDAO
 )
@@ -16,7 +18,12 @@ from .utils import (
     validate_tour_form,
     build_tour_from_form,
     build_form_data_from_tour,
-    save_uploaded_tour_photos
+    save_uploaded_tour_photos,
+    WEEK_DAYS,
+    get_schedule_form_data,
+    build_schedule_data_from_slots,
+    get_stops_form_data,
+    build_stop_data_from_stops
 )
 
 
@@ -51,6 +58,8 @@ def dashboard():
         tour.theme = ThemesDAO.get_theme_by_id(tour.theme_id)
         tour.language = LanguagesDAO.get_language_by_id(tour.language_id)
         tour.production_photos = TourPhotosDAO.list_photos_by_tour(tour.id)
+        tour.weekly_slots = TourWeeklySlotsDAO.list_slots_by_tour(tour.id)
+        tour.stops = TourStopsDAO.list_stops_by_tour(tour.id)
 
     events = TourEventsDAO.list_events_by_guide(current_user.id)
 
@@ -88,11 +97,20 @@ def create_tour():
             themes=themes,
             languages=languages,
             form_data={},
-            photos=[]
+            photos=[],
+            week_days=WEEK_DAYS,
+            schedule_data={},
+            stop_data=[]
         )
 
     form_data = get_tour_form_data(request.form)
+
+    schedule_items, schedule_data, schedule_errors = get_schedule_form_data(request.form)
+    stop_items, stop_data, stop_errors = get_stops_form_data(request.form)
+
     errors = validate_tour_form(form_data)
+    errors.extend(schedule_errors)
+    errors.extend(stop_errors)
 
     if errors:
         for error in errors:
@@ -106,12 +124,18 @@ def create_tour():
             themes=themes,
             languages=languages,
             form_data=form_data,
-            photos=[]
+            photos=[],
+            week_days=WEEK_DAYS,
+            schedule_data=schedule_data,
+            stop_data=stop_data
         )
 
     tour = build_tour_from_form(form_data, current_user.id)
 
     tour_id = ToursDAO.add_tour(tour)
+
+    TourWeeklySlotsDAO.replace_slots_for_tour(tour_id, schedule_items)
+    TourStopsDAO.replace_stops_for_tour(tour_id, stop_items)
 
     photo_files = request.files.getlist("tour_photos")
     save_uploaded_tour_photos(photo_files, tour_id, TourPhotosDAO)
@@ -130,9 +154,13 @@ def update_tour(tour_id):
     themes = ThemesDAO.list_all_themes()
     languages = LanguagesDAO.list_all_languages()
     photos = TourPhotosDAO.list_photos_by_tour(tour.id)
+    slots = TourWeeklySlotsDAO.list_slots_by_tour(tour.id)
+    stops = TourStopsDAO.list_stops_by_tour(tour.id)
 
     if request.method == "GET":
         form_data = build_form_data_from_tour(tour)
+        schedule_data = build_schedule_data_from_slots(slots)
+        stop_data = build_stop_data_from_stops(stops)
 
         return render_template(
             "guide_dashboard/tour_form.html",
@@ -143,11 +171,20 @@ def update_tour(tour_id):
             languages=languages,
             form_data=form_data,
             photos=photos,
-            tour=tour
+            tour=tour,
+            week_days=WEEK_DAYS,
+            schedule_data=schedule_data,
+            stop_data=stop_data
         )
 
     form_data = get_tour_form_data(request.form)
+
+    schedule_items, schedule_data, schedule_errors = get_schedule_form_data(request.form)
+    stop_items, stop_data, stop_errors = get_stops_form_data(request.form)
+
     errors = validate_tour_form(form_data)
+    errors.extend(schedule_errors)
+    errors.extend(stop_errors)
 
     if errors:
         for error in errors:
@@ -162,11 +199,17 @@ def update_tour(tour_id):
             languages=languages,
             form_data=form_data,
             photos=photos,
-            tour=tour
+            tour=tour,
+            week_days=WEEK_DAYS,
+            schedule_data=schedule_data,
+            stop_data=stop_data
         )
 
     updated_tour = build_tour_from_form(form_data, current_user.id, tour.id)
+
     ToursDAO.update_tour(updated_tour)
+    TourWeeklySlotsDAO.replace_slots_for_tour(tour.id, schedule_items)
+    TourStopsDAO.replace_stops_for_tour(tour.id, stop_items)
 
     photo_files = request.files.getlist("tour_photos")
     save_uploaded_tour_photos(photo_files, tour.id, TourPhotosDAO)
@@ -194,3 +237,15 @@ def delete_tour_photo(tour_id, photo_id):
 
     flash("Photo removed.", "success")
     return redirect(url_for("guide_dashboard.update_tour", tour_id=tour.id))
+
+@guide_dashboard_bp.route("/dashboard/tours/<tour_id>/delete", methods=["POST"])
+@login_required
+def delete_tour(tour_id):
+    require_guide()
+
+    tour = get_owned_tour_or_404(tour_id)
+
+    ToursDAO.soft_delete_tour(tour.id)
+
+    flash("Tour deleted successfully.", "success")
+    return redirect(url_for("guide_dashboard.dashboard"))

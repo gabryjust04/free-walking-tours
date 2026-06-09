@@ -197,6 +197,44 @@ class TourStopsDAO:
 
         return [TourStop.from_row(row) for row in rows]
 
+    @staticmethod
+    def replace_stops_for_tour(tour_id: str, stop_items: list[dict]) -> bool:
+        db = get_db()
+
+        try:
+            db.execute(
+                "DELETE FROM tour_stops WHERE tour_id = ?",
+                (tour_id,)
+            )
+
+            for item in stop_items:
+                stop_id = str(uuid.uuid4())
+
+                db.execute(
+                    """
+                    INSERT INTO tour_stops
+                    (id, tour_id, stop_name, stop_order, latitude, longitude, description, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    """,
+                    (
+                        stop_id,
+                        tour_id,
+                        item["stop_name"],
+                        item["stop_order"],
+                        None,
+                        None,
+                        item["description"]
+                    )
+                )
+
+            db.commit()
+            return True
+
+        except Exception as e:
+            print(f"Errore DB durante aggiornamento stops: {e}")
+            db.rollback()
+            return False
+    
 
 class TourWeeklySlotsDAO:
 
@@ -259,6 +297,49 @@ class TourWeeklySlotsDAO:
         ).fetchall()
 
         return [TourWeeklySlot.from_row(row) for row in rows]
+
+    @staticmethod
+    def delete_slots_by_tour(tour_id: str):
+        db = get_db()
+
+        db.execute(
+            "DELETE FROM tour_weekly_slots WHERE tour_id = ?",
+            (tour_id,)
+        )
+
+        db.commit()
+
+
+    @staticmethod
+    def replace_slots_for_tour(tour_id: str, schedule_items: list[dict]):
+        db = get_db()
+        try:
+            db.execute(
+                "DELETE FROM tour_weekly_slots WHERE tour_id = ?",
+                (tour_id,)
+            )
+
+            for item in schedule_items:
+                db.execute(
+                    """
+                    INSERT INTO tour_weekly_slots 
+                    (tour_id, day_of_week, start_time, created_at, updated_at)
+                    VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    """,
+                    (
+                        tour_id,
+                        item["day_of_week"],
+                        item["start_time"]
+                    )
+                )
+
+            db.commit()
+            return True
+        except Exception as e:
+            print(f"Errore DB durante aggiornamento schedule: {e}")
+            db.rollback()
+            return False
+        
     
 
 class TourEventsDAO:
