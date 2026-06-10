@@ -1,7 +1,6 @@
 import uuid
 from app.core.db import get_db
-from .domain import Language, Theme, Tour, TourEvents, TourPhoto, TourStop, TourWeeklySlot
-
+from .domain import Language, Theme, Tour, TourEvents, TourPhoto, TourStop, TourWeeklySlot, TourReservation
 
 class ToursDAO:
 
@@ -11,6 +10,21 @@ class ToursDAO:
 
         row = db.execute(
             "SELECT * FROM tours WHERE id = ?",
+            (tour_id,)
+        ).fetchone()
+
+        return Tour.from_row(row)
+    
+    def get_public_tour_by_id(tour_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT *
+            FROM tours
+            WHERE id = ?
+            AND is_deleted = 0
+            """,
             (tour_id,)
         ).fetchone()
 
@@ -292,7 +306,12 @@ class TourWeeklySlotsDAO:
         db = get_db()
 
         rows = db.execute(
-            "SELECT * FROM tour_weekly_slots WHERE tour_id = ? ORDER BY id ASC",
+            """
+            SELECT *
+            FROM tour_weekly_slots
+            WHERE tour_id = ?
+            ORDER BY day_of_week ASC, start_time ASC
+            """,
             (tour_id,)
         ).fetchall()
 
@@ -354,35 +373,146 @@ class TourEventsDAO:
         ).fetchone()
 
         return TourEvents.from_row(row)
-    
+
+    @staticmethod
+    def get_event_by_occurrence(tour_id: str, event_date: str, start_time: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT *
+            FROM tour_events
+            WHERE tour_id = ?
+              AND event_date = ?
+              AND start_time = ?
+            """,
+            (tour_id, event_date, start_time)
+        ).fetchone()
+
+        return TourEvents.from_row(row)
+
+    @staticmethod
+    def create_event_for_booking(tour_id: str, event_date: str, start_time: str):
+        db = get_db()
+
+        event_id = str(uuid.uuid4())
+
+        db.execute(
+            """
+            INSERT INTO tour_events
+            (
+                id,
+                tour_id,
+                event_date,
+                start_time,
+                status,
+                actual_participants,
+                evidence_photo,
+                created_at,
+                updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """,
+            (
+                event_id,
+                tour_id,
+                event_date,
+                start_time,
+                "scheduled",
+                0,
+                None
+            )
+        )
+
+        return event_id
+
     @staticmethod
     def add_event(event: TourEvents):
         db = get_db()
 
         event_id = str(uuid.uuid4())
+
+        actual_participants = getattr(event, "actual_participants", 0)
+        evidence_photo = getattr(event, "evidence_photo", None)
+
         db.execute(
             """
-            INSERT INTO tour_events (id, tour_id, event_date, start_time, status, actual_partecipants, evicende_photos, created_at, updated_at)
+            INSERT INTO tour_events
+            (
+                id,
+                tour_id,
+                event_date,
+                start_time,
+                status,
+                actual_participants,
+                evidence_photo,
+                created_at,
+                updated_at
+            )
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             """,
-            (event_id, event.tour_id, event.event_date, event.start_time, event.status, event.actual_partecipants, event.evicende_photos)
+            (
+                event_id,
+                event.tour_id,
+                event.event_date,
+                event.start_time,
+                event.status,
+                actual_participants,
+                evidence_photo
+            )
         )
+
         db.commit()
         return event_id
-    
+
     @staticmethod
     def update_event(event: TourEvents):
+        db = get_db()
+
+        actual_participants = getattr(event, "actual_participants", 0)
+        evidence_photo = getattr(event, "evidence_photo", None)
+
+        db.execute(
+            """
+            UPDATE tour_events
+            SET event_date = ?,
+                start_time = ?,
+                status = ?,
+                actual_participants = ?,
+                evidence_photo = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (
+                event.event_date,
+                event.start_time,
+                event.status,
+                actual_participants,
+                evidence_photo,
+                event.id
+            )
+        )
+
+        db.commit()
+
+    @staticmethod
+    def update_actual_participants(event_id: str):
         db = get_db()
 
         db.execute(
             """
             UPDATE tour_events
-            SET event_date = ?, start_time = ?, status = ?, actual_partecipants = ?, evicende_photos = ?, updated_at = CURRENT_TIMESTAMP
+            SET actual_participants = (
+                SELECT COALESCE(SUM(total_people), 0)
+                FROM tour_reservations
+                WHERE event_id = ?
+                  AND status = 'active'
+            ),
+            updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """,
-            (event.event_date, event.start_time, event.status, event.actual_partecipants, event.evicende_photos, event.id)
+            (event_id, event_id)
         )
-        db.commit()
 
     @staticmethod
     def delete_event(event_id: str):
@@ -392,6 +522,7 @@ class TourEventsDAO:
             "DELETE FROM tour_events WHERE id = ?",
             (event_id,)
         )
+
         db.commit()
 
     @staticmethod
@@ -404,12 +535,14 @@ class TourEventsDAO:
             FROM tour_events te
             JOIN tours t ON te.tour_id = t.id
             WHERE t.guide_id = ?
-            ORDER BY te.created_at DESC
+            ORDER BY te.event_date DESC, te.start_time DESC
             """,
             (guide_id,)
         ).fetchall()
 
         return [TourEvents.from_row(row) for row in rows]
+    
+
     
 class ThemesDao:
 
@@ -479,3 +612,161 @@ class ThemesDAO:
         ).fetchone()
 
         return Theme.from_row(row)
+    
+
+class TourReservationsDAO:
+
+    @staticmethod
+    def get_reservation_by_id(reservation_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT *
+            FROM tour_reservations
+            WHERE id = ?
+            """,
+            (reservation_id,)
+        ).fetchone()
+
+        return TourReservation.from_row(row)
+    
+    @staticmethod
+    def has_active_reservation_by_event_and_participant(event_id: str, participant_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT id
+            FROM tour_reservations
+            WHERE event_id = ?
+            AND participant_id = ?
+            AND status = 'active'
+            LIMIT 1
+            """,
+            (event_id, participant_id)
+        ).fetchone()
+
+        return row is not None
+
+    @staticmethod
+    def get_reservation_by_idempotency_key(idempotency_key: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT *
+            FROM tour_reservations
+            WHERE idempotency_key = ?
+            """,
+            (idempotency_key,)
+        ).fetchone()
+
+        return TourReservation.from_row(row)
+
+    @staticmethod
+    def get_active_reservation_by_event_and_participant(event_id: str, participant_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT *
+            FROM tour_reservations
+            WHERE event_id = ?
+              AND participant_id = ?
+              AND status = 'active'
+            """,
+            (event_id, participant_id)
+        ).fetchone()
+
+        return TourReservation.from_row(row)
+
+    @staticmethod
+    def count_reserved_people(event_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COALESCE(SUM(total_people), 0) AS total
+            FROM tour_reservations
+            WHERE event_id = ?
+              AND status = 'active'
+            """,
+            (event_id,)
+        ).fetchone()
+
+        return int(row["total"])
+
+    @staticmethod
+    def list_reservations_by_event(event_id: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT *
+            FROM tour_reservations
+            WHERE event_id = ?
+            ORDER BY created_at ASC
+            """,
+            (event_id,)
+        ).fetchall()
+
+        return [TourReservation.from_row(row) for row in rows]
+
+    @staticmethod
+    def add_reservation(
+        event_id: str,
+        participant_id: str,
+        total_people: int,
+        additional_names: str,
+        idempotency_key: str
+    ):
+        db = get_db()
+
+        reservation_id = str(uuid.uuid4())
+
+        db.execute(
+            """
+            INSERT INTO tour_reservations
+            (
+                id,
+                event_id,
+                participant_id,
+                idempotency_key,
+                total_people,
+                additional_names,
+                reminder_sent,
+                is_checked_in,
+                status,
+                created_at,
+                updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, 0, 0, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """,
+            (
+                reservation_id,
+                event_id,
+                participant_id,
+                idempotency_key,
+                total_people,
+                additional_names
+            )
+        )
+
+        return reservation_id
+
+    @staticmethod
+    def cancel_reservation(reservation_id: str):
+        db = get_db()
+
+        db.execute(
+            """
+            UPDATE tour_reservations
+            SET status = 'cancelled',
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (reservation_id,)
+        )
+
+        db.commit()

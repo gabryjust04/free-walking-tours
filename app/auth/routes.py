@@ -12,7 +12,15 @@ from .dao import UsersDAO
 from .domain import User
 from app.core.login_manager import login_manager
 from app.tours.dao import LanguagesDAO
-
+from .utils import (
+    get_signup_form_data,
+    get_profile_form_data,
+    validate_signup_form_data,
+    validate_profile_form_data,
+    get_profile_photo_filename,
+    build_user_for_signup,
+    build_user_for_profile_update,
+)
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -103,81 +111,37 @@ def signup():
     if request.method == "GET":
         return render_template(
             "signup.html",
-            languages=languages
+            languages=languages,
         )
 
-    email = request.form.get("email", "").strip()
-    password = request.form.get("password", "")
-    first_name = request.form.get("first_name", "").strip()
-    last_name = request.form.get("last_name", "").strip()
-    username = request.form.get("username", "").strip()
-    role = request.form.get("role", "participant").strip()
+    form_data = get_signup_form_data(request.form)
 
-    guide_language_ids = get_selected_language_ids(request.form)
+    errors = validate_signup_form_data(form_data, languages)
 
-    if not all([email, password, first_name, last_name, username]):
-        flash("You must fill all required fields", "warning")
+    for error in errors:
+        flash(error, "warning")
+
+    if errors:
         return redirect(url_for("auth.signup"))
 
-    if not is_valid_email(email):
-        flash("Invalid email format.", "warning")
-        return redirect(url_for("auth.signup"))
-
-    if not is_valid_password(password):
-        flash("Password must be at least 8 characters long, contain 1 uppercase letter and 1 number.", "warning")
-        return redirect(url_for("auth.signup"))
-
-    allowed_roles = ["participant", "guide"]
-
-    if role not in allowed_roles:
-        flash("Invalid role.", "warning")
-        return redirect(url_for("auth.signup"))
-
-    if role == "guide":
-        if len(guide_language_ids) == 0:
-            flash("Select at least one language if you want to register as a guide.", "warning")
-            return redirect(url_for("auth.signup"))
-
-        if not are_valid_language_ids(guide_language_ids, languages):
-            flash("Invalid guide language selected.", "warning")
-            return redirect(url_for("auth.signup"))
-    else:
-        guide_language_ids = []
-
-    if UsersDAO.get_user_by_email(email):
+    if UsersDAO.get_user_by_email(form_data["email"]):
         flash("Email already used", "warning")
         return redirect(url_for("auth.signup"))
 
-    if UsersDAO.get_user_by_username(username):
+    if UsersDAO.get_user_by_username(form_data["username"]):
         flash("Username already used", "warning")
         return redirect(url_for("auth.signup"))
 
-    img_filename = "default.png"
+    try:
+        img_filename = get_profile_photo_filename(
+            request.files.get("profile_photo"),
+            "default.png",
+        )
+    except Exception:
+        flash("Error processing image.", "danger")
+        return redirect(url_for("auth.signup"))
 
-    profile_photo = request.files.get("profile_photo")
-
-    if profile_photo and profile_photo.filename != "":
-        if not allowed_file(profile_photo.filename):
-            flash("Invalid image format.", "warning")
-            return redirect(url_for("auth.signup"))
-
-        try:
-            img_filename = process_profile_photo(profile_photo)
-        except Exception:
-            flash("Error processing image.", "danger")
-            return redirect(url_for("auth.signup"))
-
-    user = User(
-        id=str(uuid.uuid4()),
-        email=email,
-        password_hash=generate_password_hash(password),
-        first_name=first_name,
-        last_name=last_name,
-        username=username,
-        role=role,
-        profile_photo=img_filename,
-        guide_language_ids=guide_language_ids
-    )
+    user = build_user_for_signup(form_data, img_filename)
 
     if UsersDAO.add_user(user):
         flash("Registration was successful, now you can login", "success")
@@ -234,83 +198,50 @@ def profile():
             "profile.html",
             user=current_user,
             languages=languages,
-            selected_language_ids=selected_language_ids
+            selected_language_ids=selected_language_ids,
         )
 
-    email = request.form.get("email", "").strip()
-    first_name = request.form.get("first_name", "").strip()
-    last_name = request.form.get("last_name", "").strip()
-    username = request.form.get("username", "").strip()
-    new_password = request.form.get("password", "")
+    form_data = get_profile_form_data(request.form, current_user)
 
-    guide_language_ids = []
+    errors = validate_profile_form_data(form_data, current_user, languages)
 
-    if current_user.role == "guide":
-        guide_language_ids = get_selected_language_ids(request.form)
+    for error in errors:
+        flash(error, "warning")
 
-    if not all([email, first_name, last_name, username]):
-        flash("Email, First Name, Last Name and Username are required.", "warning")
+    if errors:
         return redirect(url_for("auth.profile"))
 
-    if not is_valid_email(email):
-        flash("Invalid email format.", "warning")
-        return redirect(url_for("auth.profile"))
-
-    user_with_same_email = UsersDAO.get_user_by_email(email)
+    user_with_same_email = UsersDAO.get_user_by_email(form_data["email"])
 
     if user_with_same_email is not None and user_with_same_email.id != current_user.id:
         flash("Email already used by another account", "warning")
         return redirect(url_for("auth.profile"))
 
-    user_with_same_username = UsersDAO.get_user_by_username(username)
+    user_with_same_username = UsersDAO.get_user_by_username(form_data["username"])
 
     if user_with_same_username is not None and user_with_same_username.id != current_user.id:
         flash("Username already taken", "warning")
         return redirect(url_for("auth.profile"))
 
-    if current_user.role == "guide":
-        if len(guide_language_ids) == 0:
-            flash("Select at least one guide language.", "warning")
-            return redirect(url_for("auth.profile"))
-
-        if not are_valid_language_ids(guide_language_ids, languages):
-            flash("Invalid guide language selected.", "warning")
-            return redirect(url_for("auth.profile"))
-
     password_hash = current_user.password_hash
 
-    if new_password:
-        if not is_valid_password(new_password):
-            flash("New password must be at least 8 chars, 1 uppercase, 1 number.", "warning")
-            return redirect(url_for("auth.profile"))
+    if form_data["new_password"]:
+        password_hash = generate_password_hash(form_data["new_password"])
 
-        password_hash = generate_password_hash(new_password)
+    try:
+        img_filename = get_profile_photo_filename(
+            request.files.get("profile_photo"),
+            current_user.profile_photo,
+        )
+    except Exception:
+        flash("Error processing new image.", "danger")
+        return redirect(url_for("auth.profile"))
 
-    img_filename = current_user.profile_photo
-
-    profile_photo = request.files.get("profile_photo")
-
-    if profile_photo and profile_photo.filename != "":
-        if not allowed_file(profile_photo.filename):
-            flash("Invalid image format.", "warning")
-            return redirect(url_for("auth.profile"))
-
-        try:
-            img_filename = process_profile_photo(profile_photo)
-        except Exception:
-            flash("Error processing new image.", "danger")
-            return redirect(url_for("auth.profile"))
-
-    updated_user = User(
-        id=current_user.id,
-        email=email,
+    updated_user = build_user_for_profile_update(
+        data=form_data,
+        current_user=current_user,
         password_hash=password_hash,
-        first_name=first_name,
-        last_name=last_name,
-        username=username,
-        role=current_user.role,
-        profile_photo=img_filename,
-        guide_language_ids=guide_language_ids
+        profile_photo_filename=img_filename,
     )
 
     if not UsersDAO.update_user(updated_user):
@@ -318,7 +249,7 @@ def profile():
         return redirect(url_for("auth.profile"))
 
     if current_user.role == "guide":
-        if not UsersDAO.replace_guide_languages(current_user.id, guide_language_ids):
+        if not UsersDAO.replace_guide_languages(current_user.id, form_data["guide_language_ids"]):
             flash("Profile updated, but guide languages could not be saved.", "warning")
             return redirect(url_for("auth.profile"))
 

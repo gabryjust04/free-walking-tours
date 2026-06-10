@@ -1,0 +1,37 @@
+{# Guide language checkbox grid. Reused by signup and profile.
+   Optional vars:
+     - input_class:  extra class on each checkbox (e.g. "guide-language-input")
+     - input_disabled: bool, render checkboxes disabled
+     - selected_language_ids: list of pre-checked ids #}
+{% if languages %}
+    <div class="row g-3">
+        {% for language in languages %}
+            <div class="col-md-6">
+                <input
+                    type="checkbox"
+                    class="btn-check {{ input_class|default('') }}"
+                    name="language_ids"
+                    id="language-{{ language.id }}"
+                    value="{{ language.id }}"
+                    {% if input_disabled|default(false) %}disabled{% endif %}
+                    {% if language.id in selected_language_ids|default([]) %}checked{% endif %}
+                >
+
+                <label class="btn language-choice w-100 rounded-4 p-3 text-start h-100" for="language-{{ language.id }}">
+                    <div class="d-flex align-items-center justify-content-between gap-3">
+                        <div>
+                            <span class="fw-bold d-block">{{ language.name }}</span>
+                            <span class="small opacity-75">{{ language.label|default('Tour language') }}</span>
+                        </div>
+
+                        <i class="bi bi-check-circle fs-5"></i>
+                    </div>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-light border rounded-4 mb-0">
+        No languages available yet.
+    </div>
+{% endif %}

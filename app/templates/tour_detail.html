@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tour.title }} - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container container-page">
+
+        <div class="mb-4">
+            <a href="{{ url_for('public.home') }}" class="text-decoration-none fw-bold">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to tours
+            </a>
+        </div>
+        {% include "partials/flash_messages.html" %}
+
+        <div class="row g-4 align-items-start">
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-4">
+                    {% if cover_photo %}
+                        <div class="ratio ratio-16x9">
+                            <img
+                                src="{{ url_for('static', filename='uploads/tours/' ~ cover_photo.filename) }}"
+                                alt="{{ tour.title }}"
+                                class="w-100 h-100 object-fit-cover"
+                            >
+                        </div>
+                    {% else %}
+                        <div class="tour-img">
+                            <div class="tour-placeholder">
+                                UrbanBuddy
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <div class="card-body p-4 p-lg-5">
+                        <span class="eyebrow mb-2">
+                            About this experience
+                        </span>
+
+                        <h2 class="fw-black mb-3">
+                            What you will discover
+                        </h2>
+
+                        <p class="text-muted mb-0 lh-lg">
+                            {{ tour.description }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+                            <div>
+                                <span class="eyebrow mb-2">
+                                    Route
+                                </span>
+                                <h2 class="fw-black mb-0">
+                                    Tour itinerary
+                                </h2>
+                            </div>
+
+                            <div class="icon-circle">
+                                <i class="bi bi-signpost-2"></i>
+                            </div>
+                        </div>
+
+                        {% if stops %}
+                            <div class="list-group list-group-flush">
+                                {% for stop in stops %}
+                                    <div class="list-group-item px-0 py-4">
+                                        <div class="d-flex gap-3">
+                                            <div>
+                                                <span class="badge rounded-pill bg-brand text-dark">
+                                                    {{ loop.index }}
+                                                </span>
+                                            </div>
+
+                                            <div>
+                                                <h3 class="h5 fw-black mb-2">
+                                                    {{ stop.stop_name }}
+                                                </h3>
+
+                                                {% if stop.description %}
+                                                    <p class="text-muted mb-0">
+                                                        {{ stop.description }}
+                                                    </p>
+                                                {% else %}
+                                                    <p class="text-muted mb-0">
+                                                        More details about this stop will be added soon.
+                                                    </p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="border border-dashed rounded-4 p-4 bg-light">
+                                <div class="d-flex gap-3 align-items-start">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-map"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3 class="h5 fw-black mb-1">
+                                            No itinerary stops yet
+                                        </h3>
+                                        <p class="text-muted mb-0">
+                                            The guide has not added the route stops for this tour yet.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if photos and photos|length > 1 %}
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4 p-lg-5">
+                            <span class="eyebrow mb-2">
+                                Gallery
+                            </span>
+
+                            <h2 class="fw-black mb-4">
+                                Tour photos
+                            </h2>
+
+                            <div class="row g-3">
+                                {% for photo in photos %}
+                                    <div class="col-6 col-md-4">
+                                        <div class="ratio ratio-4x3 rounded-4 overflow-hidden bg-light">
+                                            <img
+                                                src="{{ url_for('static', filename='uploads/tours/' ~ photo.filename) }}"
+                                                alt="{{ tour.title }} photo {{ loop.index }}"
+                                                class="w-100 h-100 object-fit-cover"
+                                            >
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-aside">
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4">
+                            <span class="eyebrow mb-2">
+                                Free walking tour in {{ city_name }}
+                            </span>
+
+                            <h1 class="fw-black mb-3">
+                                {{ tour.title }}
+                            </h1>
+
+                            <p class="text-muted mb-4">
+                                Explore {{ city_name }} with a passionate local guide.
+                            </p>
+
+                            <div class="vstack gap-3">
+                                <div class="d-flex gap-3">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted fw-bold">
+                                            Meeting point
+                                        </div>
+                                        <div class="fw-bold">
+                                            {{ tour.meeting_point }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted fw-bold">
+                                            Duration
+                                        </div>
+                                        <div class="fw-bold">
+                                            {{ duration_label }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted fw-bold">
+                                            Group size
+                                        </div>
+                                        <div class="fw-bold">
+                                            Up to {{ tour.max_participants }} people
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-translate"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted fw-bold">
+                                            Language
+                                        </div>
+                                        <div class="fw-bold">
+                                            {{ language_name }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <div class="icon-circle icon-circle-sm">
+                                        <i class="bi bi-compass"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted fw-bold">
+                                            Theme
+                                        </div>
+                                        <div class="fw-bold">
+                                            {{ theme_name }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="booking" class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="icon-circle icon-circle-sm">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+
+                                <div>
+                                    <span class="eyebrow mb-1">
+                                        Booking
+                                    </span>
+                                    <h2 class="h4 fw-black mb-0">
+                                        Reserve your spot
+                                    </h2>
+                                </div>
+                            </div>
+
+                            {% if upcoming_occurrences %}
+                                <form method="POST" action="{{ url_for('public.book_tour', tour_id=tour.id) }}">
+                                    <input type="hidden" name="idempotency_key" value="{{ idempotency_key }}">
+
+                                    <div class="mb-4">
+                                        <label class="form-label">
+                                            Choose a date
+                                        </label>
+
+                                        <div class="list-group">
+                                            {% for occurrence in upcoming_occurrences %}
+                                                <label class="list-group-item d-flex gap-3 align-items-start">
+                                                    <input
+                                                        class="form-check-input mt-1"
+                                                        type="radio"
+                                                        name="occurrence"
+                                                        value="{{ occurrence.event_date }}|{{ occurrence.start_time }}"
+                                                        {% if loop.first %}checked{% endif %}
+                                                        required
+                                                    >
+
+                                                    <span>
+                                                        <span class="d-block fw-bold">
+                                                            {{ occurrence.weekday }}
+                                                        </span>
+                                                        <span class="small text-muted">
+                                                            {{ occurrence.date_label }} · {{ occurrence.start_time }}
+                                                        </span>
+                                                    </span>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="additional_names" class="form-label">
+                                            Additional guests
+                                        </label>
+
+                                        <textarea
+                                            id="additional_names"
+                                            name="additional_names"
+                                            class="form-control"
+                                            rows="4"
+                                            placeholder="Write one guest name per line. Leave empty if you are booking only for yourself."
+                                        ></textarea>
+
+                                        <div class="form-text">
+                                            You are included automatically in the booking.
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Book now
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="text-muted mb-0">
+                                    No available dates have been published for this tour yet.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div id="schedule" class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="icon-circle icon-circle-sm">
+                                    <i class="bi bi-calendar3"></i>
+                                </div>
+
+                                <div>
+                                    <span class="eyebrow mb-1">
+                                        Weekly schedule
+                                    </span>
+                                    <h2 class="h4 fw-black mb-0">
+                                        Regular times
+                                    </h2>
+                                </div>
+                            </div>
+
+                            {% if schedule %}
+                                <div class="list-group list-group-flush">
+                                    {% for item in schedule %}
+                                        <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">
+                                                {{ item.day }}
+                                            </span>
+                                            <span class="badge bg-soft-blue text-primary rounded-pill">
+                                                {{ item.time }}
+                                            </span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted mb-0">
+                                    No weekly schedule has been published yet.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="icon-circle icon-circle-sm">
+                                    <i class="bi bi-info-circle"></i>
+                                </div>
+
+                                <h2 class="h4 fw-black mb-0">
+                                    Good to know
+                                </h2>
+                            </div>
+
+                            <ul class="list-unstyled vstack gap-3 mb-0 text-muted">
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <span>This is a free walking tour.</span>
+                                </li>
+
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <span>Comfortable shoes are recommended.</span>
+                                </li>
+
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <span>Please arrive a few minutes before the start time.</span>
+                                </li>
+
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <span>The tour takes place in {{ city_name }}.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -7,42 +7,15 @@
 {% block content %}
 <section class="auth-page py-5">
     <div class="container">
-        <div class="row g-4 align-items-start justify-content-center">
-            <div class="col-lg-5 d-none d-lg-block">
-                <div class="signup-cover-card position-sticky rounded-5 overflow-hidden shadow-lg">
-                    <img 
-                        src="{{ url_for('static', filename='img/auth-cover.jpg') }}"
-                        alt="UrbanBuddy Stockholm"
-                        class="signup-cover-img"
-                    >
-
-                    <div class="signup-cover-overlay"></div>
-
-                    <div class="signup-cover-content p-4">
-                        <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-white mb-auto" href="{{ url_for('public.home') }}">
-                            <i class="bi bi-signpost-2-fill"></i>
-                            UrbanBuddy
-                        </a>
-
-                        <div>
-                            <span class="badge rounded-pill bg-primary text-dark mb-3">
-                                Stockholm walking tours
-                            </span>
-
-                            <h2 class="fw-black text-white mb-3">
-                                Start your journey.
-                            </h2>
-
-                            <p class="text-white-50 mb-0">
-                                Join tours or become a local guide in Stockholm.
-                            </p>
-                        </div>
-                    </div>
+        <div class="card auth-card border-0 shadow-lg rounded-5 mx-auto overflow-hidden">
+            <div class="row g-0">
+                <div class="col-lg-5 d-none d-lg-block">
+                    {% set cover_title = "Start your journey." %}
+                    {% set cover_text = "Join tours or become a local guide in " ~ city_name|default("Stockholm") ~ "." %}
+                    {% include "partials/auth_cover.html" %}
                 </div>
-            </div>
 
-            <div class="col-lg-7 col-xl-6">
-                <div class="card border-0 shadow-lg rounded-5">
+                <div class="col-lg-7">
                     <div class="card-body p-4 p-md-5">
                         <div class="auth-tabs d-grid mb-4">
                             <a href="{{ url_for('auth.login') }}">Log In</a>
@@ -52,95 +25,41 @@
                         <h1 class="h2 fw-black mb-1">Create account</h1>
                         <p class="text-muted mb-4">Join UrbanBuddy in a few seconds.</p>
 
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                <div class="mt-4">
-                                    {% for category, message in messages %}
-                                        <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4" role="alert">
-                                            {{ message }}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        {% endwith %}
+                        {% include "partials/flash_messages.html" %}
 
                         <form action="{{ url_for('auth.signup') }}" method="POST" enctype="multipart/form-data">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="firstNameInput" class="form-label">First Name</label>
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="firstNameInput" 
-                                        name="first_name"
-                                        required
-                                    >
+                                    <input type="text" class="form-control" id="firstNameInput" name="first_name" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="lastNameInput" class="form-label">Last Name</label>
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="lastNameInput" 
-                                        name="last_name"
-                                        required
-                                    >
+                                    <input type="text" class="form-control" id="lastNameInput" name="last_name" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="usernameInput" class="form-label">Username</label>
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="usernameInput" 
-                                        name="username"
-                                        required
-                                    >
+                                    <input type="text" class="form-control" id="usernameInput" name="username" required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="emailInput" class="form-label">Email Address</label>
-                                    <input 
-                                        type="email" 
-                                        class="form-control" 
-                                        id="emailInput" 
-                                        name="email" 
-                                        placeholder="hello@example.com"
-                                        required
-                                    >
+                                    <input type="email" class="form-control" id="emailInput" name="email" placeholder="hello@example.com" required>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="passwordInput" class="form-label">Password</label>
-                                    <input 
-                                        type="password" 
-                                        class="form-control" 
-                                        id="passwordInput" 
-                                        name="password"
-                                        placeholder="At least 8 characters"
-                                        required
-                                    >
-                                    <div class="form-text">
-                                        At least 8 characters, 1 uppercase letter and 1 number.
-                                    </div>
+                                    <input type="password" class="form-control" id="passwordInput" name="password" placeholder="At least 8 characters" required>
+                                    <div class="form-text">At least 8 characters, 1 uppercase letter and 1 number.</div>
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label">Account type</label>
-
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <input 
-                                                type="radio" 
-                                                class="btn-check" 
-                                                name="role" 
-                                                id="participantRole" 
-                                                value="participant" 
-                                                checked
-                                            >
-
+                                            <input type="radio" class="btn-check" name="role" id="participantRole" value="participant" checked>
                                             <label class="role-option" for="participantRole">
                                                 <i class="bi bi-person"></i>
                                                 <span>
@@ -151,14 +70,7 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <input 
-                                                type="radio" 
-                                                class="btn-check" 
-                                                name="role" 
-                                                id="guideRole" 
-                                                value="guide"
-                                            >
-
+                                            <input type="radio" class="btn-check" name="role" id="guideRole" value="guide">
                                             <label class="role-option" for="guideRole">
                                                 <i class="bi bi-map"></i>
                                                 <span>
@@ -174,83 +86,27 @@
                                     <div class="card border rounded-5 bg-light">
                                         <div class="card-body p-4">
                                             <div class="d-flex align-items-center gap-3 mb-4">
-                                                <div class="rounded-circle bg-primary bg-opacity-25 d-flex align-items-center justify-content-center"
-                                                     style="width: 44px; height: 44px;">
-                                                    <i class="bi bi-translate text-dark"></i>
-                                                </div>
-
+                                                <span class="icon-circle"><i class="bi bi-translate"></i></span>
                                                 <div>
-                                                    <label class="form-label h5 fw-black mb-1">
-                                                        Guide Languages
-                                                    </label>
-                                                    <p class="small text-muted mb-0">
-                                                        Select one or more languages you can use during tours.
-                                                    </p>
+                                                    <label class="form-label h5 fw-black mb-1">Guide Languages</label>
+                                                    <p class="small text-muted mb-0">Select one or more languages you can use during tours.</p>
                                                 </div>
                                             </div>
 
-                                            {% if languages %}
-                                                <div class="row g-2">
-                                                    {% for language in languages %}
-                                                        <div class="col-sm-6">
-                                                            <input
-                                                                type="checkbox"
-                                                                class="btn-check guide-language-input"
-                                                                name="language_ids"
-                                                                id="language-{{ language.id }}"
-                                                                value="{{ language.id }}"
-                                                                disabled
-                                                            >
-
-                                                            <label class="btn language-choice w-100 rounded-4 p-3 text-start h-100"
-                                                                   for="language-{{ language.id }}">
-                                                                <div class="d-flex align-items-center justify-content-between gap-3">
-                                                                    <div>
-                                                                        <span class="fw-bold d-block">
-                                                                            {{ language.name }}
-                                                                        </span>
-
-                                                                        {% if language.label %}
-                                                                            <span class="small opacity-75">
-                                                                                {{ language.label }}
-                                                                            </span>
-                                                                        {% else %}
-                                                                            <span class="small opacity-75">
-                                                                                Tour language
-                                                                            </span>
-                                                                        {% endif %}
-                                                                    </div>
-
-                                                                    <i class="bi bi-check-circle fs-5"></i>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            {% else %}
-                                                <div class="alert alert-light border rounded-4 mb-0">
-                                                    No languages available yet.
-                                                </div>
-                                            {% endif %}
+                                            {% set input_class = "guide-language-input" %}
+                                            {% set input_disabled = true %}
+                                            {% include "partials/guide_languages.html" %}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-12">
                                     <label for="profilePhotoInput" class="form-label">Profile Photo</label>
-                                    <input 
-                                        type="file" 
-                                        class="form-control" 
-                                        id="profilePhotoInput" 
-                                        name="profile_photo"
-                                        accept="image/png, image/jpeg, image/jpg, image/webp"
-                                    >
+                                    <input type="file" class="form-control" id="profilePhotoInput" name="profile_photo" accept="image/png, image/jpeg, image/jpg, image/webp">
                                 </div>
 
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary w-100 py-3">
-                                        Register
-                                    </button>
+                                    <button type="submit" class="btn btn-primary w-100 py-3">Register</button>
                                 </div>
                             </div>
                         </form>
@@ -265,29 +121,27 @@
         </div>
     </div>
 </section>
+{% endblock %}
 
+{% block scripts %}
 <script>
-    const participantRole = document.getElementById("participantRole");
     const guideRole = document.getElementById("guideRole");
     const guideLanguagesBox = document.getElementById("guideLanguagesBox");
     const guideLanguageInputs = document.querySelectorAll(".guide-language-input");
 
     function updateGuideLanguagesVisibility() {
         const isGuide = guideRole.checked;
-
         guideLanguagesBox.classList.toggle("d-none", !isGuide);
 
         guideLanguageInputs.forEach((input) => {
             input.disabled = !isGuide;
-
-            if (!isGuide) {
-                input.checked = false;
-            }
+            if (!isGuide) input.checked = false;
         });
     }
 
-    participantRole.addEventListener("change", updateGuideLanguagesVisibility);
-    guideRole.addEventListener("change", updateGuideLanguagesVisibility);
+    document.querySelectorAll('input[name="role"]').forEach((radio) => {
+        radio.addEventListener("change", updateGuideLanguagesVisibility);
+    });
 
     updateGuideLanguagesVisibility();
 </script>

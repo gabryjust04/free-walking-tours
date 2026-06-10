@@ -68,8 +68,8 @@ class TourEvents:
     event_date: str
     start_time: str
     status: str
-    actual_partecipants: str
-    evicende_photos: str
+    actual_participants: int
+    evidence_photo: str
     created_at: str
     updated_at: str
     tour: object = None
@@ -85,8 +85,8 @@ class TourEvents:
             event_date=row["event_date"],
             start_time=row["start_time"],
             status=row["status"],
-            actual_partecipants=row["actual_partecipants"],
-            evicende_photos=row["evicende_photos"],
+            actual_participants=row["actual_participants"],
+            evidence_photo=row["evidence_photo"],
             created_at=row["created_at"],
             updated_at=row["updated_at"]
         )
@@ -169,4 +169,38 @@ class Tour:
             duration=row["duration"],
             max_participants=row["max_participants"],
             is_deleted=bool(row["is_deleted"])
+        )
+    
+
+@dataclass
+class TourReservation:
+    id: str
+    event_id: str = None
+    participant_id: str = None
+    idempotency_key: str = None
+    total_people: int = 1
+    additional_names: str = None
+    reminder_sent: int = 0
+    is_checked_in: int = 0
+    status: str = "active"
+    created_at: str = None
+    updated_at: str = None
+
+    @staticmethod
+    def from_row(row):
+        if row is None:
+            return None
+
+        return TourReservation(
+            id=row["id"],
+            event_id=row.get("event_id", row.get("tour_event_id")),
+            participant_id=row.get("participant_id"),
+            idempotency_key=row.get("idempotency_key"),
+            total_people=row.get("total_people", 1),
+            additional_names=row.get("additional_names"),
+            reminder_sent=row.get("reminder_sent", 0),
+            is_checked_in=row.get("is_checked_in", 0),
+            status=row.get("status", "active"),
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
         )

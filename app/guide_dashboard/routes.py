@@ -12,6 +12,8 @@ from app.tours.dao import (
 )
 
 from .utils import (
+    require_guide,
+    get_owned_tour_or_404,
     build_dashboard_tours,
     build_dashboard_events,
     get_tour_form_data,
@@ -23,28 +25,12 @@ from .utils import (
     get_schedule_form_data,
     build_schedule_data_from_slots,
     get_stops_form_data,
-    build_stop_data_from_stops
+    build_stop_data_from_stops,
 )
 
 
 guide_dashboard_bp = Blueprint("guide_dashboard", __name__)
 
-
-def require_guide():
-    if current_user.role != "guide":
-        abort(403)
-
-
-def get_owned_tour_or_404(tour_id):
-    tour = ToursDAO.get_tour_by_id(tour_id)
-
-    if tour is None:
-        abort(404)
-
-    if tour.guide_id != current_user.id:
-        abort(403)
-
-    return tour
 
 
 @guide_dashboard_bp.route("/dashboard", methods=["GET"])

@@ -1,16 +1,59 @@
+/* ============================================================
+   UrbanBuddy — global stylesheet
+   1. Design tokens + Bootstrap overrides
+   2. Base & utilities
+   3. Buttons & forms
+   4. Navbar & footer
+   5. Home (hero, search, tour cards)
+   6. Dashboard (booking rows, schedule, stops)
+   7. Auth (login / signup) & profile
+   8. Responsive
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Design tokens + Bootstrap overrides
+   ------------------------------------------------------------ */
 :root {
+    /* Brand palette */
     --ub-primary: #FFD700;
+    --ub-primary-hover: #EDC500;
+    --ub-primary-active: #D9B400;
     --ub-primary-dark: #8F7800;
     --ub-blue: #4285F4;
-    --ub-bg: #F8F9FA;
-    --ub-text: #252525;
+    --ub-text: #20242B;
     --ub-muted: #6C757D;
-    --ub-border: #E5E5E5;
+    --ub-bg: #F6F7F9;
+    --ub-border: #E8EAEE;
+
+    /* Shadows */
+    --ub-shadow-sm: 0 1px 2px rgba(20, 24, 33, 0.04), 0 10px 30px -14px rgba(20, 24, 33, 0.14);
+    --ub-shadow-lg: 0 18px 45px -18px rgba(20, 24, 33, 0.28);
+
+    /* Bootstrap hooks — restyle Bootstrap itself instead of fighting it */
+    --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --bs-body-bg: var(--ub-bg);
+    --bs-body-color: var(--ub-text);
+    --bs-border-color: var(--ub-border);
+
+    --bs-primary: var(--ub-blue);
+    --bs-primary-rgb: 66, 133, 244;           /* text-primary / bg-primary = brand blue */
+    --bs-link-color-rgb: 66, 133, 244;
+    --bs-link-hover-color-rgb: 28, 100, 222;
+
+    --bs-border-radius: 0.75rem;
+    --bs-border-radius-sm: 0.5rem;
+    --bs-border-radius-lg: 1rem;
+    --bs-border-radius-xl: 1.25rem;
+    --bs-border-radius-xxl: 1.75rem;
+
+    --bs-focus-ring-color: rgba(255, 215, 0, 0.35);
 }
 
-body {
-    background-color: var(--ub-bg);
-    color: var(--ub-text);
+/* ------------------------------------------------------------
+   2. Base & utilities
+   ------------------------------------------------------------ */
+h1, h2, h3, .fw-black {
+    letter-spacing: -0.02em;
 }
 
 .fw-black {
@@ -18,64 +61,216 @@ body {
 }
 
 .text-brand {
-    color: var(--ub-primary-dark);
+    color: var(--ub-primary-dark) !important;
+}
+
+.bg-brand {
+    background-color: var(--ub-primary) !important;
 }
 
 .bg-soft-blue {
-    background-color: #EEF4FF;
+    background-color: #EEF4FF !important;
 }
 
-.navbar-brand {
-    color: var(--ub-primary-dark);
+.border-dashed {
+    border-style: dashed !important;
 }
 
-.navbar .nav-link {
+::selection {
+    background: rgba(255, 215, 0, 0.45);
+}
+
+/* Softer, layered shadows everywhere shadow utilities are used */
+.shadow-sm {
+    box-shadow: var(--ub-shadow-sm) !important;
+}
+
+.shadow-lg {
+    box-shadow: var(--ub-shadow-lg) !important;
+}
+
+/* Single page width for dashboard, tour form and profile */
+.container-page {
+    max-width: 1100px;
+}
+
+/* Round icon chip used in card headers */
+.icon-circle {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 215, 0, 0.25);
+    color: var(--ub-text);
+    font-size: 1.05rem;
+}
+
+.icon-circle-sm {
+    width: 40px;
+    height: 40px;
+    font-size: 0.95rem;
+}
+
+/* Round icon-only buttons (edit / delete) */
+.btn-icon,
+.btn-icon-sm {
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon {
+    width: 38px;
+    height: 38px;
+}
+
+.btn-icon-sm {
+    width: 32px;
+    height: 32px;
+}
+
+/* Sticky sidebar (tour form) */
+.sticky-aside {
+    position: sticky;
+    top: 96px;
+}
+
+.alert {
+    border: 0;
+    box-shadow: var(--ub-shadow-sm);
+}
+
+/* ------------------------------------------------------------
+   3. Buttons & forms
+   ------------------------------------------------------------ */
+.btn {
     font-weight: 600;
-}
-
-.navbar .nav-link.active {
-    color: var(--ub-blue);
-    border-bottom: 3px solid var(--ub-blue);
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+                background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-primary {
     --bs-btn-bg: var(--ub-primary);
     --bs-btn-border-color: var(--ub-primary);
     --bs-btn-color: #1f1f1f;
-    --bs-btn-hover-bg: #e6c200;
-    --bs-btn-hover-border-color: #e6c200;
+    --bs-btn-hover-bg: var(--ub-primary-hover);
+    --bs-btn-hover-border-color: var(--ub-primary-hover);
     --bs-btn-hover-color: #1f1f1f;
-    --bs-btn-active-bg: #d6b400;
-    --bs-btn-active-border-color: #312d1c;
+    --bs-btn-active-bg: var(--ub-primary-active);
+    --bs-btn-active-border-color: var(--ub-primary-active);
     --bs-btn-active-color: #1f1f1f;
+    --bs-btn-disabled-bg: var(--ub-primary);
+    --bs-btn-disabled-border-color: var(--ub-primary);
+    --bs-btn-disabled-color: #1f1f1f;
+    --bs-btn-focus-shadow-rgb: 222, 189, 0;
     font-weight: 800;
+    box-shadow: 0 10px 22px -10px rgba(143, 120, 0, 0.55);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+}
+
+.btn-light {
+    --bs-btn-bg: #F1F3F6;
+    --bs-btn-border-color: #F1F3F6;
+    --bs-btn-color: var(--ub-text);
+    --bs-btn-hover-bg: #E6E9EE;
+    --bs-btn-hover-border-color: #E6E9EE;
+    --bs-btn-hover-color: var(--ub-text);
+}
+
+.form-label {
+    font-weight: 600;
 }
 
 .form-control,
 .form-select {
-    border-radius: 14px;
-    padding: 12px 14px;
+    padding: 0.7rem 0.9rem;
+    background-color: #FBFBFC;
     border-color: var(--ub-border);
-    background-color: #fbfbfb;
 }
 
 .form-control:focus,
 .form-select:focus {
+    background-color: #fff;
     border-color: var(--ub-primary);
     box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
 }
 
-/* HOME */
+.input-group-text {
+    background-color: #F1F3F6;
+    border-color: var(--ub-border);
+    color: var(--ub-muted);
+    font-weight: 600;
+}
 
-.py-lg-6 {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+.form-check-input:checked {
+    background-color: var(--ub-primary-dark);
+    border-color: var(--ub-primary-dark);
+}
+
+.form-check-input:focus {
+    border-color: var(--ub-primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
+}
+
+/* ------------------------------------------------------------
+   4. Navbar & footer
+   ------------------------------------------------------------ */
+.navbar {
+    --bs-navbar-padding-y: 0.8rem;
+}
+
+.navbar-brand {
+    color: var(--ub-primary-dark);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+    color: var(--ub-primary-dark);
+}
+
+.navbar .nav-link {
+    font-weight: 600;
+    color: var(--ub-text);
+    border-bottom: 3px solid transparent;
+}
+
+.navbar .nav-link:hover {
+    color: var(--ub-blue);
+}
+
+.navbar .nav-link.active {
+    color: var(--ub-blue);
+    border-bottom-color: var(--ub-blue);
+}
+
+footer .nav-link:hover {
+    color: var(--ub-text) !important;
+}
+
+/* ------------------------------------------------------------
+   5. Home (hero, search, tour cards)
+   ------------------------------------------------------------ */
+@media (min-width: 992px) {
+    .py-lg-6 {
+        padding-top: 5.5rem !important;
+        padding-bottom: 5.5rem !important;
+    }
 }
 
 .hero {
     background:
-        radial-gradient(circle at top left, rgba(255, 215, 0, 0.12), transparent 32%),
-        radial-gradient(circle at top right, rgba(66, 133, 244, 0.12), transparent 32%),
+        radial-gradient(900px 420px at 12% -10%, rgba(255, 215, 0, 0.16), transparent 60%),
+        radial-gradient(900px 420px at 88% -10%, rgba(66, 133, 244, 0.14), transparent 60%),
         var(--ub-bg);
 }
 
@@ -101,7 +296,6 @@ body {
     background-color: #F3F4F6;
     color: #374151;
     font-weight: 600;
-    border-radius: 14px;
 }
 
 .search-submit {
@@ -110,25 +304,28 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    border-radius: 14px;
 }
 
 .search-filter:disabled,
 .search-submit:disabled {
     opacity: 1;
     cursor: default;
+    transform: none;
+}
+
+/* Tour card — single definition */
+.tour-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tour-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ub-shadow-lg) !important;
 }
 
 .tour-img {
-    position: relative;
-    height: 190px;
+    height: 200px;
     background-color: #FDE1C9;
-}
-
-.tour-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .tour-placeholder {
@@ -136,45 +333,100 @@ body {
     display: grid;
     place-items: center;
     background:
-        linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(66, 133, 244, 0.25)),
+        linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(66, 133, 244, 0.3)),
         #FDE1C9;
     color: var(--ub-primary-dark);
-    font-size: 2rem;
+    font-size: 1.9rem;
     font-weight: 900;
+    letter-spacing: -0.02em;
 }
 
 .tour-description {
-    height: 42px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
+    min-height: 2.7em;
 }
 
-.tour-card {
-    transition: 0.2s ease;
+/* ------------------------------------------------------------
+   6. Dashboard (booking rows, schedule, stops)
+   ------------------------------------------------------------ */
+.booking-row {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.tour-card:hover {
-    transform: translateY(-4px);
+.booking-row:hover {
+    box-shadow: var(--ub-shadow-sm);
+    border-color: rgba(66, 133, 244, 0.35) !important;
 }
 
-/* AUTH */
+.date-box {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    line-height: 1.05;
+}
 
+.schedule-row,
+.stop-row {
+    background-color: #F8F9FA;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.schedule-row:hover,
+.stop-row:hover {
+    background-color: #fff;
+    border-color: rgba(255, 215, 0, 0.6) !important;
+}
+
+.stop-order-label {
+    font-weight: 800;
+}
+
+/* ------------------------------------------------------------
+   7. Auth (login / signup) & profile
+   ------------------------------------------------------------ */
 .auth-page {
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - 73px);
     display: flex;
     align-items: center;
 }
 
 .auth-card {
-    max-width: 980px;
+    width: 100%;
+    max-width: 1020px;
 }
 
+/* Shared photo cover (login + signup) */
 .auth-cover {
-    min-height: 620px;
-    background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.72)),
-        url("/static/img/auth-cover.jpg");
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    min-height: 560px;
+    background-color: #101726;
+}
+
+.auth-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.auth-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(185deg, rgba(13, 18, 28, 0.1) 30%, rgba(13, 18, 28, 0.85));
+}
+
+.auth-cover-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .auth-tabs {
@@ -187,18 +439,19 @@ body {
 .auth-tabs a {
     text-align: center;
     text-decoration: none;
-    color: #333333;
+    color: #333;
     padding: 10px 14px;
     border-radius: 999px;
     font-weight: 700;
 }
 
 .auth-tabs a.active {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #fff;
+    color: #000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* Account type selector (signup) */
 .role-option {
     min-height: 86px;
     display: flex;
@@ -207,13 +460,15 @@ body {
     padding: 16px;
     border: 1px solid var(--ub-border);
     border-radius: 18px;
-    background-color: #fbfbfb;
+    background-color: #FBFBFC;
     cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .role-option i {
     width: 38px;
     height: 38px;
+    flex: 0 0 auto;
     display: grid;
     place-items: center;
     border-radius: 50%;
@@ -237,302 +492,10 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.15);
 }
 
-/* RESPONSIVE */
-
-@media (max-width: 768px) {
-    .hero {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
-    }
-
-    .display-4 {
-        font-size: 2.4rem;
-    }
-
-    .auth-page {
-        align-items: flex-start;
-    }
-
-    .auth-card {
-        border-radius: 28px;
-    }
-}
-
-.dashboard-container {
-    max-width: 980px;
-}
-
-.date-box {
-    width: 64px;
-    height: 64px;
-    display: grid;
-    place-items: center;
-    line-height: 1.1;
-}
-
-.booking-row {
-    transition: 0.2s ease;
-}
-
-.booking-row:hover {
-    background-color: #ffffff !important;
-}
-
-.form-switch .form-check-input {
-    width: 2.6rem;
-    height: 1.35rem;
-}
-
-.tour-img {
-    position: relative;
-    height: 190px;
-    background-color: #FDE1C9;
-}
-
-.tour-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tour-placeholder {
-    height: 100%;
-    display: grid;
-    place-items: center;
-    background:
-        linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(66, 133, 244, 0.25)),
-        #FDE1C9;
-    color: var(--ub-primary-dark);
-    font-size: 2rem;
-    font-weight: 900;
-}
-
-.tour-card {
-    transition: 0.2s ease;
-}
-
-.tour-card:hover {
-    transform: translateY(-4px);
-}
-
-.tour-description {
-    height: 42px;
-    overflow: hidden;
-}
-
-.bg-soft-blue {
-    background-color: #EEF4FF;
-}
-
-.tour-form-container {
-    max-width: 1100px;
-}
-
-.tour-form-placeholder {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    background-color: #F3F4F6;
-    border: 1px dashed var(--ub-border);
-    display: grid;
-    place-items: center;
-    color: var(--ub-muted);
-    text-align: center;
-}
-
-.tour-form-placeholder i {
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.tour-form-placeholder span {
-    display: block;
-    font-weight: 700;
-}
-
-.tour-photo-thumb {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1rem;
-    aspect-ratio: 4 / 3;
-    background-color: #F3F4F6;
-}
-
-.tour-photo-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tour-photo-delete {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    padding: 0;
-}
-
-.schedule-row {
-    background-color: #F8F9FA;
-}
-
-.schedule-row:hover {
-    background-color: #FFFFFF;
-}
-
-.schedule-row .form-check-input:checked {
-    background-color: var(--ub-primary-dark);
-    border-color: var(--ub-primary-dark);
-}
-
-.schedule-row,
-.stop-row {
-    background-color: #F8F9FA;
-}
-
-.schedule-row:hover,
-.stop-row:hover {
-    background-color: #FFFFFF;
-}
-
-.schedule-row .form-check-input:checked {
-    background-color: var(--ub-primary-dark);
-    border-color: var(--ub-primary-dark);
-}
-
-.stop-order-label {
-    font-weight: 800;
-}
-
-.tour-form-container {
-    max-width: 1100px;
-}
-
-.tour-form-placeholder {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    background-color: #F3F4F6;
-    border: 1px dashed var(--ub-border);
-    display: grid;
-    place-items: center;
-    color: var(--ub-muted);
-    text-align: center;
-}
-
-.tour-form-placeholder i {
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.tour-form-placeholder span {
-    display: block;
-    font-weight: 700;
-}
-
-.tour-photo-thumb {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1rem;
-    aspect-ratio: 4 / 3;
-    background-color: #F3F4F6;
-}
-
-.tour-photo-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tour-photo-delete {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    padding: 0;
-}
-
-.tour-img {
-    height: 220px;
-    background-color: #F3F4F6;
-}
-
-.tour-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tour-card {
-    transition: 0.2s ease;
-}
-
-.tour-card:hover {
-    transform: translateY(-3px);
-}
-
-.tour-placeholder {
-    height: 100%;
-    display: grid;
-    place-items: center;
-    background:
-        linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(66, 133, 244, 0.25)),
-        #FDE1C9;
-    color: var(--ub-primary-dark);
-    font-size: 2rem;
-    font-weight: 900;
-}
-
-.signup-cover-card {
-    top: 88px;
-    min-height: 620px;
-    height: calc(100vh - 140px);
-    max-height: 760px;
-    background-color: #111827;
-}
-
-.signup-cover-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 1;
-}
-
-.signup-cover-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.05),
-            rgba(0, 0, 0, 0.78)
-        );
-}
-
-.signup-cover-content {
-    position: relative;
-    z-index: 3;
-    min-height: 620px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
+/* Guide language picker (signup + profile) */
 .language-choice {
     color: #1f1f1f;
-    background-color: #ffffff;
+    background-color: #fff;
     border: 1px solid rgba(143, 120, 0, 0.25);
 }
 
@@ -552,3 +515,29 @@ body {
 .btn-check:checked + .language-choice .bi-check-circle {
     color: var(--ub-primary-dark);
 }
+
+.profile-avatar {
+    width: 130px;
+    height: 130px;
+    box-shadow: 0 0 0 6px rgba(255, 215, 0, 0.3);
+}
+
+/* ------------------------------------------------------------
+   8. Responsive
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.35rem;
+    }
+
+    .tour-img {
+        height: 180px;
+    }
+
+    .auth-page {
+        min-height: 0;
+        align-items: flex-start;
+    }
+}
+
+

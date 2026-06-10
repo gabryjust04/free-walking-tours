@@ -4,433 +4,377 @@
 
 {% block content %}
 <section class="py-5">
-    <div class="container tour-form-container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
-                    <div>
-                        <a href="{{ url_for('guide_dashboard.dashboard') }}" class="small text-decoration-none fw-bold">
-                            <i class="bi bi-arrow-left me-1"></i>
-                            Back to dashboard
-                        </a>
+    <div class="container container-page">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <a href="{{ url_for('guide_dashboard.dashboard') }}" class="small text-decoration-none fw-bold">
+                    <i class="bi bi-arrow-left me-1"></i>Back to dashboard
+                </a>
 
-                        <h1 class="fw-black mt-3 mb-1">
-                            {{ page_title }}
-                        </h1>
+                <h1 class="fw-black mt-3 mb-1">{{ page_title }}</h1>
+                <p class="text-muted mb-0">
+                    Manage the tour information, schedule, stops and photos.
+                </p>
+            </div>
+        </div>
 
-                        <p class="text-muted mb-0">
-                            Manage the tour information, schedule, stops and photos.
-                        </p>
-                    </div>
-                </div>
+        {% include "partials/flash_messages.html" %}
 
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="container mt-4">
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    {# --- Tour information --- #}
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <span class="icon-circle"><i class="bi bi-info-circle"></i></span>
+                                <div>
+                                    <h2 class="h4 fw-black mb-1">Tour Information</h2>
+                                    <p class="text-muted small mb-0">Basic details visible to participants.</p>
+                                </div>
                             </div>
-                        {% endfor %}
+
+                            <div class="mb-3">
+                                <label for="titleInput" class="form-label">Title</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="titleInput"
+                                    name="title"
+                                    value="{{ form_data.get('title', '') }}"
+                                    placeholder="Old Town Legends Walk"
+                                    required
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descriptionInput" class="form-label">Description</label>
+                                <textarea
+                                    class="form-control"
+                                    id="descriptionInput"
+                                    name="description"
+                                    rows="5"
+                                    placeholder="Describe the tour."
+                                    required
+                                >{{ form_data.get('description', '') }}</textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="meetingPointInput" class="form-label">Meeting Point</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="meetingPointInput"
+                                    name="meeting_point"
+                                    value="{{ form_data.get('meeting_point', '') }}"
+                                    placeholder="Piazza Sant'Oronzo"
+                                    required
+                                >
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="themeInput" class="form-label">Theme</label>
+                                    <select class="form-select" id="themeInput" name="theme_id" required>
+                                        <option value="">Select theme</option>
+                                        {% for theme in themes %}
+                                            <option value="{{ theme.id }}" {% if form_data.get('theme_id') == theme.id|string %}selected{% endif %}>
+                                                {{ theme.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="languageInput" class="form-label">Language</label>
+                                    <select class="form-select" id="languageInput" name="language_id" required>
+                                        <option value="">Select language</option>
+                                        {% for language in languages %}
+                                            <option value="{{ language.id }}" {% if form_data.get('language_id') == language.id|string %}selected{% endif %}>
+                                                {{ language.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="durationInput" class="form-label">Duration</label>
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            id="durationInput"
+                                            name="duration"
+                                            min="1"
+                                            value="{{ form_data.get('duration', '') }}"
+                                            required
+                                        >
+                                        <span class="input-group-text">min</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="maxParticipantsInput" class="form-label">Max Participants</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="maxParticipantsInput"
+                                        name="max_participants"
+                                        min="1"
+                                        value="{{ form_data.get('max_participants', '') }}"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
-                {% endwith %}
 
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="row g-4">
-                        <div class="col-lg-8">
-                            <div class="card border-0 shadow-sm rounded-5 mb-4">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="d-flex align-items-center gap-3 mb-4">
-                                        <div class="rounded-circle bg-primary bg-opacity-25 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                            <i class="bi bi-info-circle text-dark"></i>
-                                        </div>
+                    {# --- Weekly schedule --- #}
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <span class="icon-circle"><i class="bi bi-calendar-week"></i></span>
+                                <div>
+                                    <h2 class="h4 fw-black mb-1">Weekly Schedule</h2>
+                                    <p class="text-muted small mb-0">Maximum one departure per day.</p>
+                                </div>
+                            </div>
 
-                                        <div>
-                                            <h2 class="h4 fw-black mb-1">Tour Information</h2>
-                                            <p class="text-muted small mb-0">
-                                                Basic details visible to participants.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="titleInput" class="form-label">Title</label>
-                                        <input 
-                                            type="text"
-                                            class="form-control"
-                                            id="titleInput"
-                                            name="title"
-                                            value="{{ form_data.get('title', '') }}"
-                                            placeholder="Old Town Legends Walk"
-                                            required
-                                        >
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="descriptionInput" class="form-label">Description</label>
-                                        <textarea
-                                            class="form-control"
-                                            id="descriptionInput"
-                                            name="description"
-                                            rows="5"
-                                            placeholder="Describe the tour."
-                                            required
-                                        >{{ form_data.get('description', '') }}</textarea>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="meetingPointInput" class="form-label">Meeting Point</label>
-                                        <input 
-                                            type="text"
-                                            class="form-control"
-                                            id="meetingPointInput"
-                                            name="meeting_point"
-                                            value="{{ form_data.get('meeting_point', '') }}"
-                                            placeholder="Piazza Sant'Oronzo"
-                                            required
-                                        >
-                                    </div>
-
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label for="themeInput" class="form-label">Theme</label>
-                                            <select class="form-select" id="themeInput" name="theme_id" required>
-                                                <option value="">Select theme</option>
-
-                                                {% for theme in themes %}
-                                                    <option 
-                                                        value="{{ theme.id }}"
-                                                        {% if form_data.get('theme_id') == theme.id|string %}selected{% endif %}
+                            <div class="row g-3">
+                                {% for day in week_days %}
+                                    {% set current_time = schedule_data.get(day.value, '') %}
+                                    <div class="col-md-6">
+                                        <div class="border rounded-4 p-3 h-100 schedule-row">
+                                            <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                                                <div class="form-check mb-0">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        name="schedule_days"
+                                                        value="{{ day.value }}"
+                                                        id="day-{{ day.value }}"
+                                                        {% if current_time %}checked{% endif %}
                                                     >
-                                                        {{ theme.name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label for="languageInput" class="form-label">Language</label>
-                                            <select class="form-select" id="languageInput" name="language_id" required>
-                                                <option value="">Select language</option>
-
-                                                {% for language in languages %}
-                                                    <option 
-                                                        value="{{ language.id }}"
-                                                        {% if form_data.get('language_id') == language.id|string %}selected{% endif %}
-                                                    >
-                                                        {{ language.name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label for="durationInput" class="form-label">Duration</label>
-                                            <div class="input-group">
-                                                <input 
-                                                    type="number"
-                                                    class="form-control"
-                                                    id="durationInput"
-                                                    name="duration"
-                                                    min="1"
-                                                    value="{{ form_data.get('duration', '') }}"
-                                                    required
-                                                >
-                                                <span class="input-group-text">min</span>
+                                                    <label class="form-check-label fw-bold" for="day-{{ day.value }}">
+                                                        {{ day.label }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-clock text-muted"></i>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-6">
-                                            <label for="maxParticipantsInput" class="form-label">Max Participants</label>
-                                            <input 
-                                                type="number"
+                                            <input
+                                                type="time"
                                                 class="form-control"
-                                                id="maxParticipantsInput"
-                                                name="max_participants"
-                                                min="1"
-                                                value="{{ form_data.get('max_participants', '') }}"
-                                                required
+                                                name="start_time_{{ day.value }}"
+                                                value="{{ current_time }}"
                                             >
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="card border-0 shadow-sm rounded-5 mb-4">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="d-flex align-items-center gap-3 mb-4">
-                                        <div class="rounded-circle bg-primary bg-opacity-25 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                            <i class="bi bi-calendar-week text-dark"></i>
-                                        </div>
-
-                                        <div>
-                                            <h2 class="h4 fw-black mb-1">Weekly Schedule</h2>
-                                            <p class="text-muted small mb-0">
-                                                Maximum one departure per day.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-3">
-                                        {% for day in week_days %}
-                                            {% set current_time = schedule_data.get(day.value, '') %}
-
-                                            <div class="col-md-6">
-                                                <div class="border rounded-4 p-3 h-100 schedule-row">
-                                                    <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-                                                        <div class="form-check mb-0">
-                                                            <input 
-                                                                class="form-check-input"
-                                                                type="checkbox"
-                                                                name="schedule_days"
-                                                                value="{{ day.value }}"
-                                                                id="day-{{ day.value }}"
-                                                                {% if current_time %}checked{% endif %}
-                                                            >
-
-                                                            <label class="form-check-label fw-bold" for="day-{{ day.value }}">
-                                                                {{ day.label }}
-                                                            </label>
-                                                        </div>
-
-                                                        <i class="bi bi-clock text-muted"></i>
-                                                    </div>
-
-                                                    <input 
-                                                        type="time"
-                                                        class="form-control"
-                                                        name="start_time_{{ day.value }}"
-                                                        value="{{ current_time }}"
-                                                    >
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card border-0 shadow-sm rounded-5">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="rounded-circle bg-primary bg-opacity-25 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                                <i class="bi bi-signpost-split text-dark"></i>
-                                            </div>
-
-                                            <div>
-                                                <h2 class="h4 fw-black mb-1">Tour Stops</h2>
-                                                <p class="text-muted small mb-0">
-                                                    Add the main places visited during the tour.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <button type="button" class="btn btn-light fw-bold" id="add-stop-btn">
-                                            <i class="bi bi-plus-lg me-1"></i>
-                                            Add
-                                        </button>
-                                    </div>
-
-                                    <div id="stops-list" class="vstack gap-3">
-                                        {% for stop in stop_data %}
-                                            <div class="card border rounded-4 shadow-none stop-row">
-                                                <div class="card-body p-3 p-md-4">
-                                                    <div class="d-flex align-items-center justify-content-between mb-3">
-                                                        <span class="badge rounded-pill bg-light text-muted stop-order-label">
-                                                            Stop {{ loop.index }}
-                                                        </span>
-
-                                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill remove-stop-btn">
-                                                            <i class="bi bi-x-lg me-1"></i>
-                                                            Remove
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Stop Name</label>
-                                                        <input
-                                                            type="text"
-                                                            class="form-control"
-                                                            name="stop_name"
-                                                            value="{{ stop.stop_name }}"
-                                                            placeholder="Piazza Sant'Oronzo"
-                                                        >
-                                                    </div>
-
-                                                    <div>
-                                                        <label class="form-label">Description</label>
-                                                        <textarea
-                                                            class="form-control"
-                                                            name="stop_description"
-                                                            rows="3"
-                                                            placeholder="Short description of this stop."
-                                                        >{{ stop.description }}</textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-
-                                    <template id="stop-template">
-                                        <div class="card border rounded-4 shadow-none stop-row">
-                                            <div class="card-body p-3 p-md-4">
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <span class="badge rounded-pill bg-light text-muted stop-order-label">
-                                                        Stop
-                                                    </span>
-
-                                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill remove-stop-btn">
-                                                        <i class="bi bi-x-lg me-1"></i>
-                                                        Remove
-                                                    </button>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Stop Name</label>
-                                                    <input
-                                                        type="text"
-                                                        class="form-control"
-                                                        name="stop_name"
-                                                        placeholder="Piazza Sant'Oronzo"
-                                                    >
-                                                </div>
-
-                                                <div>
-                                                    <label class="form-label">Description</label>
-                                                    <textarea
-                                                        class="form-control"
-                                                        name="stop_description"
-                                                        rows="3"
-                                                        placeholder="Short description of this stop."
-                                                    ></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </template>
-
-                                    <p class="small text-muted mt-3 mb-0">
-                                        Empty stops will be ignored when saving. Coordinates will be added later.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <div class="position-sticky" style="top: 90px;">
-                                <div class="card border-0 shadow-sm rounded-5 mb-4">
-                                    <div class="card-body p-4">
-                                        <div class="d-flex align-items-center gap-3 mb-4">
-                                            <div class="rounded-circle bg-primary bg-opacity-25 d-inline-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                                                <i class="bi bi-images text-dark"></i>
-                                            </div>
-
-                                            <div>
-                                                <h2 class="h5 fw-black mb-0">Tour Photos</h2>
-                                                <p class="small text-muted mb-0">Upload multiple images.</p>
-                                            </div>
-                                        </div>
-
-                                        {% if photos %}
-                                            <div class="row g-2 mb-3">
-                                                {% for photo in photos %}
-                                                    <div class="col-6">
-                                                        <div class="position-relative overflow-hidden rounded-4 bg-light ratio ratio-4x3">
-                                                            <img 
-                                                                src="{{ url_for('static', filename='uploads/tours/' ~ photo.filename) }}"
-                                                                alt="Tour photo"
-                                                                class="w-100 h-100 object-fit-cover"
-                                                            >
-
-                                                            {% if mode == "update" %}
-                                                                <button 
-                                                                    type="submit"
-                                                                    class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 m-2 d-flex align-items-center justify-content-center"
-                                                                    style="width: 32px; height: 32px;"
-                                                                    form="delete-photo-{{ photo.id }}"
-                                                                >
-                                                                    <i class="bi bi-x-lg"></i>
-                                                                </button>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% else %}
-                                            <div class="border border-2 border-dashed rounded-4 bg-light text-center p-4 mb-3">
-                                                <i class="bi bi-images fs-1 text-muted"></i>
-                                                <p class="fw-bold text-muted mb-0">No photos yet</p>
-                                            </div>
-                                        {% endif %}
-
-                                        <label for="tourPhotosInput" class="form-label">Add photos</label>
-                                        <input 
-                                            type="file"
-                                            class="form-control"
-                                            id="tourPhotosInput"
-                                            name="tour_photos"
-                                            accept="image/png, image/jpeg, image/jpg, image/webp"
-                                            multiple
-                                        >
-
-                                        <p class="small text-muted mt-2 mb-0">
-                                            JPG, PNG or WEBP. You can upload multiple photos.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="card border-0 shadow-sm rounded-5">
-                                    <div class="card-body p-4">
-                                        <h2 class="h5 fw-black mb-3">Actions</h2>
-
-                                        <button type="submit" class="btn btn-primary w-100 py-3 mb-2">
-                                            <i class="bi bi-check-lg me-1"></i>
-                                            {{ submit_label }}
-                                        </button>
-
-                                        <a href="{{ url_for('guide_dashboard.dashboard') }}" class="btn btn-light w-100 py-3">
-                                            Cancel
-                                        </a>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                </form>
 
-                {% if photos and mode == "update" %}
-                    {% for photo in photos %}
-                        <form 
-                            id="delete-photo-{{ photo.id }}"
-                            method="POST"
-                            action="{{ url_for('guide_dashboard.delete_tour_photo', tour_id=tour.id, photo_id=photo.id) }}"
-                        ></form>
-                    {% endfor %}
-                {% endif %}
+                    {# --- Tour stops --- #}
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="icon-circle"><i class="bi bi-signpost-split"></i></span>
+                                    <div>
+                                        <h2 class="h4 fw-black mb-1">Tour Stops</h2>
+                                        <p class="text-muted small mb-0">Add the main places visited during the tour.</p>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-light fw-bold" id="add-stop-btn">
+                                    <i class="bi bi-plus-lg me-1"></i>Add
+                                </button>
+                            </div>
+
+                            <div id="stops-list" class="vstack gap-3">
+                                {% for stop in stop_data %}
+                                    <div class="card border rounded-4 shadow-none stop-row">
+                                        <div class="card-body p-3 p-md-4">
+                                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                                <span class="badge rounded-pill bg-light text-muted stop-order-label">
+                                                    Stop {{ loop.index }}
+                                                </span>
+                                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill remove-stop-btn">
+                                                    <i class="bi bi-x-lg me-1"></i>Remove
+                                                </button>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Stop Name</label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    name="stop_name"
+                                                    value="{{ stop.stop_name }}"
+                                                    placeholder="Piazza Sant'Oronzo"
+                                                >
+                                            </div>
+
+                                            <div>
+                                                <label class="form-label">Description</label>
+                                                <textarea
+                                                    class="form-control"
+                                                    name="stop_description"
+                                                    rows="3"
+                                                    placeholder="Short description of this stop."
+                                                >{{ stop.description }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <template id="stop-template">
+                                <div class="card border rounded-4 shadow-none stop-row">
+                                    <div class="card-body p-3 p-md-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <span class="badge rounded-pill bg-light text-muted stop-order-label">Stop</span>
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill remove-stop-btn">
+                                                <i class="bi bi-x-lg me-1"></i>Remove
+                                            </button>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Stop Name</label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                name="stop_name"
+                                                placeholder="Piazza Sant'Oronzo"
+                                            >
+                                        </div>
+
+                                        <div>
+                                            <label class="form-label">Description</label>
+                                            <textarea
+                                                class="form-control"
+                                                name="stop_description"
+                                                rows="3"
+                                                placeholder="Short description of this stop."
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <p class="small text-muted mt-3 mb-0">
+                                Empty stops will be ignored when saving. Coordinates will be added later.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {# --- Sidebar --- #}
+                <div class="col-lg-4">
+                    <div class="sticky-aside">
+                        <div class="card border-0 shadow-sm rounded-5 mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-3 mb-4">
+                                    <span class="icon-circle icon-circle-sm"><i class="bi bi-images"></i></span>
+                                    <div>
+                                        <h2 class="h5 fw-black mb-0">Tour Photos</h2>
+                                        <p class="small text-muted mb-0">Upload multiple images.</p>
+                                    </div>
+                                </div>
+
+                                {% if photos %}
+                                    <div class="row g-2 mb-3">
+                                        {% for photo in photos %}
+                                            <div class="col-6">
+                                                <div class="position-relative overflow-hidden rounded-4 bg-light ratio ratio-4x3">
+                                                    <img
+                                                        src="{{ url_for('static', filename='uploads/tours/' ~ photo.filename) }}"
+                                                        alt="Tour photo"
+                                                        class="w-100 h-100 object-fit-cover"
+                                                    >
+
+                                                    {% if mode == "update" %}
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-danger btn-icon-sm position-absolute top-0 end-0 m-2"
+                                                            form="delete-photo-{{ photo.id }}"
+                                                            aria-label="Delete photo"
+                                                        >
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="border border-2 border-dashed rounded-4 bg-light text-center p-4 mb-3">
+                                        <i class="bi bi-images fs-1 text-muted"></i>
+                                        <p class="fw-bold text-muted mb-0">No photos yet</p>
+                                    </div>
+                                {% endif %}
+
+                                <label for="tourPhotosInput" class="form-label">Add photos</label>
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    id="tourPhotosInput"
+                                    name="tour_photos"
+                                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                                    multiple
+                                >
+                                <p class="small text-muted mt-2 mb-0">
+                                    JPG, PNG or WEBP. You can upload multiple photos.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm rounded-5">
+                            <div class="card-body p-4">
+                                <h2 class="h5 fw-black mb-3">Actions</h2>
+
+                                <button type="submit" class="btn btn-primary w-100 py-3 mb-2">
+                                    <i class="bi bi-check-lg me-1"></i>{{ submit_label }}
+                                </button>
+
+                                <a href="{{ url_for('guide_dashboard.dashboard') }}" class="btn btn-light w-100 py-3">
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </form>
+
+        {% if photos and mode == "update" %}
+            {% for photo in photos %}
+                <form
+                    id="delete-photo-{{ photo.id }}"
+                    method="POST"
+                    action="{{ url_for('guide_dashboard.delete_tour_photo', tour_id=tour.id, photo_id=photo.id) }}"
+                ></form>
+            {% endfor %}
+        {% endif %}
     </div>
 </section>
+{% endblock %}
 
+{% block scripts %}
 <script>
     const stopsList = document.getElementById("stops-list");
     const stopTemplate = document.getElementById("stop-template");
     const addStopButton = document.getElementById("add-stop-btn");
 
     function refreshStopLabels() {
-        const rows = stopsList.querySelectorAll(".stop-row");
-
-        rows.forEach((row, index) => {
-            const label = row.querySelector(".stop-order-label");
-            label.textContent = `Stop ${index + 1}`;
+        stopsList.querySelectorAll(".stop-row").forEach((row, index) => {
+            row.querySelector(".stop-order-label").textContent = `Stop ${index + 1}`;
         });
     }
 
     function attachRemoveHandler(row) {
-        const removeButton = row.querySelector(".remove-stop-btn");
-
-        removeButton.addEventListener("click", () => {
+        row.querySelector(".remove-stop-btn").addEventListener("click", () => {
             row.remove();
             refreshStopLabels();
         });
@@ -439,18 +383,13 @@
     function addStop() {
         const clone = stopTemplate.content.cloneNode(true);
         const row = clone.querySelector(".stop-row");
-
         attachRemoveHandler(row);
         stopsList.appendChild(row);
         refreshStopLabels();
     }
 
     addStopButton.addEventListener("click", addStop);
-
-    stopsList.querySelectorAll(".stop-row").forEach((row) => {
-        attachRemoveHandler(row);
-    });
-
+    stopsList.querySelectorAll(".stop-row").forEach(attachRemoveHandler);
     refreshStopLabels();
 </script>
 {% endblock %}
