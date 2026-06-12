@@ -12,7 +12,10 @@ from app.tours.dao import (
 )
 
 from .utils import (
+    build_my_reservations_page_data,
+    build_reservation_detail_page_data,
     build_tour_card,
+    cancel_reservation_for_user,
     get_public_tour_or_404,
     build_public_tour_detail_data,
     build_booking_payload,
@@ -82,3 +85,41 @@ def book_tour(tour_id):
     flash(flash_message, flash_category)
 
     return redirect(url_for("public.tour_detail", tour_id=tour.id))
+
+
+@public_bp.route("/my-reservations")
+@login_required
+def my_reservations():
+    page_data = build_my_reservations_page_data(current_user.id)
+
+    return render_template(
+        "my_reservations.html",
+        **page_data,
+    )
+
+
+@public_bp.route("/my-reservations/<reservation_id>")
+@login_required
+def reservation_detail(reservation_id):
+    page_data = build_reservation_detail_page_data(
+        reservation_id=reservation_id,
+        participant_id=current_user.id,
+    )
+
+    return render_template(
+        "reservation_detail.html",
+        **page_data,
+    )
+
+
+@public_bp.route("/my-reservations/<reservation_id>/cancel", methods=["POST"])
+@login_required
+def cancel_reservation(reservation_id):
+    flash_category, flash_message = cancel_reservation_for_user(
+        reservation_id=reservation_id,
+        participant_id=current_user.id,
+    )
+
+    flash(flash_message, flash_category)
+
+    return redirect(url_for("public.reservation_detail", reservation_id=reservation_id))

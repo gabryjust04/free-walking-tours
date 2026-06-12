@@ -186,21 +186,29 @@ class TourReservation:
     created_at: str = None
     updated_at: str = None
 
-    @staticmethod
     def from_row(row):
         if row is None:
             return None
 
+        keys = row.keys()
+
+        event_id = None
+
+        if "event_id" in keys:
+            event_id = row["event_id"]
+        elif "tour_event_id" in keys:
+            event_id = row["tour_event_id"]
+
         return TourReservation(
             id=row["id"],
-            event_id=row.get("event_id", row.get("tour_event_id")),
-            participant_id=row.get("participant_id"),
-            idempotency_key=row.get("idempotency_key"),
-            total_people=row.get("total_people", 1),
-            additional_names=row.get("additional_names"),
-            reminder_sent=row.get("reminder_sent", 0),
-            is_checked_in=row.get("is_checked_in", 0),
-            status=row.get("status", "active"),
-            created_at=row.get("created_at"),
-            updated_at=row.get("updated_at"),
+            event_id=event_id,
+            participant_id=row["participant_id"] if "participant_id" in keys else None,
+            idempotency_key=row["idempotency_key"] if "idempotency_key" in keys else None,
+            total_people=row["total_people"] if "total_people" in keys else 1,
+            additional_names=row["additional_names"] if "additional_names" in keys else None,
+            reminder_sent=row["reminder_sent"] if "reminder_sent" in keys else 0,
+            is_checked_in=row["is_checked_in"] if "is_checked_in" in keys else 0,
+            status=row["status"] if "status" in keys else "active",
+            created_at=row["created_at"] if "created_at" in keys else None,
+            updated_at=row["updated_at"] if "updated_at" in keys else None,
         )

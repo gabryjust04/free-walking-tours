@@ -261,16 +261,71 @@ def allowed_image_file(filename, allowed_extensions=None):
     return extension in allowed_extensions
 
 
-def process_uploaded_image(photo_file, upload_folder_name, image_size, filename_prefix):
+def validate_uploaded_image(photo_file, min_width=None, min_height=None):
+    if photo_file is None or photo_file.filename == "":
+        return False, "No image selected."
+
     original_filename = secure_filename(photo_file.filename)
 
     if not allowed_image_file(original_filename):
-        raise ValueError("Invalid image format.")
+        return False, "Invalid image format. Use JPG, PNG or WEBP."
 
+    try:
+        photo_file.stream.seek(0)
+
+        image = Image.open(photo_file.stream)
+        image.verify()
+
+        photo_file.stream.seek(0)
+
+        image = Image.open(photo_file.stream)
+        image = ImageOps.exif_transpose(image)
+
+        width, height = image.size
+
+        photo_file.stream.seek(0)
+
+    except Exception:
+        try:
+            photo_file.stream.seek(0)
+        except Exception:
+            pass
+
+        return False, "The uploaded file is not a valid image."
+
+    if min_width is not None and width < min_width:
+        return False, f"Image is too small. Minimum width is {min_width}px."
+
+    if min_height is not None and height < min_height:
+        return False, f"Image is too small. Minimum height is {min_height}px."
+
+    return True, ""
+
+
+def process_uploaded_image(
+    photo_file,
+    upload_folder_name,
+    image_size,
+    filename_prefix,
+    min_width=None,
+    min_height=None,
+):
+    is_valid, error = validate_uploaded_image(
+        photo_file,
+        min_width=min_width,
+        min_height=min_height,
+    )
+
+    if not is_valid:
+        raise ValueError(error)
+
+    original_filename = secure_filename(photo_file.filename)
     extension = original_filename.rsplit(".", 1)[1].lower()
     new_filename = f"{filename_prefix}_{uuid.uuid4()}.{extension}"
 
-    img = Image.open(photo_file)
+    photo_file.stream.seek(0)
+
+    img = Image.open(photo_file.stream)
     img = ImageOps.exif_transpose(img)
 
     img = ImageOps.fit(

@@ -17,15 +17,15 @@
                     {% if language.id in selected_language_ids|default([]) %}checked{% endif %}
                 >
 
-                <label class="btn language-choice w-100 rounded-4 p-3 text-start h-100" for="language-{{ language.id }}">
-                    <div class="d-flex align-items-center justify-content-between gap-3">
-                        <div>
+                <label class="btn pick-card border w-100 h-100 rounded-4 p-3 text-start" for="language-{{ language.id }}">
+                    <span class="d-flex align-items-center justify-content-between gap-3">
+                        <span>
                             <span class="fw-bold d-block">{{ language.name }}</span>
-                            <span class="small opacity-75">{{ language.label|default('Tour language') }}</span>
-                        </div>
+                            <span class="small text-body-secondary">{{ language.label|default('Tour language') }}</span>
+                        </span>
 
-                        <i class="bi bi-check-circle fs-5"></i>
-                    </div>
+                        <i class="bi bi-check-circle fs-5 text-warning-emphasis"></i>
+                    </span>
                 </label>
             </div>
         {% endfor %}

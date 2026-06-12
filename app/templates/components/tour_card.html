@@ -1,20 +1,24 @@
 <article class="card tour-card border-0 shadow-sm rounded-5 h-100 overflow-hidden">
-    <div class="tour-img position-relative">
-        {% if tour.cover_filename %}
-            <img
-                src="{{ url_for('static', filename='uploads/tours/' ~ tour.cover_filename) }}"
-                alt="{{ tour.title }}"
-                class="w-100 h-100 object-fit-cover"
-            >
-        {% else %}
-            <div class="tour-placeholder">{{ city_name|default("Stockholm") }}</div>
-        {% endif %}
+    <div class="position-relative">
+        <div class="ratio ratio-16x9 bg-warning-subtle">
+            {% if tour.cover_filename %}
+                <img
+                    src="{{ url_for('static', filename='uploads/tours/' ~ tour.cover_filename) }}"
+                    alt="{{ tour.title }}"
+                    class="object-fit-cover"
+                >
+            {% else %}
+                <div class="d-flex align-items-center justify-content-center fs-3 fw-black text-warning-emphasis">
+                    {{ city_name|default("Stockholm") }}
+                </div>
+            {% endif %}
+        </div>
 
         {% if card_variant is defined and card_variant == "dashboard" %}
             <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
                 <a
                     href="{{ url_for('guide_dashboard.update_tour', tour_id=tour.id) }}"
-                    class="btn btn-light btn-icon shadow-sm"
+                    class="btn btn-light btn-sm rounded-circle shadow-sm p-2 lh-1"
                     aria-label="Edit tour"
                 >
                     <i class="bi bi-pencil-fill"></i>
@@ -22,7 +26,7 @@
 
                 <button
                     type="button"
-                    class="btn btn-danger btn-icon shadow-sm"
+                    class="btn btn-danger btn-sm rounded-circle shadow-sm p-2 lh-1"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteTourModal-{{ tour.id }}"
                     aria-label="Delete tour"
@@ -31,7 +35,7 @@
                 </button>
             </div>
         {% else %}
-            <span class="badge rounded-pill bg-brand text-dark fw-black position-absolute top-0 end-0 m-3">
+            <span class="badge rounded-pill text-bg-warning fw-bold position-absolute top-0 end-0 m-3">
                 FREE
             </span>
         {% endif %}
@@ -39,32 +43,32 @@
 
     <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-            <span class="badge rounded-pill bg-soft-blue text-primary">{{ tour.theme }}</span>
-            <span class="badge rounded-pill bg-light text-muted">{{ tour.language }}</span>
+            <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">{{ tour.theme }}</span>
+            <span class="badge rounded-pill bg-body-secondary text-body-secondary">{{ tour.language }}</span>
         </div>
 
         <h3 class="h5 fw-black mb-3">{{ tour.title }}</h3>
 
         {% if card_variant is defined and card_variant == "dashboard" %}
-            <div class="d-flex flex-wrap gap-3 small text-muted mb-3">
+            <div class="d-flex flex-wrap gap-3 small text-body-secondary mb-3">
                 <span><i class="bi bi-clock me-1"></i>{{ tour.duration }}</span>
                 <span><i class="bi bi-people me-1"></i>max {{ tour.max_participants }}</span>
             </div>
 
-            <div class="vstack gap-2 small text-muted">
+            <div class="vstack gap-2 small text-body-secondary">
                 <div><i class="bi bi-calendar-week me-1"></i>{{ tour.schedule }}</div>
                 <div><i class="bi bi-signpost-split me-1"></i>{{ tour.stops_count }}</div>
             </div>
         {% else %}
-            <p class="text-muted small tour-description mb-3">{{ tour.description }}</p>
+            <p class="small text-body-secondary clamp-2 mb-3">{{ tour.description }}</p>
 
-            <div class="d-flex flex-wrap gap-3 small text-muted mb-3">
+            <div class="d-flex flex-wrap gap-3 small text-body-secondary mb-3">
                 <span><i class="bi bi-clock me-1"></i>{{ tour.duration }}</span>
                 <span><i class="bi bi-people me-1"></i>max {{ tour.max_participants }}</span>
             </div>
 
             <div class="d-flex align-items-center justify-content-between border-top pt-3">
-                <span class="small text-muted text-truncate pe-3">
+                <span class="small text-body-secondary text-truncate pe-3">
                     <i class="bi bi-geo-alt me-1"></i>{{ tour.meeting_point }}
                 </span>
                 <a href="{{ url_for('public.tour_detail', tour_id=tour.id) }}" class="small fw-bold text-decoration-none">Details</a>
@@ -76,14 +80,14 @@
 {% if card_variant is defined and card_variant == "dashboard" %}
     <div class="modal fade" id="deleteTourModal-{{ tour.id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-5 shadow">
+            <div class="modal-content border-0 rounded-4 shadow">
                 <div class="modal-header border-0 pb-0">
                     <h2 class="modal-title h5 fw-black">Delete tour?</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-                    <p class="text-muted mb-0">
+                    <p class="text-body-secondary mb-0">
                         Are you sure you want to delete
                         <strong class="text-dark">{{ tour.title }}</strong>?
                         This tour will be hidden from your dashboard.

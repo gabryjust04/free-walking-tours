@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Event Details - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="mb-4">
+            <a href="{{ url_for('guide_dashboard.dashboard') }}" class="text-decoration-none fw-bold">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to dashboard
+            </a>
+        </div>
+
+        {% include "partials/flash_messages.html" %}
+
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+                            <div>
+                                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
+                                    Tour event
+                                </span>
+
+                                <h1 class="fw-black mb-2">
+                                    {{ event.title }}
+                                </h1>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">
+                                        {{ event.theme }}
+                                    </span>
+
+
+                                    <span class="badge rounded-pill {{ event.status_class }}">
+                                        {{ event.status_label }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border rounded-4 text-center px-3 py-2">
+                                <div class="small fw-bold text-primary text-uppercase lh-1">
+                                    {{ event.date_month }}
+                                </div>
+
+                                <div class="h3 fw-black lh-1 mt-1 mb-0">
+                                    {{ event.date_day }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                    <div class="small text-body-secondary fw-bold mb-1">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        Date
+                                    </div>
+                                    <div class="fw-bold">
+                                        {{ event.date_label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                    <div class="small text-body-secondary fw-bold mb-1">
+                                        <i class="bi bi-clock me-1"></i>
+                                        Time
+                                    </div>
+                                    <div class="fw-bold">
+                                        {{ event.time_range }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                    <div class="small text-body-secondary fw-bold mb-1">
+                                        <i class="bi bi-people me-1"></i>
+                                        Participants
+                                    </div>
+                                    <div class="fw-bold">
+                                        {{ event.active_people }} / {{ event.max_participants }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                    <div class="small text-body-secondary fw-bold mb-1">
+                                        <i class="bi bi-ticket-perforated me-1"></i>
+                                        Available places
+                                    </div>
+                                    <div class="fw-bold">
+                                        {{ event.available_places }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="border rounded-4 bg-body-tertiary p-3">
+                                    <div class="small text-body-secondary fw-bold mb-1">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        Meeting point
+                                    </div>
+                                    <div class="fw-bold">
+                                        {{ event.meeting_point }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-5">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+                            <div>
+                                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
+                                    Participants
+                                </span>
+
+                                <h2 class="h3 fw-black mb-0">
+                                    Reservation list
+                                </h2>
+                            </div>
+
+                            <span class="badge rounded-pill text-bg-warning">
+                                {{ participants|length }} bookings
+                            </span>
+                        </div>
+
+                        {% if participants %}
+                            <div class="vstack gap-3">
+                                {% for participant in participants %}
+                                    <div class="border rounded-4 bg-body-tertiary p-3">
+                                        <div class="row g-3 align-items-start">
+                                            <div class="col">
+                                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                                    <h3 class="h6 fw-black mb-0">
+                                                        {{ participant.participant_name }}
+                                                    </h3>
+
+                                                    <span class="badge rounded-pill {{ participant.status_class }}">
+                                                        {{ participant.status }}
+                                                    </span>
+                                                </div>
+
+                                                <p class="small text-body-secondary mb-2">
+                                                    <i class="bi bi-envelope me-1"></i>
+                                                    {{ participant.participant_email }}
+                                                </p>
+
+                                                <p class="small text-body-secondary mb-0">
+                                                    <i class="bi bi-people me-1"></i>
+                                                    {{ participant.total_people }} people · booked on {{ participant.created_at }}
+                                                </p>
+
+                                                {% if participant.guest_names %}
+                                                    <div class="mt-3">
+                                                        <div class="small fw-bold mb-2">
+                                                            Additional guests
+                                                        </div>
+
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            {% for guest_name in participant.guest_names %}
+                                                                <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
+                                                                    {{ guest_name }}
+                                                                </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis fs-5 mb-3">
+                                    <i class="bi bi-people"></i>
+                                </span>
+
+                                <h3 class="h5 fw-black mb-2">
+                                    No participants yet
+                                </h3>
+
+                                <p class="text-body-secondary mb-0">
+                                    When someone books this event, they will appear here.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-aside">
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-black mb-3">
+                                Actions
+                            </h2>
+
+                            <a
+                                href="{{ url_for('public.tour_detail', tour_id=event.tour_id) }}"
+                                class="btn btn-light fw-bold w-100 py-3 mb-3"
+                            >
+                                <i class="bi bi-eye me-1"></i>
+                                View public tour page
+                            </a>
+
+                            {% if event.can_upload_evidence %}
+                                <div class="border rounded-4 bg-body-tertiary p-3">
+                                    <h3 class="h6 fw-black mb-2">
+                                        Complete event
+                                    </h3>
+
+                                    <p class="small text-body-secondary mb-3">
+                                        Upload an evidence photo to confirm that the tour took place.
+                                    </p>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('guide_dashboard.upload_event_evidence_photo', event_id=event.id) }}"
+                                        enctype="multipart/form-data"
+                                    >
+                                        <input
+                                            type="file"
+                                            class="form-control mb-3"
+                                            name="evidence_photo"
+                                            accept="image/png, image/jpeg, image/jpg, image/webp"
+                                            required
+                                        >
+
+                                        <button type="submit" class="btn btn-warning fw-bold w-100">
+                                            <i class="bi bi-camera me-1"></i>
+                                            Upload evidence
+                                        </button>
+                                    </form>
+                                </div>
+                            {% elif event.evidence_photo %}
+                                <div class="border rounded-4 overflow-hidden bg-body-tertiary">
+                                    <div class="ratio ratio-16x9">
+                                        <img
+                                            src="{{ url_for('static', filename='uploads/evidence_photos/' ~ event.evidence_photo) }}"
+                                            alt="Evidence photo"
+                                            class="object-fit-cover"
+                                        >
+                                    </div>
+
+                                    <div class="p-3">
+                                        <span class="badge rounded-pill text-bg-success">
+                                            Evidence uploaded
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-light border rounded-4 mb-0">
+                                    Evidence upload will be available after the event starts.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-black mb-3">
+                                Good to know
+                            </h2>
+
+                            <ul class="list-unstyled vstack gap-3 mb-0 text-body-secondary">
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>Only active reservations count as participants.</span>
+                                </li>
+
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>Cancelled reservations stay visible for reference.</span>
+                                </li>
+
+                                <li class="d-flex gap-2">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span>Tours with active bookings cannot be edited.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

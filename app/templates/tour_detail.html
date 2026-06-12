@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="py-5">
-    <div class="container container-page">
+    <div class="container">
 
         <div class="mb-4">
             <a href="{{ url_for('public.home') }}" class="text-decoration-none fw-bold">
@@ -18,26 +18,24 @@
 
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-4">
-                    {% if cover_photo %}
-                        <div class="ratio ratio-16x9">
+                    <div class="ratio ratio-16x9 bg-warning-subtle">
+                        {% if cover_photo %}
                             <img
                                 src="{{ url_for('static', filename='uploads/tours/' ~ cover_photo.filename) }}"
                                 alt="{{ tour.title }}"
-                                class="w-100 h-100 object-fit-cover"
+                                class="object-fit-cover"
                             >
-                        </div>
-                    {% else %}
-                        <div class="tour-img">
-                            <div class="tour-placeholder">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center fs-1 fw-black text-warning-emphasis">
                                 UrbanBuddy
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="card border-0 shadow-sm rounded-5 mb-4">
                     <div class="card-body p-4 p-lg-5">
-                        <span class="eyebrow mb-2">
+                        <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
                             About this experience
                         </span>
 
@@ -45,7 +43,7 @@
                             What you will discover
                         </h2>
 
-                        <p class="text-muted mb-0 lh-lg">
+                        <p class="text-body-secondary mb-0 lh-lg">
                             {{ tour.description }}
                         </p>
                     </div>
@@ -55,7 +53,7 @@
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
                             <div>
-                                <span class="eyebrow mb-2">
+                                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
                                     Route
                                 </span>
                                 <h2 class="fw-black mb-0">
@@ -63,9 +61,9 @@
                                 </h2>
                             </div>
 
-                            <div class="icon-circle">
+                            <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                 <i class="bi bi-signpost-2"></i>
-                            </div>
+                            </span>
                         </div>
 
                         {% if stops %}
@@ -74,7 +72,7 @@
                                     <div class="list-group-item px-0 py-4">
                                         <div class="d-flex gap-3">
                                             <div>
-                                                <span class="badge rounded-pill bg-brand text-dark">
+                                                <span class="badge rounded-pill text-bg-warning">
                                                     {{ loop.index }}
                                                 </span>
                                             </div>
@@ -85,11 +83,11 @@
                                                 </h3>
 
                                                 {% if stop.description %}
-                                                    <p class="text-muted mb-0">
+                                                    <p class="text-body-secondary mb-0">
                                                         {{ stop.description }}
                                                     </p>
                                                 {% else %}
-                                                    <p class="text-muted mb-0">
+                                                    <p class="text-body-secondary mb-0">
                                                         More details about this stop will be added soon.
                                                     </p>
                                                 {% endif %}
@@ -99,17 +97,17 @@
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="border border-dashed rounded-4 p-4 bg-light">
+                            <div class="border rounded-4 p-4 bg-body-tertiary">
                                 <div class="d-flex gap-3 align-items-start">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-map"></i>
-                                    </div>
+                                    </span>
 
                                     <div>
                                         <h3 class="h5 fw-black mb-1">
                                             No itinerary stops yet
                                         </h3>
-                                        <p class="text-muted mb-0">
+                                        <p class="text-body-secondary mb-0">
                                             The guide has not added the route stops for this tour yet.
                                         </p>
                                     </div>
@@ -122,7 +120,7 @@
                 {% if photos and photos|length > 1 %}
                     <div class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4 p-lg-5">
-                            <span class="eyebrow mb-2">
+                            <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
                                 Gallery
                             </span>
 
@@ -133,11 +131,11 @@
                             <div class="row g-3">
                                 {% for photo in photos %}
                                     <div class="col-6 col-md-4">
-                                        <div class="ratio ratio-4x3 rounded-4 overflow-hidden bg-light">
+                                        <div class="ratio ratio-4x3 rounded-4 overflow-hidden bg-body-tertiary">
                                             <img
                                                 src="{{ url_for('static', filename='uploads/tours/' ~ photo.filename) }}"
                                                 alt="{{ tour.title }} photo {{ loop.index }}"
-                                                class="w-100 h-100 object-fit-cover"
+                                                class="object-fit-cover"
                                             >
                                         </div>
                                     </div>
@@ -152,25 +150,25 @@
                 <div class="sticky-aside">
                     <div class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
-                            <span class="eyebrow mb-2">
+                            <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
                                 Free walking tour in {{ city_name }}
                             </span>
 
-                            <h1 class="fw-black mb-3">
+                            <h1 class="h3 fw-black mb-3">
                                 {{ tour.title }}
                             </h1>
 
-                            <p class="text-muted mb-4">
+                            <p class="text-body-secondary mb-4">
                                 Explore {{ city_name }} with a passionate local guide.
                             </p>
 
                             <div class="vstack gap-3">
                                 <div class="d-flex gap-3">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-geo-alt"></i>
-                                    </div>
+                                    </span>
                                     <div>
-                                        <div class="small text-muted fw-bold">
+                                        <div class="small text-body-secondary fw-bold">
                                             Meeting point
                                         </div>
                                         <div class="fw-bold">
@@ -180,11 +178,11 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-clock"></i>
-                                    </div>
+                                    </span>
                                     <div>
-                                        <div class="small text-muted fw-bold">
+                                        <div class="small text-body-secondary fw-bold">
                                             Duration
                                         </div>
                                         <div class="fw-bold">
@@ -194,11 +192,11 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-people"></i>
-                                    </div>
+                                    </span>
                                     <div>
-                                        <div class="small text-muted fw-bold">
+                                        <div class="small text-body-secondary fw-bold">
                                             Group size
                                         </div>
                                         <div class="fw-bold">
@@ -208,11 +206,11 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-translate"></i>
-                                    </div>
+                                    </span>
                                     <div>
-                                        <div class="small text-muted fw-bold">
+                                        <div class="small text-body-secondary fw-bold">
                                             Language
                                         </div>
                                         <div class="fw-bold">
@@ -222,11 +220,11 @@
                                 </div>
 
                                 <div class="d-flex gap-3">
-                                    <div class="icon-circle icon-circle-sm">
+                                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                         <i class="bi bi-compass"></i>
-                                    </div>
+                                    </span>
                                     <div>
-                                        <div class="small text-muted fw-bold">
+                                        <div class="small text-body-secondary fw-bold">
                                             Theme
                                         </div>
                                         <div class="fw-bold">
@@ -241,12 +239,12 @@
                     <div id="booking" class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">
-                                <div class="icon-circle icon-circle-sm">
+                                <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                     <i class="bi bi-calendar-check"></i>
-                                </div>
+                                </span>
 
                                 <div>
-                                    <span class="eyebrow mb-1">
+                                    <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-1">
                                         Booking
                                     </span>
                                     <h2 class="h4 fw-black mb-0">
@@ -260,7 +258,7 @@
                                     <input type="hidden" name="idempotency_key" value="{{ idempotency_key }}">
 
                                     <div class="mb-4">
-                                        <label class="form-label">
+                                        <label class="form-label fw-semibold">
                                             Choose a date
                                         </label>
 
@@ -280,7 +278,7 @@
                                                         <span class="d-block fw-bold">
                                                             {{ occurrence.weekday }}
                                                         </span>
-                                                        <span class="small text-muted">
+                                                        <span class="small text-body-secondary">
                                                             {{ occurrence.date_label }} · {{ occurrence.start_time }}
                                                         </span>
                                                     </span>
@@ -290,7 +288,7 @@
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="additional_names" class="form-label">
+                                        <label for="additional_names" class="form-label fw-semibold">
                                             Additional guests
                                         </label>
 
@@ -307,13 +305,13 @@
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <button type="submit" class="btn btn-warning btn-lg fw-bold w-100">
                                         <i class="bi bi-check-circle me-1"></i>
                                         Book now
                                     </button>
                                 </form>
                             {% else %}
-                                <p class="text-muted mb-0">
+                                <p class="text-body-secondary mb-0">
                                     No available dates have been published for this tour yet.
                                 </p>
                             {% endif %}
@@ -323,12 +321,12 @@
                     <div id="schedule" class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">
-                                <div class="icon-circle icon-circle-sm">
+                                <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                     <i class="bi bi-calendar3"></i>
-                                </div>
+                                </span>
 
                                 <div>
-                                    <span class="eyebrow mb-1">
+                                    <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-1">
                                         Weekly schedule
                                     </span>
                                     <h2 class="h4 fw-black mb-0">
@@ -344,14 +342,14 @@
                                             <span class="fw-bold">
                                                 {{ item.day }}
                                             </span>
-                                            <span class="badge bg-soft-blue text-primary rounded-pill">
+                                            <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">
                                                 {{ item.time }}
                                             </span>
                                         </div>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                <p class="text-muted mb-0">
+                                <p class="text-body-secondary mb-0">
                                     No weekly schedule has been published yet.
                                 </p>
                             {% endif %}
@@ -361,33 +359,33 @@
                     <div class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-3">
-                                <div class="icon-circle icon-circle-sm">
+                                <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis">
                                     <i class="bi bi-info-circle"></i>
-                                </div>
+                                </span>
 
                                 <h2 class="h4 fw-black mb-0">
                                     Good to know
                                 </h2>
                             </div>
 
-                            <ul class="list-unstyled vstack gap-3 mb-0 text-muted">
+                            <ul class="list-unstyled vstack gap-3 mb-0 text-body-secondary">
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <i class="bi bi-check-circle text-success"></i>
                                     <span>This is a free walking tour.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <i class="bi bi-check-circle text-success"></i>
                                     <span>Comfortable shoes are recommended.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <i class="bi bi-check-circle text-success"></i>
                                     <span>Please arrive a few minutes before the start time.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-brand"></i>
+                                    <i class="bi bi-check-circle text-success"></i>
                                     <span>The tour takes place in {{ city_name }}.</span>
                                 </li>
                             </ul>

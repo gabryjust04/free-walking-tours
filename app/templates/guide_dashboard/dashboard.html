@@ -4,36 +4,84 @@
 
 {% block content %}
 <section class="py-5">
-    <div class="container container-page">
+    <div class="container">
         <div class="mb-4">
             <h1 class="fw-black mb-2">
                 Welcome back, {{ current_user.first_name }}! 👋
             </h1>
-            <p class="text-muted mb-0">
+            <p class="text-body-secondary mb-0">
                 Here's an overview of your upcoming tours and reports.
             </p>
         </div>
 
         {% include "partials/flash_messages.html" %}
 
+        {% if dashboard_ongoing_events %}
+            <div class="card border-0 shadow-sm rounded-5 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <h2 class="h4 fw-black mb-1">Ongoing Events</h2>
+                            <p class="small text-body-secondary mb-0">
+                                These events have already started and need evidence if not completed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="vstack gap-3">
+                        {% for event in dashboard_ongoing_events %}
+                            {% include "components/booking_row.html" %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <div class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 fw-black mb-0">Upcoming Bookings</h2>
-                    <a href="#" class="small fw-bold text-decoration-none">
-                        View Calendar <i class="bi bi-calendar3 ms-1"></i>
-                    </a>
+                    <span class="small text-body-secondary">
+                        {{ dashboard_upcoming_events|length }} scheduled
+                    </span>
                 </div>
 
-                {% if dashboard_events %}
+                {% if dashboard_upcoming_events %}
                     <div class="vstack gap-3">
-                        {% for event in dashboard_events %}
+                        {% for event in dashboard_upcoming_events %}
                             {% include "components/booking_row.html" %}
                         {% endfor %}
                     </div>
                 {% else %}
                     <div class="text-center py-4">
-                        <p class="text-muted mb-0">No upcoming bookings yet.</p>
+                        <p class="text-body-secondary mb-0">
+                            No upcoming bookings yet.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-5 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="h4 fw-black mb-0">Past Events</h2>
+                    <span class="small text-body-secondary">
+                        {{ dashboard_past_events|length }} completed
+                    </span>
+                </div>
+
+                {% if dashboard_past_events %}
+                    <div class="vstack gap-3">
+                        {% for event in dashboard_past_events %}
+                            {% include "components/booking_row.html" %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-body-secondary mb-0">
+                            Completed events will appear here.
+                        </p>
                     </div>
                 {% endif %}
             </div>
@@ -43,7 +91,7 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 fw-black mb-0">Active Tours Management</h2>
-                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
                         <i class="bi bi-plus-lg me-1"></i>New Tour
                     </a>
                 </div>
@@ -59,7 +107,9 @@
                     </div>
                 {% else %}
                     <div class="text-center py-4">
-                        <p class="text-muted mb-0">You have not created any tours yet.</p>
+                        <p class="text-body-secondary mb-0">
+                            You have not created any tours yet.
+                        </p>
                     </div>
                 {% endif %}
             </div>

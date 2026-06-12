@@ -1,22 +1,22 @@
 {# Shared image cover for auth pages.
    Pass `cover_title` and `cover_text`; falls back to sensible defaults. #}
-<div class="auth-cover h-100">
+<div class="position-relative h-100 bg-dark overflow-hidden">
     <img
         src="{{ url_for('static', filename='img/auth-cover.jpg') }}"
         alt="UrbanBuddy {{ city_name|default('Stockholm') }}"
-        class="auth-cover-img"
+        class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
     >
 
-    <div class="auth-cover-overlay"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
 
-    <div class="auth-cover-content p-4">
-        <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-white mb-auto" href="{{ url_for('public.home') }}">
+    <div class="position-relative z-1 h-100 d-flex flex-column p-4">
+        <a class="navbar-brand fw-black d-inline-flex align-items-center gap-2 text-white mb-auto" href="{{ url_for('public.home') }}">
             <i class="bi bi-signpost-2-fill"></i>
             UrbanBuddy
         </a>
 
         <div>
-            <span class="badge rounded-pill bg-primary text-white mb-3">
+            <span class="badge rounded-pill text-bg-primary mb-3">
                 {{ city_name|default('Stockholm') }} walking tours
             </span>
 

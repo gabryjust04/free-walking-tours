@@ -427,6 +427,22 @@ class TourEventsDAO:
         return event_id
 
     @staticmethod
+    def list_events_by_tour(tour_id: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT *
+            FROM tour_events
+            WHERE tour_id = ?
+            ORDER BY event_date ASC, start_time ASC
+            """,
+            (tour_id,)
+        ).fetchall()
+
+        return [TourEvents.from_row(row) for row in rows]
+
+    @staticmethod
     def add_event(event: TourEvents):
         db = get_db()
 
@@ -542,6 +558,29 @@ class TourEventsDAO:
 
         return [TourEvents.from_row(row) for row in rows]
     
+
+    @staticmethod
+    def complete_event_with_evidence_photo(event_id: str, evidence_photo: str):
+        db = get_db()
+
+        db.execute(
+            """
+            UPDATE tour_events
+            SET status = 'completed',
+                evidence_photo = ?,
+                actual_participants = (
+                    SELECT COALESCE(SUM(total_people), 0)
+                    FROM tour_reservations
+                    WHERE event_id = ?
+                    AND status = 'active'
+                ),
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (evidence_photo, event_id, event_id)
+        )
+
+        db.commit()
 
     
 class ThemesDao:
@@ -770,3 +809,19 @@ class TourReservationsDAO:
         )
 
         db.commit()
+
+    @staticmethod
+    def list_reservations_by_participant(participant_id: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT *
+            FROM tour_reservations
+            WHERE participant_id = ?
+            ORDER BY created_at DESC
+            """,
+            (participant_id,)
+        ).fetchall()
+
+        return [TourReservation.from_row(row) for row in rows]

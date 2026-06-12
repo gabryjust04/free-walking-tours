@@ -1,543 +1,65 @@
 /* ============================================================
-   UrbanBuddy — global stylesheet
-   1. Design tokens + Bootstrap overrides
-   2. Base & utilities
-   3. Buttons & forms
-   4. Navbar & footer
-   5. Home (hero, search, tour cards)
-   6. Dashboard (booking rows, schedule, stops)
-   7. Auth (login / signup) & profile
-   8. Responsive
+   UrbanBuddy — CSS minimo.
+   Tutto il resto è Bootstrap 5.3 (utility + componenti).
+   Colori: btn-warning / text-warning-emphasis = brand giallo,
+           primary = blu Bootstrap di default.
    ============================================================ */
 
-/* ------------------------------------------------------------
-   1. Design tokens + Bootstrap overrides
-   ------------------------------------------------------------ */
 :root {
-    /* Brand palette */
-    --ub-primary: #FFD700;
-    --ub-primary-hover: #EDC500;
-    --ub-primary-active: #D9B400;
-    --ub-primary-dark: #8F7800;
-    --ub-blue: #4285F4;
-    --ub-text: #20242B;
-    --ub-muted: #6C757D;
-    --ub-bg: #F6F7F9;
-    --ub-border: #E8EAEE;
-
-    /* Shadows */
-    --ub-shadow-sm: 0 1px 2px rgba(20, 24, 33, 0.04), 0 10px 30px -14px rgba(20, 24, 33, 0.14);
-    --ub-shadow-lg: 0 18px 45px -18px rgba(20, 24, 33, 0.28);
-
-    /* Bootstrap hooks — restyle Bootstrap itself instead of fighting it */
     --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --bs-body-bg: var(--ub-bg);
-    --bs-body-color: var(--ub-text);
-    --bs-border-color: var(--ub-border);
-
-    --bs-primary: var(--ub-blue);
-    --bs-primary-rgb: 66, 133, 244;           /* text-primary / bg-primary = brand blue */
-    --bs-link-color-rgb: 66, 133, 244;
-    --bs-link-hover-color-rgb: 28, 100, 222;
-
-    --bs-border-radius: 0.75rem;
-    --bs-border-radius-sm: 0.5rem;
-    --bs-border-radius-lg: 1rem;
-    --bs-border-radius-xl: 1.25rem;
-    --bs-border-radius-xxl: 1.75rem;
-
-    --bs-focus-ring-color: rgba(255, 215, 0, 0.35);
 }
 
-/* ------------------------------------------------------------
-   2. Base & utilities
-   ------------------------------------------------------------ */
-h1, h2, h3, .fw-black {
+/* Peso 900 per i titoli (le utility Bootstrap si fermano a 700) */
+.fw-black {
+    font-weight: 900;
     letter-spacing: -0.02em;
 }
 
-.fw-black {
-    font-weight: 900;
-}
-
-.text-brand {
-    color: var(--ub-primary-dark) !important;
-}
-
-.bg-brand {
-    background-color: var(--ub-primary) !important;
-}
-
-.bg-soft-blue {
-    background-color: #EEF4FF !important;
-}
-
-.border-dashed {
-    border-style: dashed !important;
-}
-
-::selection {
-    background: rgba(255, 215, 0, 0.45);
-}
-
-/* Softer, layered shadows everywhere shadow utilities are used */
-.shadow-sm {
-    box-shadow: var(--ub-shadow-sm) !important;
-}
-
-.shadow-lg {
-    box-shadow: var(--ub-shadow-lg) !important;
-}
-
-/* Single page width for dashboard, tour form and profile */
-.container-page {
-    max-width: 1100px;
-}
-
-/* Round icon chip used in card headers */
+/* Chip circolare per le icone (colore via utility bg-* / text-*) */
 .icon-circle {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: rgba(255, 215, 0, 0.25);
-    color: var(--ub-text);
-    font-size: 1.05rem;
 }
 
-.icon-circle-sm {
-    width: 40px;
-    height: 40px;
-    font-size: 0.95rem;
+/* Descrizioni delle card limitate a due righe */
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Round icon-only buttons (edit / delete) */
-.btn-icon,
-.btn-icon-sm {
-    padding: 0;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon {
-    width: 38px;
-    height: 38px;
-}
-
-.btn-icon-sm {
-    width: 32px;
-    height: 32px;
-}
-
-/* Sticky sidebar (tour form) */
+/* Sidebar sticky che resta sotto la navbar sticky */
 .sticky-aside {
     position: sticky;
-    top: 96px;
+    top: 90px;
 }
 
-.alert {
-    border: 0;
-    box-shadow: var(--ub-shadow-sm);
-}
-
-/* ------------------------------------------------------------
-   3. Buttons & forms
-   ------------------------------------------------------------ */
-.btn {
-    font-weight: 600;
-    transition: transform 0.15s ease, box-shadow 0.15s ease,
-                background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.btn-primary {
-    --bs-btn-bg: var(--ub-primary);
-    --bs-btn-border-color: var(--ub-primary);
-    --bs-btn-color: #1f1f1f;
-    --bs-btn-hover-bg: var(--ub-primary-hover);
-    --bs-btn-hover-border-color: var(--ub-primary-hover);
-    --bs-btn-hover-color: #1f1f1f;
-    --bs-btn-active-bg: var(--ub-primary-active);
-    --bs-btn-active-border-color: var(--ub-primary-active);
-    --bs-btn-active-color: #1f1f1f;
-    --bs-btn-disabled-bg: var(--ub-primary);
-    --bs-btn-disabled-border-color: var(--ub-primary);
-    --bs-btn-disabled-color: #1f1f1f;
-    --bs-btn-focus-shadow-rgb: 222, 189, 0;
-    font-weight: 800;
-    box-shadow: 0 10px 22px -10px rgba(143, 120, 0, 0.55);
-}
-
-.btn-primary:hover {
-    transform: translateY(-1px);
-}
-
-.btn-light {
-    --bs-btn-bg: #F1F3F6;
-    --bs-btn-border-color: #F1F3F6;
-    --bs-btn-color: var(--ub-text);
-    --bs-btn-hover-bg: #E6E9EE;
-    --bs-btn-hover-border-color: #E6E9EE;
-    --bs-btn-hover-color: var(--ub-text);
-}
-
-.form-label {
-    font-weight: 600;
-}
-
-.form-control,
-.form-select {
-    padding: 0.7rem 0.9rem;
-    background-color: #FBFBFC;
-    border-color: var(--ub-border);
-}
-
-.form-control:focus,
-.form-select:focus {
-    background-color: #fff;
-    border-color: var(--ub-primary);
-    box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
-}
-
-.input-group-text {
-    background-color: #F1F3F6;
-    border-color: var(--ub-border);
-    color: var(--ub-muted);
-    font-weight: 600;
-}
-
-.form-check-input:checked {
-    background-color: var(--ub-primary-dark);
-    border-color: var(--ub-primary-dark);
-}
-
-.form-check-input:focus {
-    border-color: var(--ub-primary);
-    box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
-}
-
-/* ------------------------------------------------------------
-   4. Navbar & footer
-   ------------------------------------------------------------ */
-.navbar {
-    --bs-navbar-padding-y: 0.8rem;
-}
-
-.navbar-brand {
-    color: var(--ub-primary-dark);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-}
-
-.navbar-brand:hover,
-.navbar-brand:focus {
-    color: var(--ub-primary-dark);
-}
-
-.navbar .nav-link {
-    font-weight: 600;
-    color: var(--ub-text);
-    border-bottom: 3px solid transparent;
-}
-
-.navbar .nav-link:hover {
-    color: var(--ub-blue);
-}
-
-.navbar .nav-link.active {
-    color: var(--ub-blue);
-    border-bottom-color: var(--ub-blue);
-}
-
-footer .nav-link:hover {
-    color: var(--ub-text) !important;
-}
-
-/* ------------------------------------------------------------
-   5. Home (hero, search, tour cards)
-   ------------------------------------------------------------ */
-@media (min-width: 992px) {
-    .py-lg-6 {
-        padding-top: 5.5rem !important;
-        padding-bottom: 5.5rem !important;
-    }
-}
-
-.hero {
-    background:
-        radial-gradient(900px 420px at 12% -10%, rgba(255, 215, 0, 0.16), transparent 60%),
-        radial-gradient(900px 420px at 88% -10%, rgba(66, 133, 244, 0.14), transparent 60%),
-        var(--ub-bg);
-}
-
-.hero-content {
-    max-width: 980px;
-}
-
-.hero .lead {
-    max-width: 720px;
-    line-height: 1.7;
-}
-
-.search-card {
-    max-width: 920px;
-}
-
-.search-filter {
-    min-height: 58px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border: 1px solid var(--ub-border);
-    background-color: #F3F4F6;
-    color: #374151;
-    font-weight: 600;
-}
-
-.search-submit {
-    min-height: 58px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.search-filter:disabled,
-.search-submit:disabled {
-    opacity: 1;
-    cursor: default;
-    transform: none;
-}
-
-/* Tour card — single definition */
+/* Leggero lift al passaggio del mouse sulle card dei tour */
 .tour-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tour-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--ub-shadow-lg) !important;
+    transform: translateY(-3px);
+    box-shadow: var(--bs-box-shadow) !important;
 }
 
-.tour-img {
-    height: 200px;
-    background-color: #FDE1C9;
+/* Card selezionabili (tipo account + lingue guida) con .btn-check */
+.pick-card {
+    background-color: var(--bs-body-bg);
 }
 
-.tour-placeholder {
-    height: 100%;
-    display: grid;
-    place-items: center;
-    background:
-        linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(66, 133, 244, 0.3)),
-        #FDE1C9;
-    color: var(--ub-primary-dark);
-    font-size: 1.9rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
+.btn-check:checked + .pick-card {
+    --bs-border-color: var(--bs-warning);
+    background-color: var(--bs-warning-bg-subtle);
 }
 
-.tour-description {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.7em;
+.btn-check:focus-visible + .pick-card {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.35);
 }
-
-/* ------------------------------------------------------------
-   6. Dashboard (booking rows, schedule, stops)
-   ------------------------------------------------------------ */
-.booking-row {
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.booking-row:hover {
-    box-shadow: var(--ub-shadow-sm);
-    border-color: rgba(66, 133, 244, 0.35) !important;
-}
-
-.date-box {
-    width: 64px;
-    height: 64px;
-    display: grid;
-    place-items: center;
-    line-height: 1.05;
-}
-
-.schedule-row,
-.stop-row {
-    background-color: #F8F9FA;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.schedule-row:hover,
-.stop-row:hover {
-    background-color: #fff;
-    border-color: rgba(255, 215, 0, 0.6) !important;
-}
-
-.stop-order-label {
-    font-weight: 800;
-}
-
-/* ------------------------------------------------------------
-   7. Auth (login / signup) & profile
-   ------------------------------------------------------------ */
-.auth-page {
-    min-height: calc(100vh - 73px);
-    display: flex;
-    align-items: center;
-}
-
-.auth-card {
-    width: 100%;
-    max-width: 1020px;
-}
-
-/* Shared photo cover (login + signup) */
-.auth-cover {
-    position: relative;
-    min-height: 560px;
-    background-color: #101726;
-}
-
-.auth-cover-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.auth-cover-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(185deg, rgba(13, 18, 28, 0.1) 30%, rgba(13, 18, 28, 0.85));
-}
-
-.auth-cover-content {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.auth-tabs {
-    grid-template-columns: 1fr 1fr;
-    background-color: #E9EAEC;
-    border-radius: 999px;
-    padding: 4px;
-}
-
-.auth-tabs a {
-    text-align: center;
-    text-decoration: none;
-    color: #333;
-    padding: 10px 14px;
-    border-radius: 999px;
-    font-weight: 700;
-}
-
-.auth-tabs a.active {
-    background-color: #fff;
-    color: #000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* Account type selector (signup) */
-.role-option {
-    min-height: 86px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px;
-    border: 1px solid var(--ub-border);
-    border-radius: 18px;
-    background-color: #FBFBFC;
-    cursor: pointer;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.role-option i {
-    width: 38px;
-    height: 38px;
-    flex: 0 0 auto;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background-color: #F3F4F6;
-    color: var(--ub-primary-dark);
-    font-size: 1.1rem;
-}
-
-.role-option strong,
-.role-option small {
-    display: block;
-}
-
-.role-option small {
-    color: var(--ub-muted);
-}
-
-.btn-check:checked + .role-option {
-    border-color: var(--ub-primary);
-    background-color: rgba(255, 215, 0, 0.16);
-    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.15);
-}
-
-/* Guide language picker (signup + profile) */
-.language-choice {
-    color: #1f1f1f;
-    background-color: #fff;
-    border: 1px solid rgba(143, 120, 0, 0.25);
-}
-
-.language-choice:hover {
-    color: #1f1f1f;
-    background-color: rgba(255, 215, 0, 0.12);
-    border-color: var(--ub-primary-dark);
-}
-
-.btn-check:checked + .language-choice {
-    color: #1f1f1f;
-    background-color: var(--ub-primary);
-    border-color: var(--ub-primary);
-    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
-}
-
-.btn-check:checked + .language-choice .bi-check-circle {
-    color: var(--ub-primary-dark);
-}
-
-.profile-avatar {
-    width: 130px;
-    height: 130px;
-    box-shadow: 0 0 0 6px rgba(255, 215, 0, 0.3);
-}
-
-/* ------------------------------------------------------------
-   8. Responsive
-   ------------------------------------------------------------ */
-@media (max-width: 768px) {
-    .display-4 {
-        font-size: 2.35rem;
-    }
-
-    .tour-img {
-        height: 180px;
-    }
-
-    .auth-page {
-        min-height: 0;
-        align-items: flex-start;
-    }
-}
-
-

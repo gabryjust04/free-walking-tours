@@ -1,0 +1,81 @@
+<article class="card border-0 shadow-sm rounded-5 overflow-hidden">
+    <div class="card-body p-4">
+        <div class="row g-4 align-items-center">
+            <div class="col-auto">
+                <div class="bg-white border rounded-4 text-center px-3 py-2">
+                    <div class="small fw-bold text-primary text-uppercase lh-1">
+                        {{ reservation.date_month }}
+                    </div>
+
+                    <div class="h3 fw-black lh-1 mt-1 mb-0">
+                        {{ reservation.date_day }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">
+                        {{ reservation.theme }}
+                    </span>
+
+                    <span class="badge rounded-pill bg-body-secondary text-body-secondary">
+                        {{ reservation.language }}
+                    </span>
+
+                    <span class="badge rounded-pill {{ reservation.status_class }}">
+                        {{ reservation.status_label }}
+                    </span>
+                </div>
+
+                <h2 class="h5 fw-black mb-2">
+                    {{ reservation.title }}
+                </h2>
+
+                <div class="row g-2 small text-body-secondary">
+                    <div class="col-md-6">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        {{ reservation.date_label }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <i class="bi bi-clock me-1"></i>
+                        {{ reservation.time_range }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <i class="bi bi-people me-1"></i>
+                        {{ reservation.total_people }} people
+                    </div>
+
+                    <div class="col-md-6">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        {{ reservation.meeting_point }}
+                    </div>
+                </div>
+
+                {% if reservation.guest_names %}
+                    <div class="border rounded-4 bg-body-tertiary p-3 mt-3">
+                        <div class="small fw-bold mb-1">
+                            Additional guests
+                        </div>
+
+                        <div class="small text-body-secondary">
+                            {{ reservation.guest_names|join(", ") }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-auto">
+               <a
+                    href="{{ url_for('public.reservation_detail', reservation_id=reservation.id) }}"
+                    class="btn btn-light fw-bold rounded-pill px-4"
+                >
+                    Details
+                    <i class="bi bi-chevron-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</article>

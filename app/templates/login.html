@@ -5,64 +5,72 @@
 {% block footer %}{% endblock %}
 
 {% block content %}
-<section class="auth-page py-5">
+<section class="py-5">
     <div class="container">
-        <div class="card auth-card border-0 shadow-lg rounded-5 mx-auto overflow-hidden">
-            <div class="row g-0">
-                <div class="col-lg-5 d-none d-lg-block">
-                    {% set cover_title = "Let's walk together." %}
-                    {% set cover_text = "Discover authentic city stories with local guides." %}
-                    {% include "partials/auth_cover.html" %}
-                </div>
-
-                <div class="col-lg-7">
-                    <div class="card-body p-4 p-md-5">
-                        <div class="auth-tabs d-grid mb-4">
-                            <a href="{{ url_for('auth.login') }}" class="active">Log In</a>
-                            <a href="{{ url_for('auth.signup') }}">Register</a>
+        <div class="row justify-content-center">
+            <div class="col-xl-9">
+                <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-lg-5 d-none d-lg-block">
+                            {% set cover_title = "Let's walk together." %}
+                            {% set cover_text = "Discover authentic city stories with local guides." %}
+                            {% include "partials/auth_cover.html" %}
                         </div>
 
-                        <h1 class="h2 fw-black mb-1">Welcome back!</h1>
-                        <p class="text-muted mb-4">Ready for your next adventure?</p>
+                        <div class="col-lg-7">
+                            <div class="card-body p-4 p-md-5">
+                                <ul class="nav nav-pills nav-fill bg-body-secondary rounded-pill p-1 mb-4">
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('auth.login') }}" class="nav-link rounded-pill fw-bold text-dark bg-white shadow-sm">Log In</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('auth.signup') }}" class="nav-link rounded-pill fw-bold text-dark">Register</a>
+                                    </li>
+                                </ul>
 
-                        {% include "partials/flash_messages.html" %}
+                                <h1 class="h2 fw-black mb-1">Welcome back!</h1>
+                                <p class="text-body-secondary mb-4">Ready for your next adventure?</p>
 
-                        <form action="{{ url_for('auth.login') }}" method="POST">
-                            <div class="mb-3">
-                                <label for="emailInput" class="form-label">Email Address</label>
-                                <input
-                                    type="email"
-                                    class="form-control"
-                                    id="emailInput"
-                                    name="email"
-                                    placeholder="hello@example.com"
-                                    required
-                                >
+                                {% include "partials/flash_messages.html" %}
+
+                                <form action="{{ url_for('auth.login') }}" method="POST">
+                                    <div class="mb-3">
+                                        <label for="emailInput" class="form-label fw-semibold">Email Address</label>
+                                        <input
+                                            type="email"
+                                            class="form-control form-control-lg fs-6"
+                                            id="emailInput"
+                                            name="email"
+                                            placeholder="hello@example.com"
+                                            required
+                                        >
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label for="passwordInput" class="form-label fw-semibold">Password</label>
+                                        <input
+                                            type="password"
+                                            class="form-control form-control-lg fs-6"
+                                            id="passwordInput"
+                                            name="password"
+                                            placeholder="••••••••"
+                                            required
+                                        >
+                                    </div>
+
+                                    <div class="text-end mb-4">
+                                        <a href="#" class="small text-decoration-none">Forgot password?</a>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-warning btn-lg fw-bold w-100">Log In</button>
+                                </form>
+
+                                <p class="text-center small text-body-secondary mt-4 mb-0">
+                                    Don't have an account?
+                                    <a href="{{ url_for('auth.signup') }}">Register</a>
+                                </p>
                             </div>
-
-                            <div class="mb-2">
-                                <label for="passwordInput" class="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="passwordInput"
-                                    name="password"
-                                    placeholder="••••••••"
-                                    required
-                                >
-                            </div>
-
-                            <div class="text-end mb-4">
-                                <a href="#" class="small text-decoration-none">Forgot password?</a>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 py-3">Log In</button>
-                        </form>
-
-                        <p class="text-center small text-muted mt-4 mb-0">
-                            Don't have an account?
-                            <a href="{{ url_for('auth.signup') }}">Register</a>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
