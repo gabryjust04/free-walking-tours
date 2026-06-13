@@ -81,6 +81,90 @@ def get_public_tour_or_404(tour_id):
 # ---------------------------------------------------------
 # Tour detail page
 # ---------------------------------------------------------
+def is_valid_hex_color(value):
+    if value is None:
+        return False
+
+    value = str(value).strip()
+
+    if value.startswith("#"):
+        value = value[1:]
+
+    if len(value) != 6:
+        return False
+
+    for char in value:
+        if char not in "0123456789abcdefABCDEF":
+            return False
+
+    return True
+
+
+def get_theme_primary_color(theme):
+    color = getattr(theme, "primary_color", None)
+
+    if not is_valid_hex_color(color):
+        return "#ffc107"
+
+    color = str(color).strip()
+
+    if not color.startswith("#"):
+        color = f"#{color}"
+
+    return color
+
+
+def get_theme_rgb(theme):
+    color = get_theme_primary_color(theme).replace("#", "")
+
+    red = int(color[0:2], 16)
+    green = int(color[2:4], 16)
+    blue = int(color[4:6], 16)
+
+    return f"{red}, {green}, {blue}"
+
+
+def get_theme_text_color(theme):
+    color = get_theme_primary_color(theme).replace("#", "")
+
+    red = int(color[0:2], 16)
+    green = int(color[2:4], 16)
+    blue = int(color[4:6], 16)
+
+    brightness = (red * 299 + green * 587 + blue * 114) / 1000
+
+    if brightness > 150:
+        return "#1f1f1f"
+
+    return "#ffffff"
+
+
+def get_theme_icon_filename(theme):
+    icon = getattr(theme, "icon", "")
+
+    if icon is None:
+        return None
+
+    icon = str(icon).strip()
+
+    if icon == "":
+        return None
+
+    if "/" in icon or "\\" in icon:
+        return None
+
+    return icon
+
+
+def build_theme_style(theme):
+    return {
+        "name": get_object_name(theme, "Walking Tour"),
+        "icon_filename": get_theme_icon_filename(theme),
+        "primary_color": get_theme_primary_color(theme),
+        "primary_rgb": get_theme_rgb(theme),
+        "text_color": get_theme_text_color(theme),
+    }
+
 
 def build_schedule_items(slots):
     schedule = []
@@ -145,6 +229,7 @@ def build_public_tour_detail_data(tour, photos, stops, weekly_slots, theme, lang
         "schedule": build_schedule_items(weekly_slots),
         "upcoming_occurrences": build_upcoming_occurrences(weekly_slots),
         "theme_name": get_object_name(theme),
+        "theme_style": build_theme_style(theme),
         "language_name": get_language_label(language),
         "duration_label": format_duration(tour.duration),
         "idempotency_key": str(uuid.uuid4()),

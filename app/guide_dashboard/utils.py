@@ -35,6 +35,8 @@ from app.tours.domain import Tour
 TOUR_IMAGE_SIZE = (900, 560)
 EVIDENCE_IMAGE_SIZE = (900, 560)
 
+MIN_TOUR_STOPS = 4
+
 MIN_TOUR_PHOTOS = 5
 MIN_TOUR_IMAGE_WIDTH = 400
 MIN_TOUR_IMAGE_HEIGHT = 200
@@ -661,6 +663,9 @@ def get_stops_form_data(form):
 
         stop_items.append(item)
         stop_data.append(item)
+
+    if len(stop_items) < MIN_TOUR_STOPS:
+        errors.append(f"Add at least {MIN_TOUR_STOPS} tour stops.")
 
     return stop_items, stop_data, errors
 

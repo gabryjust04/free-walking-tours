@@ -97,20 +97,30 @@ class Theme:
     id: int
     name: str
     slug: str
-    icon: str
-    created_at: str
+    icon: str = ""
+    primary_color: str = "#ffc107"
+    created_at: str = ""
 
     @staticmethod
     def from_row(row):
         if row is None:
             return None
 
+        keys = row.keys()
+
+        def get_value(column_name, default=None):
+            if column_name in keys and row[column_name] is not None:
+                return row[column_name]
+
+            return default
+
         return Theme(
-            id=row["id"],
-            name=row["name"],
-            slug=row["slug"],
-            icon=row["icon"],
-            created_at=row["created_at"]
+            id=get_value("id"),
+            name=get_value("name", ""),
+            slug=get_value("slug", ""),
+            icon=get_value("icon", ""),
+            primary_color=get_value("primary_color", "#ffc107"),
+            created_at=get_value("created_at", ""),
         )
 
 
