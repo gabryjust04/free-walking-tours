@@ -27,6 +27,7 @@ from app.tours.dao import (
     TourEventsDAO,
     TourReservationsDAO,
     TourWeeklySlotsDAO,
+    LanguagesDAO,
 )
 
 from app.tours.domain import Tour
@@ -449,7 +450,21 @@ def get_tour_form_data(form):
     }
 
 
-def validate_tour_form(data):
+def guide_can_use_language(guide_id, language_id):
+    try:
+        language_id = int(language_id)
+    except (TypeError, ValueError):
+        return False
+
+    guide_languages = LanguagesDAO.list_languages_by_guide(guide_id)
+
+    for language in guide_languages:
+        if language.id == language_id:
+            return True
+
+    return False
+
+def validate_tour_form(data, guide_id=None):
     errors = []
 
     required_fields = [
@@ -471,6 +486,9 @@ def validate_tour_form(data):
 
     if parse_positive_int(data["max_participants"]) is None:
         errors.append("Max participants must be a positive number.")
+
+    if guide_id is not None and not guide_can_use_language(guide_id, data["language_id"]):
+        errors.append("You can create tours only in languages selected in your profile.")
 
     return errors
 

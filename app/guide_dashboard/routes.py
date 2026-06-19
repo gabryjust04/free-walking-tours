@@ -108,7 +108,7 @@ def create_tour():
     require_guide()
 
     themes = ThemesDAO.list_all_themes()
-    languages = LanguagesDAO.list_all_languages()
+    languages = LanguagesDAO.list_languages_by_guide(current_user.id)
 
     if request.method == "GET":
         return render_template(
@@ -136,7 +136,7 @@ def create_tour():
         existing_photos_count=0,
     )
 
-    errors = validate_tour_form(form_data)
+    errors = validate_tour_form(form_data,current_user.id)
     errors.extend(schedule_errors)
     errors.extend(stop_errors)
     errors.extend(photo_errors)
@@ -188,7 +188,7 @@ def update_tour(tour_id):
         return redirect(url_for("guide_dashboard.dashboard"))
 
     themes = ThemesDAO.list_all_themes()
-    languages = LanguagesDAO.list_all_languages()
+    languages = LanguagesDAO.list_languages_by_guide(current_user.id)
     photos = TourPhotosDAO.list_photos_by_tour(tour.id)
     slots = TourWeeklySlotsDAO.list_slots_by_tour(tour.id)
     stops = TourStopsDAO.list_stops_by_tour(tour.id)
@@ -220,7 +220,7 @@ def update_tour(tour_id):
         existing_photos_count=len(photos),
     )
 
-    errors = validate_tour_form(form_data)
+    errors = validate_tour_form(form_data, current_user.id)
     errors.extend(schedule_errors)
     errors.extend(stop_errors)
     errors.extend(photo_errors)

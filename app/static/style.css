@@ -187,3 +187,14 @@
 .btn-check:focus-visible + .pick-card {
     box-shadow: 0 0 0 0.25rem rgba(var(--ub-primary-rgb), 0.35);
 }
+
+.ub-step-badge {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+}
