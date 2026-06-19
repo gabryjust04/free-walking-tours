@@ -21,21 +21,34 @@
                             <div class="card-body p-4 p-md-5">
                                 <ul class="nav nav-pills nav-fill bg-body-secondary rounded-pill p-1 mb-4">
                                     <li class="nav-item">
-                                        <a href="{{ url_for('auth.login') }}" class="nav-link rounded-pill fw-bold text-dark bg-white shadow-sm">Log In</a>
+                                        <a href="{{ url_for('auth.login') }}" class="nav-link rounded-pill fw-bold text-dark bg-white shadow-sm">
+                                            Log In
+                                        </a>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="{{ url_for('auth.signup') }}" class="nav-link rounded-pill fw-bold text-dark">Register</a>
+                                        <a href="{{ url_for('auth.signup') }}" class="nav-link rounded-pill fw-bold text-dark">
+                                            Register
+                                        </a>
                                     </li>
                                 </ul>
 
-                                <h1 class="h2 fw-black mb-1">Welcome back!</h1>
-                                <p class="text-body-secondary mb-4">Ready for your next adventure?</p>
+                                <h1 class="h2 fw-black mb-1">
+                                    Welcome back!
+                                </h1>
+
+                                <p class="text-body-secondary mb-4">
+                                    Ready for your next adventure?
+                                </p>
 
                                 {% include "partials/flash_messages.html" %}
 
                                 <form action="{{ url_for('auth.login') }}" method="POST">
                                     <div class="mb-3">
-                                        <label for="emailInput" class="form-label fw-semibold">Email Address</label>
+                                        <label for="emailInput" class="form-label fw-semibold">
+                                            Email Address
+                                        </label>
+
                                         <input
                                             type="email"
                                             class="form-control form-control-lg fs-6"
@@ -47,7 +60,10 @@
                                     </div>
 
                                     <div class="mb-2">
-                                        <label for="passwordInput" class="form-label fw-semibold">Password</label>
+                                        <label for="passwordInput" class="form-label fw-semibold">
+                                            Password
+                                        </label>
+
                                         <input
                                             type="password"
                                             class="form-control form-control-lg fs-6"
@@ -59,15 +75,19 @@
                                     </div>
 
                                     <div class="text-end mb-4">
-                                        <a href="#" class="small text-decoration-none">Forgot password?</a>
+                                        <a href="#" class="small text-decoration-none ub-link">
+                                            Forgot password?
+                                        </a>
                                     </div>
 
-                                    <button type="submit" class="btn btn-warning btn-lg fw-bold w-100">Log In</button>
+                                    <button type="submit" class="btn ub-btn btn-lg fw-bold w-100">
+                                        Log In
+                                    </button>
                                 </form>
 
                                 <p class="text-center small text-body-secondary mt-4 mb-0">
                                     Don't have an account?
-                                    <a href="{{ url_for('auth.signup') }}">Register</a>
+                                    <a href="{{ url_for('auth.signup') }}" class="ub-link">Register</a>
                                 </p>
                             </div>
                         </div>

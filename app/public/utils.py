@@ -23,7 +23,6 @@ from app.core.utils import (
 from app.tours.dao import (
     ToursDAO,
     TourPhotosDAO,
-    TourStopsDAO,
     TourWeeklySlotsDAO,
     TourEventsDAO,
     TourReservationsDAO,
@@ -34,6 +33,100 @@ from app.tours.dao import (
 
 BOOKING_DAYS_AHEAD = 28
 BOOKING_MAX_OCCURRENCES = 12
+
+DEFAULT_THEME_COLOR = "#ffc107"
+DEFAULT_THEME_TEXT_COLOR = "#1f1f1f"
+
+
+# ---------------------------------------------------------
+# Theme helpers
+# ---------------------------------------------------------
+
+def is_valid_hex_color(value):
+    if value is None:
+        return False
+
+    value = str(value).strip()
+
+    if value.startswith("#"):
+        value = value[1:]
+
+    if len(value) != 6:
+        return False
+
+    for char in value:
+        if char not in "0123456789abcdefABCDEF":
+            return False
+
+    return True
+
+
+def get_theme_primary_color(theme):
+    color = getattr(theme, "primary_color", None)
+
+    if not is_valid_hex_color(color):
+        return DEFAULT_THEME_COLOR
+
+    color = str(color).strip()
+
+    if not color.startswith("#"):
+        color = f"#{color}"
+
+    return color
+
+
+def get_rgb_from_hex_color(hex_color):
+    color = hex_color.replace("#", "")
+
+    red = int(color[0:2], 16)
+    green = int(color[2:4], 16)
+    blue = int(color[4:6], 16)
+
+    return red, green, blue
+
+
+def get_theme_rgb(theme):
+    red, green, blue = get_rgb_from_hex_color(get_theme_primary_color(theme))
+
+    return f"{red}, {green}, {blue}"
+
+
+def get_theme_text_color(theme):
+    red, green, blue = get_rgb_from_hex_color(get_theme_primary_color(theme))
+
+    brightness = (red * 299 + green * 587 + blue * 114) / 1000
+
+    if brightness > 150:
+        return "#1f1f1f"
+
+    return "#ffffff"
+
+
+def get_theme_icon_filename(theme):
+    icon = getattr(theme, "icon", "")
+
+    if icon is None:
+        return None
+
+    icon = str(icon).strip()
+
+    if icon == "":
+        return None
+
+    if "/" in icon or "\\" in icon:
+        return None
+
+    return icon
+
+
+def build_theme_style(theme):
+    return {
+        "name": get_object_name(theme, "Walking Tour"),
+        "icon_filename": get_theme_icon_filename(theme),
+        "primary_color": get_theme_primary_color(theme),
+        "primary_rgb": get_theme_rgb(theme),
+        "text_color": get_theme_text_color(theme),
+    }
 
 
 # ---------------------------------------------------------
@@ -81,90 +174,6 @@ def get_public_tour_or_404(tour_id):
 # ---------------------------------------------------------
 # Tour detail page
 # ---------------------------------------------------------
-def is_valid_hex_color(value):
-    if value is None:
-        return False
-
-    value = str(value).strip()
-
-    if value.startswith("#"):
-        value = value[1:]
-
-    if len(value) != 6:
-        return False
-
-    for char in value:
-        if char not in "0123456789abcdefABCDEF":
-            return False
-
-    return True
-
-
-def get_theme_primary_color(theme):
-    color = getattr(theme, "primary_color", None)
-
-    if not is_valid_hex_color(color):
-        return "#ffc107"
-
-    color = str(color).strip()
-
-    if not color.startswith("#"):
-        color = f"#{color}"
-
-    return color
-
-
-def get_theme_rgb(theme):
-    color = get_theme_primary_color(theme).replace("#", "")
-
-    red = int(color[0:2], 16)
-    green = int(color[2:4], 16)
-    blue = int(color[4:6], 16)
-
-    return f"{red}, {green}, {blue}"
-
-
-def get_theme_text_color(theme):
-    color = get_theme_primary_color(theme).replace("#", "")
-
-    red = int(color[0:2], 16)
-    green = int(color[2:4], 16)
-    blue = int(color[4:6], 16)
-
-    brightness = (red * 299 + green * 587 + blue * 114) / 1000
-
-    if brightness > 150:
-        return "#1f1f1f"
-
-    return "#ffffff"
-
-
-def get_theme_icon_filename(theme):
-    icon = getattr(theme, "icon", "")
-
-    if icon is None:
-        return None
-
-    icon = str(icon).strip()
-
-    if icon == "":
-        return None
-
-    if "/" in icon or "\\" in icon:
-        return None
-
-    return icon
-
-
-def build_theme_style(theme):
-    return {
-        "name": get_object_name(theme, "Walking Tour"),
-        "icon_filename": get_theme_icon_filename(theme),
-        "primary_color": get_theme_primary_color(theme),
-        "primary_rgb": get_theme_rgb(theme),
-        "text_color": get_theme_text_color(theme),
-    }
-
 
 def build_schedule_items(slots):
     schedule = []
@@ -220,6 +229,8 @@ def build_public_tour_detail_data(tour, photos, stops, weekly_slots, theme, lang
     if photos:
         cover_photo = photos[0]
 
+    theme_style = build_theme_style(theme)
+
     return {
         "city_name": CITY_NAME,
         "tour": tour,
@@ -228,8 +239,8 @@ def build_public_tour_detail_data(tour, photos, stops, weekly_slots, theme, lang
         "stops": stops,
         "schedule": build_schedule_items(weekly_slots),
         "upcoming_occurrences": build_upcoming_occurrences(weekly_slots),
-        "theme_name": get_object_name(theme),
-        "theme_style": build_theme_style(theme),
+        "theme_name": theme_style["name"],
+        "theme_style": theme_style,
         "language_name": get_language_label(language),
         "duration_label": format_duration(tour.duration),
         "idempotency_key": str(uuid.uuid4()),
@@ -476,14 +487,12 @@ def create_booking_for_user(tour, user, booking_payload):
 
     except sqlite3.IntegrityError as e:
         db.rollback()
-
         print(f"Booking integrity error: {e}")
 
         return "warning", "This booking could not be completed. Please try again."
 
     except Exception as e:
         db.rollback()
-
         print(f"Booking error: {type(e).__name__}: {e}")
 
         return "danger", "Something went wrong while creating your booking."
@@ -556,8 +565,6 @@ def build_reservation_item(reservation):
         status_label = "Completed"
         status_class = "text-bg-secondary"
 
-    guest_names = parse_guest_names(reservation.additional_names)
-
     return {
         "id": reservation.id,
         "tour_id": tour.id,
@@ -573,7 +580,7 @@ def build_reservation_item(reservation):
         "time_range": format_event_time_range(event.start_time, tour.duration),
 
         "total_people": reservation.total_people,
-        "guest_names": guest_names,
+        "guest_names": parse_guest_names(reservation.additional_names),
 
         "status_label": status_label,
         "status_class": status_class,
@@ -667,6 +674,3 @@ def cancel_reservation_for_user(reservation_id, participant_id):
     get_db().commit()
 
     return "success", "Your reservation has been cancelled."
-
-
-

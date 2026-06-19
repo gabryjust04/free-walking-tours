@@ -6,7 +6,7 @@
 <section class="py-5">
     <div class="container">
         <div class="mb-4">
-            <a href="{{ url_for('guide_dashboard.dashboard') }}" class="text-decoration-none fw-bold">
+            <a href="{{ url_for('guide_dashboard.dashboard') }}" class="text-decoration-none fw-bold ub-link">
                 <i class="bi bi-arrow-left me-1"></i>
                 Back to dashboard
             </a>
@@ -20,7 +20,7 @@
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
                             <div>
-                                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
+                                <span class="small text-uppercase fw-bold ub-text d-block mb-2">
                                     Tour event
                                 </span>
 
@@ -29,10 +29,9 @@
                                 </h1>
 
                                 <div class="d-flex flex-wrap gap-2">
-                                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">
+                                    <span class="badge rounded-pill ub-badge-soft">
                                         {{ event.theme }}
                                     </span>
-
 
                                     <span class="badge rounded-pill {{ event.status_class }}">
                                         {{ event.status_label }}
@@ -41,7 +40,7 @@
                             </div>
 
                             <div class="bg-white border rounded-4 text-center px-3 py-2">
-                                <div class="small fw-bold text-primary text-uppercase lh-1">
+                                <div class="small fw-bold ub-text text-uppercase lh-1">
                                     {{ event.date_month }}
                                 </div>
 
@@ -58,6 +57,7 @@
                                         <i class="bi bi-calendar3 me-1"></i>
                                         Date
                                     </div>
+
                                     <div class="fw-bold">
                                         {{ event.date_label }}
                                     </div>
@@ -70,6 +70,7 @@
                                         <i class="bi bi-clock me-1"></i>
                                         Time
                                     </div>
+
                                     <div class="fw-bold">
                                         {{ event.time_range }}
                                     </div>
@@ -82,6 +83,7 @@
                                         <i class="bi bi-people me-1"></i>
                                         Participants
                                     </div>
+
                                     <div class="fw-bold">
                                         {{ event.active_people }} / {{ event.max_participants }}
                                     </div>
@@ -94,6 +96,7 @@
                                         <i class="bi bi-ticket-perforated me-1"></i>
                                         Available places
                                     </div>
+
                                     <div class="fw-bold">
                                         {{ event.available_places }}
                                     </div>
@@ -106,6 +109,7 @@
                                         <i class="bi bi-geo-alt me-1"></i>
                                         Meeting point
                                     </div>
+
                                     <div class="fw-bold">
                                         {{ event.meeting_point }}
                                     </div>
@@ -119,7 +123,7 @@
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
                             <div>
-                                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-2">
+                                <span class="small text-uppercase fw-bold ub-text d-block mb-2">
                                     Participants
                                 </span>
 
@@ -128,7 +132,7 @@
                                 </h2>
                             </div>
 
-                            <span class="badge rounded-pill text-bg-warning">
+                            <span class="badge rounded-pill ub-badge">
                                 {{ participants|length }} bookings
                             </span>
                         </div>
@@ -181,7 +185,7 @@
                             </div>
                         {% else %}
                             <div class="text-center py-4">
-                                <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis fs-5 mb-3">
+                                <span class="ub-icon-soft fs-5 mb-3">
                                     <i class="bi bi-people"></i>
                                 </span>
 
@@ -237,7 +241,7 @@
                                             required
                                         >
 
-                                        <button type="submit" class="btn btn-warning fw-bold w-100">
+                                        <button type="submit" class="btn ub-btn fw-bold w-100">
                                             <i class="bi bi-camera me-1"></i>
                                             Upload evidence
                                         </button>
@@ -275,17 +279,17 @@
 
                             <ul class="list-unstyled vstack gap-3 mb-0 text-body-secondary">
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-success"></i>
+                                    <i class="bi bi-check-circle ub-text"></i>
                                     <span>Only active reservations count as participants.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-success"></i>
+                                    <i class="bi bi-check-circle ub-text"></i>
                                     <span>Cancelled reservations stay visible for reference.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
-                                    <i class="bi bi-check-circle text-success"></i>
+                                    <i class="bi bi-check-circle ub-text"></i>
                                     <span>Tours with active bookings cannot be edited.</span>
                                 </li>
                             </ul>
@@ -294,6 +298,6 @@
                 </div>
             </div>
         </div>
-    </div>
+   </div>
 </section>
 {% endblock %}

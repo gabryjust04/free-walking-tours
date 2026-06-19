@@ -1,6 +1,6 @@
 <article class="card tour-card border-0 shadow-sm rounded-5 h-100 overflow-hidden">
     <div class="position-relative">
-        <div class="ratio ratio-16x9 bg-warning-subtle">
+        <div class="ratio ratio-16x9 ub-bg-soft">
             {% if tour.cover_filename %}
                 <img
                     src="{{ url_for('static', filename='uploads/tours/' ~ tour.cover_filename) }}"
@@ -8,7 +8,7 @@
                     class="object-fit-cover"
                 >
             {% else %}
-                <div class="d-flex align-items-center justify-content-center fs-3 fw-black text-warning-emphasis">
+                <div class="d-flex align-items-center justify-content-center fs-3 fw-black ub-text">
                     {{ city_name|default("Stockholm") }}
                 </div>
             {% endif %}
@@ -35,7 +35,7 @@
                 </button>
             </div>
         {% else %}
-            <span class="badge rounded-pill text-bg-warning fw-bold position-absolute top-0 end-0 m-3">
+            <span class="badge rounded-pill ub-badge fw-bold position-absolute top-0 end-0 m-3">
                 FREE
             </span>
         {% endif %}
@@ -43,11 +43,13 @@
 
     <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-            <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">{{ tour.theme }}</span>
+            <span class="badge rounded-pill ub-badge-soft">{{ tour.theme }}</span>
             <span class="badge rounded-pill bg-body-secondary text-body-secondary">{{ tour.language }}</span>
         </div>
 
-        <h3 class="h5 fw-black mb-3">{{ tour.title }}</h3>
+        <h3 class="h5 fw-black mb-3">
+            {{ tour.title }}
+        </h3>
 
         {% if card_variant is defined and card_variant == "dashboard" %}
             <div class="d-flex flex-wrap gap-3 small text-body-secondary mb-3">
@@ -60,7 +62,9 @@
                 <div><i class="bi bi-signpost-split me-1"></i>{{ tour.stops_count }}</div>
             </div>
         {% else %}
-            <p class="small text-body-secondary clamp-2 mb-3">{{ tour.description }}</p>
+            <p class="small text-body-secondary clamp-2 mb-3">
+                {{ tour.description }}
+            </p>
 
             <div class="d-flex flex-wrap gap-3 small text-body-secondary mb-3">
                 <span><i class="bi bi-clock me-1"></i>{{ tour.duration }}</span>
@@ -71,7 +75,10 @@
                 <span class="small text-body-secondary text-truncate pe-3">
                     <i class="bi bi-geo-alt me-1"></i>{{ tour.meeting_point }}
                 </span>
-                <a href="{{ url_for('public.tour_detail', tour_id=tour.id) }}" class="small fw-bold text-decoration-none">Details</a>
+
+                <a href="{{ url_for('public.tour_detail', tour_id=tour.id) }}" class="small fw-bold text-decoration-none ub-link">
+                    Details
+                </a>
             </div>
         {% endif %}
     </div>

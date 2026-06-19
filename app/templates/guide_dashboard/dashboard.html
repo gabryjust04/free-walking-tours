@@ -9,6 +9,7 @@
             <h1 class="fw-black mb-2">
                 Welcome back, {{ current_user.first_name }}! 👋
             </h1>
+
             <p class="text-body-secondary mb-0">
                 Here's an overview of your upcoming tours and reports.
             </p>
@@ -21,7 +22,10 @@
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <div>
-                            <h2 class="h4 fw-black mb-1">Ongoing Events</h2>
+                            <h2 class="h4 fw-black mb-1">
+                                Ongoing Events
+                            </h2>
+
                             <p class="small text-body-secondary mb-0">
                                 These events have already started and need evidence if not completed.
                             </p>
@@ -40,7 +44,10 @@
         <div class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="h4 fw-black mb-0">Upcoming Bookings</h2>
+                    <h2 class="h4 fw-black mb-0">
+                        Upcoming Bookings
+                    </h2>
+
                     <span class="small text-body-secondary">
                         {{ dashboard_upcoming_events|length }} scheduled
                     </span>
@@ -65,7 +72,10 @@
         <div class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="h4 fw-black mb-0">Past Events</h2>
+                    <h2 class="h4 fw-black mb-0">
+                        Past Events
+                    </h2>
+
                     <span class="small text-body-secondary">
                         {{ dashboard_past_events|length }} completed
                     </span>
@@ -90,9 +100,13 @@
         <div class="card border-0 shadow-sm rounded-5">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="h4 fw-black mb-0">Active Tours Management</h2>
-                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
-                        <i class="bi bi-plus-lg me-1"></i>New Tour
+                    <h2 class="h4 fw-black mb-0">
+                        Active Tours Management
+                    </h2>
+
+                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn ub-btn btn-sm fw-bold rounded-pill px-3">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        New Tour
                     </a>
                 </div>
 

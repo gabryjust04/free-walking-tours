@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top py-3">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-black text-warning-emphasis" href="{{ url_for('public.home') }}">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-black ub-brand" href="{{ url_for('public.home') }}">
             <i class="bi bi-signpost-2-fill"></i>
             UrbanBuddy
         </a>
@@ -20,31 +20,43 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold {{ 'active text-primary' if request.endpoint == 'public.home' }}" href="{{ url_for('public.home') }}">
+                    <a
+                        class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'public.home' }}"
+                        href="{{ url_for('public.home') }}"
+                    >
                         Tours
                     </a>
                 </li>
 
                 {% if current_user.is_authenticated and current_user.role == "guide" %}
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold {{ 'active text-primary' if request.endpoint == 'guide_dashboard.dashboard' }}" href="{{ url_for('guide_dashboard.dashboard') }}">
+                        <a
+                            class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'guide_dashboard.dashboard' }}"
+                            href="{{ url_for('guide_dashboard.dashboard') }}"
+                        >
                             Dashboard
                         </a>
                     </li>
                 {% endif %}
 
                 {% if current_user.is_authenticated %}
-                    <a class="nav-link fw-semibold" href="{{ url_for('public.my_reservations') }}">
-                        My bookings
-                    </a>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'public.my_reservations' }}"
+                            href="{{ url_for('public.my_reservations') }}"
+                        >
+                            My bookings
+                        </a>
+                    </li>
                 {% endif %}
             </ul>
 
             <div class="d-flex align-items-center gap-2">
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.profile') }}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
+                    <a href="{{ url_for('auth.profile') }}" class="btn ub-btn btn-sm fw-bold rounded-pill px-3">
                         Profile
                     </a>
+
                     <a href="{{ url_for('auth.logout') }}" class="btn btn-link btn-sm text-dark text-decoration-none">
                         Logout
                     </a>
@@ -52,7 +64,8 @@
                     <a href="{{ url_for('auth.login') }}" class="btn btn-link btn-sm text-dark text-decoration-none">
                         Sign In
                     </a>
-                    <a href="{{ url_for('auth.signup') }}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
+
+                    <a href="{{ url_for('auth.signup') }}" class="btn ub-btn btn-sm fw-bold rounded-pill px-3">
                         Register
                     </a>
                 {% endif %}

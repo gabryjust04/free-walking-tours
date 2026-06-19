@@ -5,10 +5,11 @@
 {% block content %}
 <section class="py-5 my-lg-4 text-center">
     <div class="container">
+        {% include "partials/flash_messages.html" %}
+
         <div class="row justify-content-center">
-            {% include "partials/flash_messages.html" %}
             <div class="col-lg-10 col-xl-9">
-                <span class="badge rounded-pill text-bg-warning fw-semibold mb-3">
+                <span class="badge rounded-pill ub-badge fw-semibold mb-3">
                     Free walking tours in {{ city_name }}
                 </span>
 
@@ -48,7 +49,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                <button class="btn btn-warning fw-bold w-100 h-100 py-3 d-inline-flex align-items-center justify-content-center gap-2" type="button" disabled>
+                                <button class="btn ub-btn fw-bold w-100 h-100 py-3 d-inline-flex align-items-center justify-content-center gap-2" type="button" disabled>
                                     <i class="bi bi-search"></i>
                                     <span>Find</span>
                                 </button>
@@ -69,13 +70,14 @@
     <div class="container">
         <div class="d-flex align-items-end justify-content-between gap-3 mb-4">
             <div>
-                <span class="small text-uppercase fw-bold text-warning-emphasis d-block mb-1">
+                <span class="small text-uppercase fw-bold ub-text d-block mb-1">
                     Available experiences
                 </span>
+
                 <h2 class="fw-black mb-0">Popular Tours</h2>
             </div>
 
-            <a href="#" class="small fw-bold text-decoration-none">
+            <a href="#" class="small fw-bold text-decoration-none ub-link">
                 View all
                 <i class="bi bi-chevron-right"></i>
             </a>
@@ -92,10 +94,12 @@
         {% else %}
             <div class="card border-0 shadow-sm rounded-5">
                 <div class="card-body text-center py-5">
-                    <span class="icon-circle bg-warning bg-opacity-25 text-warning-emphasis fs-5 mb-3">
+                    <span class="ub-icon-soft fs-5 mb-3">
                         <i class="bi bi-map"></i>
                     </span>
+
                     <h3 class="fw-black">No tours yet</h3>
+
                     <p class="text-body-secondary mb-0">
                         There are no tours available in {{ city_name }} right now.
                         A guide can create the first one from the dashboard.

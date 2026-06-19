@@ -1,5 +1,3 @@
-{# Shared image cover for auth pages.
-   Pass `cover_title` and `cover_text`; falls back to sensible defaults. #}
 <div class="position-relative h-100 bg-dark overflow-hidden">
     <img
         src="{{ url_for('static', filename='img/auth-cover.jpg') }}"
@@ -16,7 +14,7 @@
         </a>
 
         <div>
-            <span class="badge rounded-pill text-bg-primary mb-3">
+            <span class="badge rounded-pill ub-badge mb-3">
                 {{ city_name|default('Stockholm') }} walking tours
             </span>
 

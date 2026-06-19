@@ -3,7 +3,7 @@
         <div class="row g-4 align-items-center">
             <div class="col-auto">
                 <div class="bg-white border rounded-4 text-center px-3 py-2">
-                    <div class="small fw-bold text-primary text-uppercase lh-1">
+                    <div class="small fw-bold ub-text text-uppercase lh-1">
                         {{ reservation.date_month }}
                     </div>
 
@@ -15,7 +15,7 @@
 
             <div class="col">
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
-                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis">
+                    <span class="badge rounded-pill ub-badge-soft">
                         {{ reservation.theme }}
                     </span>
 
@@ -68,7 +68,7 @@
             </div>
 
             <div class="col-lg-auto">
-               <a
+                <a
                     href="{{ url_for('public.reservation_detail', reservation_id=reservation.id) }}"
                     class="btn btn-light fw-bold rounded-pill px-4"
                 >

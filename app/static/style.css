@@ -1,32 +1,156 @@
 /* ============================================================
    UrbanBuddy — CSS minimo.
-   Tutto il resto è Bootstrap 5.3 (utility + componenti).
-   Colori: btn-warning / text-warning-emphasis = brand giallo,
-           primary = blu Bootstrap di default.
+   Bootstrap gestisce layout, spacing, card, grid, form, ecc.
+   Qui teniamo solo brand, micro-utility e tema dinamico.
    ============================================================ */
 
 :root {
     --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --ub-primary: #ffc107;
+    --ub-primary-rgb: 255, 193, 7;
+    --ub-on-primary: #1f1f1f;
+    --ub-primary-soft-opacity: 0.18;
 }
 
-/* Peso 900 per i titoli (le utility Bootstrap si fermano a 700) */
+/* Peso 900 per titoli */
 .fw-black {
     font-weight: 900;
     letter-spacing: -0.02em;
 }
 
-/* Chip circolare per le icone (colore via utility bg-* / text-*) */
-.icon-circle {
+/* ================================
+   Brand / theme color utilities
+================================ */
+
+.ub-text {
+    color: var(--ub-primary) !important;
+}
+
+.ub-link {
+    color: var(--ub-primary);
+}
+
+.ub-link:hover,
+.ub-link:focus {
+    color: var(--ub-primary);
+    filter: brightness(0.9);
+}
+
+.ub-bg-soft {
+    background-color: rgba(var(--ub-primary-rgb), var(--ub-primary-soft-opacity)) !important;
+}
+
+.ub-border {
+    border-color: rgba(var(--ub-primary-rgb), 0.35) !important;
+}
+
+.ub-badge {
+    color: var(--ub-on-primary);
+    background-color: var(--ub-primary);
+    border: 1px solid rgba(var(--ub-primary-rgb), 0.35);
+}
+
+.ub-badge-soft {
+    color: var(--ub-primary);
+    background-color: rgba(var(--ub-primary-rgb), 0.14);
+}
+
+.ub-btn {
+    color: var(--ub-on-primary);
+    background-color: var(--ub-primary);
+    border-color: var(--ub-primary);
+}
+
+.ub-btn:hover,
+.ub-btn:focus {
+    color: var(--ub-on-primary);
+    background-color: var(--ub-primary);
+    border-color: var(--ub-primary);
+    filter: brightness(0.95);
+}
+
+.ub-btn-outline {
+    color: var(--ub-primary);
+    background-color: transparent;
+    border-color: rgba(var(--ub-primary-rgb), 0.45);
+}
+
+.ub-btn-outline:hover,
+.ub-btn-outline:focus {
+    color: var(--ub-on-primary);
+    background-color: var(--ub-primary);
+    border-color: var(--ub-primary);
+}
+
+.ub-icon {
     width: 44px;
     height: 44px;
+    min-width: 44px;
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    color: var(--ub-on-primary);
+    background-color: var(--ub-primary);
+    overflow: hidden;
 }
 
-/* Descrizioni delle card limitate a due righe */
+.ub-icon-soft {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--ub-primary);
+    background-color: rgba(var(--ub-primary-rgb), 0.18);
+}
+
+.ub-icon-sm {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+}
+
+.ub-icon-lg {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+}
+
+.ub-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ub-brand {
+    color: var(--ub-primary) !important;
+}
+
+.ub-nav-active {
+    color: var(--ub-primary) !important;
+}
+
+/* ================================
+   Dynamic theme scope
+   Usato soprattutto in tour_detail.html
+================================ */
+
+.theme-scope {
+    --ub-primary: #ffc107;
+    --ub-primary-rgb: 255, 193, 7;
+    --ub-on-primary: #1f1f1f;
+}
+
+/* ================================
+   Component helpers
+================================ */
+
 .clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -34,13 +158,13 @@
     overflow: hidden;
 }
 
-/* Sidebar sticky che resta sotto la navbar sticky */
+/* Sidebar sticky sotto navbar */
 .sticky-aside {
     position: sticky;
     top: 90px;
 }
 
-/* Leggero lift al passaggio del mouse sulle card dei tour */
+/* Card tour */
 .tour-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -50,16 +174,16 @@
     box-shadow: var(--bs-box-shadow) !important;
 }
 
-/* Card selezionabili (tipo account + lingue guida) con .btn-check */
+/* Card selezionabili con .btn-check */
 .pick-card {
     background-color: var(--bs-body-bg);
 }
 
 .btn-check:checked + .pick-card {
-    --bs-border-color: var(--bs-warning);
-    background-color: var(--bs-warning-bg-subtle);
+    border-color: var(--ub-primary) !important;
+    background-color: rgba(var(--ub-primary-rgb), 0.14);
 }
 
 .btn-check:focus-visible + .pick-card {
-    box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.35);
+    box-shadow: 0 0 0 0.25rem rgba(var(--ub-primary-rgb), 0.35);
 }
