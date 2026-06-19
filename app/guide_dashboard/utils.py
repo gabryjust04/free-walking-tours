@@ -555,25 +555,72 @@ def get_minutes_from_time(value):
         return None
 
 
-def times_overlap(first_start, first_duration, second_start, second_duration):
-    first_start_minutes = get_minutes_from_time(first_start)
-    second_start_minutes = get_minutes_from_time(second_start)
+def get_weekly_minutes(day_of_week, start_time):
+    day_index = parse_weekday_to_index(day_of_week)
+    start_minutes = get_minutes_from_time(start_time)
+
+    if day_index is None or start_minutes is None:
+        return None
+
+    return day_index * 24 * 60 + start_minutes
+
+
+def intervals_overlap(first_start_minutes, first_duration, second_start_minutes, second_duration):
+    if first_start_minutes is None or second_start_minutes is None:
+        return False
 
     first_duration = parse_positive_int(first_duration)
     second_duration = parse_positive_int(second_duration)
 
-    if (
-        first_start_minutes is None
-        or second_start_minutes is None
-        or first_duration is None
-        or second_duration is None
-    ):
+    if first_duration is None or second_duration is None:
         return False
 
     first_end_minutes = first_start_minutes + first_duration
     second_end_minutes = second_start_minutes + second_duration
 
     return first_start_minutes < second_end_minutes and second_start_minutes < first_end_minutes
+
+
+def times_overlap(first_start, first_duration, second_start, second_duration):
+    first_start_minutes = get_minutes_from_time(first_start)
+    second_start_minutes = get_minutes_from_time(second_start)
+
+    return intervals_overlap(
+        first_start_minutes,
+        first_duration,
+        second_start_minutes,
+        second_duration,
+    )
+
+
+def weekly_times_overlap(first_day, first_start, first_duration, second_day, second_start, second_duration):
+    week_minutes = 7 * 24 * 60
+    first_start_minutes = get_weekly_minutes(first_day, first_start)
+    second_start_minutes = get_weekly_minutes(second_day, second_start)
+
+    if first_start_minutes is None or second_start_minutes is None:
+        return False
+
+    return (
+        intervals_overlap(
+            first_start_minutes,
+            first_duration,
+            second_start_minutes,
+            second_duration,
+        )
+        or intervals_overlap(
+            first_start_minutes + week_minutes,
+            first_duration,
+            second_start_minutes,
+            second_duration,
+        )
+        or intervals_overlap(
+            first_start_minutes,
+            first_duration,
+            second_start_minutes + week_minutes,
+            second_duration,
+        )
+    )
 
 
 def validate_guide_schedule_overlaps(guide_id, schedule_items, duration, current_tour_id=None):
@@ -593,18 +640,11 @@ def validate_guide_schedule_overlaps(guide_id, schedule_items, duration, current
 
         for new_slot in schedule_items:
             for existing_slot in existing_slots:
-                new_day = parse_weekday_to_index(new_slot["day_of_week"])
-                existing_day = parse_weekday_to_index(existing_slot.day_of_week)
-
-                if new_day is None or existing_day is None:
-                    continue
-
-                if new_day != existing_day:
-                    continue
-
-                if not times_overlap(
+                if not weekly_times_overlap(
+                    new_slot["day_of_week"],
                     new_slot["start_time"],
                     duration,
+                    existing_slot.day_of_week,
                     existing_slot.start_time,
                     existing_tour.duration,
                 ):

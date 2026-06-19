@@ -1,0 +1,25 @@
+<div class="card border-0 shadow-sm rounded-5 h-100">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+            <span class="ub-icon-soft">
+                <i class="bi {{ stat.icon }}"></i>
+            </span>
+
+            <span class="badge rounded-pill ub-badge-soft">
+                Admin
+            </span>
+        </div>
+
+        <p class="small text-body-secondary fw-semibold mb-1">
+            {{ stat.label }}
+        </p>
+
+        <h2 class="display-6 fw-black mb-2">
+            {{ stat.value }}
+        </h2>
+
+        <p class="small text-body-secondary mb-0">
+            {{ stat.description }}
+        </p>
+    </div>
+</div>

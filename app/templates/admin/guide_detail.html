@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}{{ guide.full_name }} - Admin - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="mb-4">
+            <a href="{{ url_for('admin.guides') }}" class="text-decoration-none fw-bold ub-link">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to guides
+            </a>
+        </div>
+
+        {% include "partials/flash_messages.html" %}
+
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-4">
+                <div class="sticky-aside">
+                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <div class="card-body p-4 text-center">
+                            {% if guide.profile_photo %}
+                                <img
+                                    src="{{ url_for('static', filename='uploads/pics/' ~ guide.profile_photo) }}"
+                                    alt="{{ guide.full_name }}"
+                                    class="rounded-circle object-fit-cover border border-3 ub-border mb-3"
+                                    style="width: 130px; height: 130px;"
+                                >
+                            {% else %}
+                                <span class="ub-icon-soft ub-icon-lg fs-3 mb-3">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                            {% endif %}
+
+                            <h1 class="h4 fw-black mb-1">
+                                {{ guide.full_name }}
+                            </h1>
+
+                            <p class="text-body-secondary mb-3">
+                                @{{ guide.username }}
+                            </p>
+
+                            <span class="badge rounded-pill ub-badge px-3 py-2">
+                                <i class="bi bi-person-badge me-1"></i>
+                                Guide
+                            </span>
+
+                            <hr class="my-4">
+
+                            <div class="text-start">
+                                <p class="small text-body-secondary mb-1">
+                                    Email
+                                </p>
+
+                                <p class="fw-bold mb-3">
+                                    {{ guide.email }}
+                                </p>
+
+                                <p class="small text-body-secondary mb-1">
+                                    Spoken languages
+                                </p>
+
+                                {% if guide.languages %}
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for language in guide.languages %}
+                                            <span class="badge rounded-pill ub-badge-soft px-3 py-2">
+                                                {{ language }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-body-secondary small mb-0">
+                                        No languages selected.
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-black mb-2">
+                                Guide summary
+                            </h2>
+
+                            <p class="text-body-secondary mb-3">
+                                This guide has created:
+                            </p>
+
+                            <span class="badge rounded-pill ub-badge px-3 py-2">
+                                {{ tours_count }} tour{% if tours_count != 1 %}s{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+                    <div>
+                        <span class="small text-uppercase fw-bold ub-text d-block mb-2">
+                            Created tours
+                        </span>
+
+                        <h2 class="fw-black mb-0">
+                            Tours by {{ guide.full_name }}
+                        </h2>
+                    </div>
+
+                    <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
+                        {{ tours_count }} total
+                    </span>
+                </div>
+
+                {% if tours %}
+                    <div class="accordion vstack gap-3" id="guideToursAccordion">
+                        {% for tour in tours %}
+                            <div class="accordion-item border-0 shadow-sm rounded-5 overflow-hidden">
+                                <h3 class="accordion-header" id="tourHeading-{{ tour.id }}">
+                                    <button
+                                        class="accordion-button collapsed fw-bold bg-white"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#tourCollapse-{{ tour.id }}"
+                                        aria-expanded="false"
+                                        aria-controls="tourCollapse-{{ tour.id }}"
+                                    >
+                                        <span class="me-3">
+                                            {{ tour.title }}
+                                        </span>
+
+                                        <span class="badge rounded-pill ub-badge-soft me-2">
+                                            {{ tour.theme }}
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-body-secondary text-body-secondary">
+                                            {{ tour.language }}
+                                        </span>
+                                    </button>
+                                </h3>
+
+                                <div
+                                    id="tourCollapse-{{ tour.id }}"
+                                    class="accordion-collapse collapse"
+                                    aria-labelledby="tourHeading-{{ tour.id }}"
+                                    data-bs-parent="#guideToursAccordion"
+                                >
+                                    <div class="accordion-body p-4">
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-6">
+                                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-clock me-1"></i>
+                                                        Duration
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.duration }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-people me-1"></i>
+                                                        Max participants
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.max_participants }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-images me-1"></i>
+                                                        Photos
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.photos_count }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="border rounded-4 bg-body-tertiary p-3 h-100">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-ticket-perforated me-1"></i>
+                                                        Reservations
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.reservations_count }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="border rounded-4 bg-body-tertiary p-3">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-geo-alt me-1"></i>
+                                                        Meeting point
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.meeting_point }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="border rounded-4 bg-body-tertiary p-3">
+                                                    <div class="small text-body-secondary fw-bold mb-1">
+                                                        <i class="bi bi-calendar-week me-1"></i>
+                                                        Schedule
+                                                    </div>
+
+                                                    <div class="fw-bold">
+                                                        {{ tour.schedule }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <h4 class="h6 fw-black mb-2">
+                                                Description
+                                            </h4>
+
+                                            <p class="text-body-secondary mb-0">
+                                                {{ tour.description }}
+                                            </p>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <h4 class="h6 fw-black mb-3">
+                                                Stops
+                                                <span class="badge rounded-pill bg-white text-dark border ms-1">
+                                                    {{ tour.stops_count }}
+                                                </span>
+                                            </h4>
+
+                                            {% if tour.stops %}
+                                                <div class="list-group list-group-flush">
+                                                    {% for stop in tour.stops %}
+                                                        <div class="list-group-item px-0 py-3">
+                                                            <div class="d-flex gap-3">
+                                                                <span class="badge rounded-pill ub-badge">
+                                                                    {{ loop.index }}
+                                                                </span>
+
+                                                                <div>
+                                                                    <div class="fw-bold">
+                                                                        {{ stop.name }}
+                                                                    </div>
+
+                                                                    {% if stop.description %}
+                                                                        <p class="small text-body-secondary mb-0">
+                                                                            {{ stop.description }}
+                                                                        </p>
+                                                                    {% else %}
+                                                                        <p class="small text-body-secondary mb-0">
+                                                                            No description.
+                                                                        </p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <p class="text-body-secondary mb-0">
+                                                    No stops added.
+                                                </p>
+                                            {% endif %}
+                                        </div>
+
+                                        <a
+                                            href="{{ url_for('public.tour_detail', tour_id=tour.id) }}"
+                                            class="btn btn-light fw-bold rounded-pill px-4"
+                                        >
+                                            <i class="bi bi-eye me-1"></i>
+                                            View public page
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card border-0 shadow-sm rounded-5">
+                        <div class="card-body text-center py-5">
+                            <span class="ub-icon-soft fs-5 mb-3">
+                                <i class="bi bi-map"></i>
+                            </span>
+
+                            <h3 class="h5 fw-black mb-2">
+                                No tours created
+                            </h3>
+
+                            <p class="text-body-secondary mb-0">
+                                This guide has not created any tours yet.
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

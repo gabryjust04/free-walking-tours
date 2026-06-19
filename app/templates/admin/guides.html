@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Guides - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+            <div>
+                <a href="{{ url_for('admin.dashboard') }}" class="small text-decoration-none fw-bold ub-link">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back to admin dashboard
+                </a>
+
+                <h1 class="fw-black mt-3 mb-2">
+                    Registered guides
+                </h1>
+
+                <p class="text-body-secondary mb-0">
+                    View the main information associated with each guide.
+                </p>
+            </div>
+
+            <span class="badge rounded-pill ub-badge px-3 py-2">
+                {{ guides_count }} guide{% if guides_count != 1 %}s{% endif %}
+            </span>
+        </div>
+
+        {% include "partials/flash_messages.html" %}
+
+        <div class="card border-0 shadow-sm rounded-5">
+            <div class="card-body p-4">
+                {% if guides %}
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Guide</th>
+                                    <th>Email</th>
+                                    <th>Spoken languages</th>
+                                    <th class="text-center">Tours</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for guide in guides %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                {% if guide.profile_photo %}
+                                                    <img
+                                                        src="{{ url_for('static', filename='uploads/pics/' ~ guide.profile_photo) }}"
+                                                        alt="{{ guide.first_name }} {{ guide.last_name }}"
+                                                        class="rounded-circle object-fit-cover border ub-border"
+                                                        style="width: 44px; height: 44px;"
+                                                    >
+                                                {% else %}
+                                                    <span class="ub-icon-soft">
+                                                        <i class="bi bi-person"></i>
+                                                    </span>
+                                                {% endif %}
+
+                                                <div>
+                                                    <div class="fw-bold">
+                                                        {{ guide.first_name }} {{ guide.last_name }}
+                                                    </div>
+
+                                                    <div class="small text-body-secondary">
+                                                        @{{ guide.username }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="small text-body-secondary">
+                                                {{ guide.email }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            {% if guide.languages %}
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    {% for language in guide.languages %}
+                                                        <span class="badge rounded-pill ub-badge-soft">
+                                                            {{ language }}
+                                                        </span>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <span class="small text-body-secondary">
+                                                    No languages selected
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="text-center">
+                                            <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
+                                                {{ guide.tours_count }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <a
+                                                href="{{ url_for('admin.guide_detail', guide_id=guide.id) }}"
+                                                class="btn btn-light btn-sm fw-bold rounded-pill px-3"
+                                            >
+                                                Details
+                                                <i class="bi bi-chevron-right ms-1"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <span class="ub-icon-soft fs-5 mb-3">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+
+                        <h2 class="h4 fw-black mb-2">
+                            No guides yet
+                        </h2>
+
+                        <p class="text-body-secondary mb-0">
+                            Registered guides will appear here.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

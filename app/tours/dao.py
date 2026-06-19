@@ -94,6 +94,37 @@ class ToursDAO:
         ).fetchall()
         return [Tour.from_row(row) for row in rows]
     
+    @staticmethod
+    def count_all_active_tours():
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM tours
+            WHERE is_deleted = 0
+            """
+        ).fetchone()
+
+        return int(row["total"])
+
+
+    @staticmethod
+    def count_tours_by_guide(guide_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM tours
+            WHERE guide_id = ?
+            AND is_deleted = 0
+            """,
+            (guide_id,)
+        ).fetchone()
+
+        return int(row["total"])
+    
 
 
 class TourPhotosDAO:
@@ -628,6 +659,23 @@ class LanguagesDAO:
         ).fetchone()
 
         return Language.from_row(row)
+    
+    @staticmethod
+    def list_languages_by_guide(guide_id: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT l.*
+            FROM languages l
+            JOIN guide_languages gl ON gl.language_id = l.id
+            WHERE gl.guide_id = ?
+            ORDER BY l.name ASC
+            """,
+            (guide_id,)
+        ).fetchall()
+
+        return [Language.from_row(row) for row in rows]
 
 class ThemesDAO:
 
@@ -825,3 +873,63 @@ class TourReservationsDAO:
         ).fetchall()
 
         return [TourReservation.from_row(row) for row in rows]
+    
+
+    @staticmethod
+    def count_all_reservations():
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM tour_reservations
+            """
+        ).fetchone()
+
+        return int(row["total"])
+
+
+    @staticmethod
+    def count_reservations_by_tour(tour_id: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COUNT(tr.id) AS total
+            FROM tour_reservations tr
+            JOIN tour_events te ON tr.event_id = te.id
+            WHERE te.tour_id = ?
+            """,
+            (tour_id,)
+        ).fetchone()
+
+        return int(row["total"])
+
+
+    @staticmethod
+    def count_reservations_by_language():
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT
+                l.id AS language_id,
+                l.name AS language_name,
+                COUNT(tr.id) AS reservations_count
+            FROM languages l
+            LEFT JOIN tours t
+                ON t.language_id = l.id
+                AND t.is_deleted = 0
+            LEFT JOIN tour_events te
+                ON te.tour_id = t.id
+            LEFT JOIN tour_reservations tr
+                ON tr.event_id = te.id
+            GROUP BY l.id, l.name
+            ORDER BY reservations_count DESC, l.name ASC
+            """
+        ).fetchall()
+
+        return rows
+    
+
+

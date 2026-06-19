@@ -208,3 +208,37 @@ class UsersDAO:
             print(f"Errore DB durante aggiornamento lingue guida: {e}")
             db.rollback()
             return False
+        
+    @staticmethod
+    def list_users_by_role(role: str):
+        db = get_db()
+
+        rows = db.execute(
+            """
+            SELECT *
+            FROM users
+            WHERE role = ?
+            ORDER BY last_name ASC, first_name ASC, email ASC
+            """,
+            (role,)
+        ).fetchall()
+
+        return [User.from_row(row) for row in rows]
+
+
+    @staticmethod
+    def count_users_by_role(role: str):
+        db = get_db()
+
+        row = db.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM users
+            WHERE role = ?
+            """,
+            (role,)
+        ).fetchone()
+
+        return int(row["total"])
+            
+

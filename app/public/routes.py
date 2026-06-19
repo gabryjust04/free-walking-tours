@@ -15,6 +15,7 @@ from .utils import (
     build_my_reservations_page_data,
     build_reservation_detail_page_data,
     build_tour_card,
+    build_tour_listings_page_data,
     cancel_reservation_for_user,
     get_public_tour_or_404,
     build_public_tour_detail_data,
@@ -29,6 +30,7 @@ public_bp = Blueprint("public", __name__)
 @public_bp.route("/")
 def home():
     tours = ToursDAO.list_all_tours(limit=6)
+    languages = LanguagesDAO.list_all_languages()
 
     tour_cards = []
 
@@ -39,6 +41,17 @@ def home():
         "home.html",
         city_name=CITY_NAME,
         tours=tour_cards,
+        languages=languages,
+    )
+
+
+@public_bp.route("/tours")
+def tour_listings():
+    page_data = build_tour_listings_page_data(request.args)
+
+    return render_template(
+        "listings.html",
+        **page_data,
     )
 
 

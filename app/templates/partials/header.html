@@ -21,8 +21,8 @@
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a
-                        class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'public.home' }}"
-                        href="{{ url_for('public.home') }}"
+                        class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint in ['public.home', 'public.tour_listings', 'public.tour_detail'] }}"
+                        href="{{ url_for('public.tour_listings') }}"
                     >
                         Tours
                     </a>

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}All Tours - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <span class="badge rounded-pill ub-badge fw-semibold mb-3">
+                    Tours in {{ city_name }}
+                </span>
+
+                <h1 class="display-5 fw-black mb-3">
+                    Find your next walking tour
+                </h1>
+
+                <p class="lead text-body-secondary mb-0">
+                    Search available experiences by theme, date, language or duration.
+                </p>
+            </div>
+        </div>
+
+        {% include "partials/flash_messages.html" %}
+
+        <form action="{{ url_for('public.tour_listings') }}" method="GET" class="card border-0 shadow-sm rounded-5 mb-5">
+            <div class="card-body p-3 p-md-4">
+                <div class="row g-3">
+                    <div class="col-lg-4">
+                        <label class="form-label fw-semibold">Search</label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input
+                                type="search"
+                                class="form-control border-start-0"
+                                name="q"
+                                value="{{ filters.q }}"
+                                placeholder="Tour, theme, place..."
+                            >
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <label class="form-label fw-semibold">Date</label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="date"
+                            value="{{ filters.date }}"
+                        >
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <label class="form-label fw-semibold">Duration</label>
+
+                        <select class="form-select" name="duration">
+                            <option value="">Any duration</option>
+                            <option value="short" {% if filters.duration == "short" %}selected{% endif %}>Up to 1h</option>
+                            <option value="medium" {% if filters.duration == "medium" %}selected{% endif %}>1h - 2h</option>
+                            <option value="long" {% if filters.duration == "long" %}selected{% endif %}>Over 2h</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 col-lg-2">
+                        <label class="form-label fw-semibold">Language</label>
+
+                        <select class="form-select" name="language_id">
+                            <option value="">Any language</option>
+
+                            {% for language in languages %}
+                                <option
+                                    value="{{ language.id }}"
+                                    {% if filters.language_id == language.id|string %}selected{% endif %}
+                                >
+                                    {{ language.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 d-flex align-items-end">
+                        <button type="submit" class="btn ub-btn fw-bold w-100">
+                            <i class="bi bi-search me-1"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                {% if filters.q or filters.date or filters.duration or filters.language_id %}
+                    <div class="border-top mt-4 pt-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <p class="small text-body-secondary mb-0">
+                            {{ results_count }} result{% if results_count != 1 %}s{% endif %} found.
+                        </p>
+
+                        <a href="{{ url_for('public.tour_listings') }}" class="small fw-bold text-decoration-none ub-link">
+                            Clear filters
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+
+        <div class="d-flex align-items-end justify-content-between gap-3 mb-4">
+            <div>
+                <span class="small text-uppercase fw-bold ub-text d-block mb-1">
+                    Results
+                </span>
+
+                <h2 class="fw-black mb-0">
+                    Available tours
+                </h2>
+            </div>
+
+            <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
+                {{ results_count }} found
+            </span>
+        </div>
+
+        {% if tours %}
+            <div class="row g-4">
+                {% for tour in tours %}
+                    <div class="col-md-6 col-lg-4">
+                        {% include "components/tour_card.html" %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card border-0 shadow-sm rounded-5">
+                <div class="card-body text-center py-5">
+                    <span class="ub-icon-soft fs-5 mb-3">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <h3 class="fw-black mb-2">
+                        No tours found
+                    </h3>
+
+                    <p class="text-body-secondary mb-4">
+                        Try changing the search filters or browse all available tours.
+                    </p>
+
+                    <a href="{{ url_for('public.tour_listings') }}" class="btn ub-btn fw-bold rounded-pill px-4">
+                        View all tours
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

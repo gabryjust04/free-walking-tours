@@ -7,7 +7,7 @@ from app.auth.routes import auth_bp
 from pathlib import Path
 from app.public.routes import public_bp
 from app.guide_dashboard.routes import guide_dashboard_bp
-
+from app.admin.routes import admin_bp
 BASE_DIR = Path(__file__).resolve().parent.parent # Base directory
 
 
@@ -37,9 +37,9 @@ def create_app():
     app.register_blueprint(public_bp)
     app.register_blueprint(guide_dashboard_bp)
 
-    @app.route("/")
-    def home():
-        return "<h1>Benvenuto in Free Walking Tours!</h1>"
-    
+
+    app.register_blueprint(admin_bp)
+
+   
     
     return app

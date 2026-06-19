@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - UrbanBuddy{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+            <div>
+                <span class="badge rounded-pill ub-badge fw-semibold mb-3">
+                    Admin area
+                </span>
+
+                <h1 class="fw-black mb-2">
+                    Platform overview
+                </h1>
+
+                <p class="text-body-secondary mb-0">
+                    View the main statistics for UrbanBuddy in {{ city_name }}.
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin.guides') }}" class="btn ub-btn fw-bold rounded-pill px-4">
+                <i class="bi bi-person-badge me-1"></i>
+                View guides
+            </a>
+        </div>
+
+        {% include "partials/flash_messages.html" %}
+
+        <div class="row g-4 mb-4">
+            {% for stat in stats %}
+                <div class="col-md-6 col-xl-3">
+                    {% include "components/admin_stat_card.html" %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-5">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                    <div>
+                        <span class="small text-uppercase fw-bold ub-text d-block mb-2">
+                            Reservations
+                        </span>
+
+                        <h2 class="h3 fw-black mb-0">
+                            Reservations per language
+                        </h2>
+                    </div>
+
+                    <span class="ub-icon-soft">
+                        <i class="bi bi-translate"></i>
+                    </span>
+                </div>
+
+                {% if reservations_by_language %}
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Language</th>
+                                    <th class="text-end">Reservations</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for item in reservations_by_language %}
+                                    <tr>
+                                        <td>
+                                            <span class="fw-bold">
+                                                {{ item.language_name }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <span class="badge rounded-pill ub-badge-soft px-3 py-2">
+                                                {{ item.reservations_count }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <span class="ub-icon-soft fs-5 mb-3">
+                            <i class="bi bi-bar-chart"></i>
+                        </span>
+
+                        <h3 class="h5 fw-black mb-2">
+                            No reservation statistics yet
+                        </h3>
+
+                        <p class="text-body-secondary mb-0">
+                            Reservation data will appear here once users start booking tours.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

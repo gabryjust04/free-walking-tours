@@ -674,3 +674,148 @@ def cancel_reservation_for_user(reservation_id, participant_id):
     get_db().commit()
 
     return "success", "Your reservation has been cancelled."
+
+
+# ---------------------------------------------------------
+# Public routes
+# ---------------------------------------------------------
+
+def get_listing_filters(args):
+    return {
+        "q": args.get("q", "").strip(),
+        "date": args.get("date", "").strip(),
+        "duration": args.get("duration", "").strip(),
+        "language_id": args.get("language_id", "").strip(),
+    }
+
+
+def normalize_search_text(value):
+    if value is None:
+        return ""
+
+    return str(value).strip().lower()
+
+
+def tour_matches_text_filter(tour, theme, language, query):
+    query = normalize_search_text(query)
+
+    if query == "":
+        return True
+
+    searchable_values = [
+        tour.title,
+        tour.description,
+        tour.meeting_point,
+        format_theme(theme),
+        get_language_label(language),
+    ]
+
+    for value in searchable_values:
+        if query in normalize_search_text(value):
+            return True
+
+    return False
+
+
+def tour_matches_language_filter(tour, language_id):
+    if not language_id:
+        return True
+
+    return str(tour.language_id) == str(language_id)
+
+
+def tour_matches_duration_filter(tour, duration_filter):
+    if not duration_filter:
+        return True
+
+    try:
+        duration = int(tour.duration)
+    except Exception:
+        return False
+
+    if duration_filter == "short":
+        return duration <= 60
+
+    if duration_filter == "medium":
+        return 60 < duration <= 120
+
+    if duration_filter == "long":
+        return duration > 120
+
+    return True
+
+
+def tour_matches_date_filter(tour, selected_date):
+    if not selected_date:
+        return True
+
+    try:
+        selected_date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date()
+    except ValueError:
+        return True
+
+    now = get_now_in_app_timezone()
+    today = now.date()
+
+    if selected_date_obj < today:
+        return False
+
+    weekly_slots = TourWeeklySlotsDAO.list_slots_by_tour(tour.id)
+
+    for slot in weekly_slots:
+        slot_weekday = parse_weekday_to_index(slot.day_of_week)
+        slot_time = parse_time_object(slot.start_time)
+
+        if slot_weekday is None or slot_time is None:
+            continue
+
+        if selected_date_obj.weekday() != slot_weekday:
+            continue
+
+        if selected_date_obj == today and slot_time <= now.time():
+            continue
+
+        return True
+
+    return False
+
+
+def tour_matches_listing_filters(tour, theme, language, filters):
+    if not tour_matches_text_filter(tour, theme, language, filters["q"]):
+        return False
+
+    if not tour_matches_language_filter(tour, filters["language_id"]):
+        return False
+
+    if not tour_matches_duration_filter(tour, filters["duration"]):
+        return False
+
+    if not tour_matches_date_filter(tour, filters["date"]):
+        return False
+
+    return True
+
+
+def build_tour_listings_page_data(args):
+    filters = get_listing_filters(args)
+    languages = LanguagesDAO.list_all_languages()
+
+    tours = ToursDAO.list_all_tours(limit=200)
+    tour_cards = []
+
+    for tour in tours:
+        theme = ThemesDAO.get_theme_by_id(tour.theme_id)
+        language = LanguagesDAO.get_language_by_id(tour.language_id)
+
+        if not tour_matches_listing_filters(tour, theme, language, filters):
+            continue
+
+        tour_cards.append(build_tour_card(tour))
+
+    return {
+        "city_name": CITY_NAME,
+        "tours": tour_cards,
+        "languages": languages,
+        "filters": filters,
+        "results_count": len(tour_cards),
+    }
