@@ -856,8 +856,6 @@ class TourReservationsDAO:
             (reservation_id,)
         )
 
-        db.commit()
-
     @staticmethod
     def list_reservations_by_participant(participant_id: str):
         db = get_db()
@@ -931,5 +929,4 @@ class TourReservationsDAO:
 
         return rows
     
-
 

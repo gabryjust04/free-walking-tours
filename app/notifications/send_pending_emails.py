@@ -1,3 +1,12 @@
+import sys
+import time
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from app import create_app
 from app.core.utils import get_now_in_app_timezone
 from app.notifications.dao import EmailQueueDAO
@@ -16,7 +25,7 @@ def send_pending_emails():
         limit=20,
     )
 
-    for email in emails:
+    for index, email in enumerate(emails):
         try:
             send_plain_email(
                 to_email=email["recipient_email"],
@@ -38,6 +47,9 @@ def send_pending_emails():
             )
 
             print(f"Failed email {email['id']}: {e}")
+
+        if index < len(emails) - 1:
+            time.sleep(1)
 
 
 if __name__ == "__main__":

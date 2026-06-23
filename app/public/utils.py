@@ -20,6 +20,7 @@ from app.core.utils import (
     format_theme,
 )
 
+from app.notifications.dao import EmailQueueDAO
 from app.tours.dao import (
     ToursDAO,
     TourPhotosDAO,
@@ -391,6 +392,109 @@ def find_booking_time_conflict(participant_id, event_date, start_time, duration)
     return None
 
 
+def format_email_queue_datetime(value):
+    return value.strftime("%Y-%m-%d %H:%M:%S")
+
+
+def format_email_event_label(event_date, start_time):
+    time_label = normalize_time(start_time) or "time not specified"
+
+    try:
+        date_label = datetime.strptime(event_date, "%Y-%m-%d").strftime("%A, %d %b %Y")
+    except Exception:
+        date_label = event_date or "date not specified"
+
+    return f"{date_label} at {time_label}"
+
+
+def get_email_greeting_name(user):
+    return getattr(user, "first_name", None) or getattr(user, "username", None) or "there"
+
+
+def build_booking_email_body(tour, user, event_date, start_time, total_people, additional_names, is_reminder=False):
+    greeting_name = get_email_greeting_name(user)
+    event_label = format_email_event_label(event_date, start_time)
+    people_label = "person" if total_people == 1 else "people"
+
+    if is_reminder:
+        intro = f"This is a reminder for your upcoming tour: {tour.title}."
+    else:
+        intro = f"Your booking for {tour.title} has been confirmed."
+
+    lines = [
+        f"Hi {greeting_name},",
+        "",
+        intro,
+        "",
+        f"Date and time: {event_label}",
+        f"Meeting point: {tour.meeting_point}",
+        f"Participants: {total_people} {people_label}",
+    ]
+
+    guest_names = parse_guest_names(additional_names)
+
+    if guest_names:
+        lines.append("")
+        lines.append("Additional guests:")
+
+        for guest_name in guest_names:
+            lines.append(f"- {guest_name}")
+
+    lines.extend([
+        "",
+        "See you soon!",
+        CITY_NAME,
+    ])
+
+    return "\n".join(lines)
+
+
+def enqueue_booking_emails(tour, user, reservation_id, event_date, start_time, total_people, additional_names):
+    now = get_now_in_app_timezone().replace(tzinfo=None)
+    event_datetime = get_datetime_from_event(event_date, start_time)
+
+    EmailQueueDAO.enqueue_email(
+        recipient_email=user.email,
+        subject=f"Booking confirmed: {tour.title}",
+        body=build_booking_email_body(
+            tour=tour,
+            user=user,
+            event_date=event_date,
+            start_time=start_time,
+            total_people=total_people,
+            additional_names=additional_names,
+        ),
+        email_type="booking_confirmation",
+        send_at=format_email_queue_datetime(now),
+        reservation_id=reservation_id,
+    )
+
+    if event_datetime is None:
+        return
+
+    reminder_send_at = event_datetime - timedelta(hours=24)
+
+    if reminder_send_at <= now:
+        return
+
+    EmailQueueDAO.enqueue_email(
+        recipient_email=user.email,
+        subject=f"Reminder: {tour.title} tomorrow",
+        body=build_booking_email_body(
+            tour=tour,
+            user=user,
+            event_date=event_date,
+            start_time=start_time,
+            total_people=total_people,
+            additional_names=additional_names,
+            is_reminder=True,
+        ),
+        email_type="booking_reminder",
+        send_at=format_email_queue_datetime(reminder_send_at),
+        reservation_id=reservation_id,
+    )
+
+
 def create_booking_for_user(tour, user, booking_payload):
     event_date = booking_payload["event_date"]
     start_time = booking_payload["start_time"]
@@ -471,12 +575,22 @@ def create_booking_for_user(tour, user, booking_payload):
 
             return "warning", f"Only {available_places} places are still available for this time."
 
-        TourReservationsDAO.add_reservation(
+        reservation_id = TourReservationsDAO.add_reservation(
             event_id=event_id,
             participant_id=user.id,
             total_people=total_people,
             additional_names=additional_names,
             idempotency_key=idempotency_key,
+        )
+
+        enqueue_booking_emails(
+            tour=tour,
+            user=user,
+            reservation_id=reservation_id,
+            event_date=event_date,
+            start_time=start_time,
+            total_people=total_people,
+            additional_names=additional_names,
         )
 
         TourEventsDAO.update_actual_participants(event_id)
@@ -668,10 +782,22 @@ def cancel_reservation_for_user(reservation_id, participant_id):
     if not can_cancel_reservation(reservation, event):
         return "warning", "You can cancel a reservation only up to 24 hours before the tour starts."
 
-    TourReservationsDAO.cancel_reservation(reservation.id)
+    db = get_db()
 
-    TourEventsDAO.update_actual_participants(event.id)
-    get_db().commit()
+    try:
+        db.execute("BEGIN IMMEDIATE")
+
+        TourReservationsDAO.cancel_reservation(reservation.id)
+        EmailQueueDAO.cancel_pending_emails_by_reservation(reservation.id)
+        TourEventsDAO.update_actual_participants(event.id)
+
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        print(f"Cancellation error: {type(e).__name__}: {e}")
+
+        return "danger", "Something went wrong while cancelling your reservation."
 
     return "success", "Your reservation has been cancelled."
 

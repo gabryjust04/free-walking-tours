@@ -105,7 +105,7 @@ class EmailQueueDAO:
     def cancel_pending_emails_by_reservation(reservation_id: str):
         db = get_db()
 
-        db.execute(
+        cursor = db.execute(
             """
             UPDATE email_queue
             SET status = 'cancelled',
@@ -115,3 +115,5 @@ class EmailQueueDAO:
             """,
             (reservation_id,)
         )
+
+        return cursor.rowcount
