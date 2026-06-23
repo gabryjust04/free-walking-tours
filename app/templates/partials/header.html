@@ -19,35 +19,48 @@
 
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a
-                        class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint in ['public.home', 'public.tour_listings', 'public.tour_detail'] }}"
-                        href="{{ url_for('public.tour_listings') }}"
-                    >
-                        Tours
-                    </a>
-                </li>
-
-                {% if current_user.is_authenticated and current_user.role == "guide" %}
-                    <li class="nav-item">
-                        <a
-                            class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'guide_dashboard.dashboard' }}"
-                            href="{{ url_for('guide_dashboard.dashboard') }}"
-                        >
-                            Dashboard
-                        </a>
-                    </li>
-                {% endif %}
-
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a
-                            class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint == 'public.my_reservations' }}"
-                            href="{{ url_for('public.my_reservations') }}"
+                            class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint in ['public.home', 'public.tour_listings', 'public.tour_detail'] }}"
+                            href="{{ url_for('public.tour_listings') }}"
                         >
-                            My bookings
+                            Tours
                         </a>
                     </li>
+
+                    {% if current_user.role == "guide" %}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint and request.endpoint.startswith('guide_dashboard.') }}"
+                                href="{{ url_for('guide_dashboard.dashboard') }}"
+                            >
+                                Dashboard
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if current_user.role == "admin" %}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint and request.endpoint.startswith('admin.') }}"
+                                href="{{ url_for('admin.dashboard') }}"
+                            >
+                                Admin
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if current_user.role == "participant" %}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link fw-semibold {{ 'active ub-nav-active' if request.endpoint in ['public.my_reservations', 'public.reservation_detail'] }}"
+                                href="{{ url_for('public.my_reservations') }}"
+                            >
+                                My bookings
+                            </a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             </ul>
 

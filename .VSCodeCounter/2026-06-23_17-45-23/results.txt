@@ -1,0 +1,91 @@
+Date : 2026-06-23 17:45:23
+Directory : /home/gabry/progetti/free-walking-tours
+Total : 46 files,  6554 codes, 300 comments, 1715 blanks, all 8569 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Python           |         18 |      3,145 |        281 |      1,200 |      4,626 |
+| HTML             |         24 |      3,003 |          0 |        466 |      3,469 |
+| toml             |          1 |        253 |          0 |         15 |        268 |
+| PostCSS          |          1 |        148 |         19 |         33 |        200 |
+| pip requirements |          1 |          4 |          0 |          0 |          4 |
+| Markdown         |          1 |          1 |          0 |          1 |          2 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                    | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                       |         46 |      6,554 |        300 |      1,715 |      8,569 |
+| . (Files)                                                                               |          4 |        262 |          0 |         19 |        281 |
+| app                                                                                     |         42 |      6,292 |        300 |      1,696 |      8,288 |
+| app (Files)                                                                             |          1 |         27 |          3 |         15 |         45 |
+| app/admin                                                                               |          2 |        208 |          0 |         74 |        282 |
+| app/auth                                                                                |          4 |        511 |         39 |        179 |        729 |
+| app/core                                                                                |          3 |        257 |          1 |        123 |        381 |
+| app/guide_dashboard                                                                     |          2 |        774 |          0 |        277 |      1,051 |
+| app/public                                                                              |          2 |        646 |         18 |        295 |        959 |
+| app/static                                                                              |          1 |        148 |         19 |         33 |        200 |
+| app/templates                                                                           |         24 |      3,003 |          0 |        466 |      3,469 |
+| app/templates (Files)                                                                   |          9 |      1,333 |          0 |        214 |      1,547 |
+| app/templates/admin                                                                     |          3 |        484 |          0 |         73 |        557 |
+| app/templates/components                                                                |          4 |        234 |          0 |         36 |        270 |
+| app/templates/guide_dashboard                                                           |          3 |        774 |          0 |        126 |        900 |
+| app/templates/partials                                                                  |          5 |        178 |          0 |         17 |        195 |
+| app/tours                                                                               |          3 |        718 |        220 |        234 |      1,172 |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                | language         | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /home/gabry/progetti/free-walking-tours/README.md                                       | Markdown         |          1 |          0 |          1 |          2 |
+| /home/gabry/progetti/free-walking-tours/app/__init__.py                                 | Python           |         27 |          3 |         15 |         45 |
+| /home/gabry/progetti/free-walking-tours/app/admin/routes.py                             | Python           |         36 |          0 |         15 |         51 |
+| /home/gabry/progetti/free-walking-tours/app/admin/utils.py                              | Python           |        172 |          0 |         59 |        231 |
+| /home/gabry/progetti/free-walking-tours/app/auth/dao.py                                 | Python           |        160 |         39 |         46 |        245 |
+| /home/gabry/progetti/free-walking-tours/app/auth/domain.py                              | Python           |         30 |          0 |          6 |         36 |
+| /home/gabry/progetti/free-walking-tours/app/auth/routes.py                              | Python           |        184 |          0 |         73 |        257 |
+| /home/gabry/progetti/free-walking-tours/app/auth/utils.py                               | Python           |        137 |          0 |         54 |        191 |
+| /home/gabry/progetti/free-walking-tours/app/core/db.py                                  | Python           |         13 |          0 |         10 |         23 |
+| /home/gabry/progetti/free-walking-tours/app/core/login_manager.py                       | Python           |          3 |          1 |          2 |          6 |
+| /home/gabry/progetti/free-walking-tours/app/core/utils.py                               | Python           |        241 |          0 |        111 |        352 |
+| /home/gabry/progetti/free-walking-tours/app/guide_dashboard/routes.py                   | Python           |        240 |          0 |         69 |        309 |
+| /home/gabry/progetti/free-walking-tours/app/guide_dashboard/utils.py                    | Python           |        534 |          0 |        208 |        742 |
+| /home/gabry/progetti/free-walking-tours/app/public/routes.py                            | Python           |        103 |          0 |         35 |        138 |
+| /home/gabry/progetti/free-walking-tours/app/public/utils.py                             | Python           |        543 |         18 |        260 |        821 |
+| /home/gabry/progetti/free-walking-tours/app/static/style.css                            | PostCSS          |        148 |         19 |         33 |        200 |
+| /home/gabry/progetti/free-walking-tours/app/templates/admin/dashboard.html              | HTML             |         90 |          0 |         15 |        105 |
+| /home/gabry/progetti/free-walking-tours/app/templates/admin/guide_detail.html           | HTML             |        273 |          0 |         42 |        315 |
+| /home/gabry/progetti/free-walking-tours/app/templates/admin/guides.html                 | HTML             |        121 |          0 |         16 |        137 |
+| /home/gabry/progetti/free-walking-tours/app/templates/base.html                         | HTML             |         27 |          0 |          6 |         33 |
+| /home/gabry/progetti/free-walking-tours/app/templates/components/admin_stat_card.html   | HTML             |         21 |          0 |          4 |         25 |
+| /home/gabry/progetti/free-walking-tours/app/templates/components/booking_row.html       | HTML             |         41 |          0 |          7 |         48 |
+| /home/gabry/progetti/free-walking-tours/app/templates/components/reservation_card.html  | HTML             |         69 |          0 |         12 |         81 |
+| /home/gabry/progetti/free-walking-tours/app/templates/components/tour_card.html         | HTML             |        103 |          0 |         13 |        116 |
+| /home/gabry/progetti/free-walking-tours/app/templates/guide_dashboard/dashboard.html    | HTML             |        117 |          0 |         16 |        133 |
+| /home/gabry/progetti/free-walking-tours/app/templates/guide_dashboard/event_detail.html | HTML             |        262 |          0 |         41 |        303 |
+| /home/gabry/progetti/free-walking-tours/app/templates/guide_dashboard/tour_form.html    | HTML             |        395 |          0 |         69 |        464 |
+| /home/gabry/progetti/free-walking-tours/app/templates/home.html                         | HTML             |        118 |          0 |         20 |        138 |
+| /home/gabry/progetti/free-walking-tours/app/templates/listings.html                     | HTML             |        130 |          0 |         25 |        155 |
+| /home/gabry/progetti/free-walking-tours/app/templates/login.html                        | HTML             |         85 |          0 |         15 |        100 |
+| /home/gabry/progetti/free-walking-tours/app/templates/my_reservations.html              | HTML             |        114 |          0 |         14 |        128 |
+| /home/gabry/progetti/free-walking-tours/app/templates/partials/auth_cover.html          | HTML             |         25 |          0 |          5 |         30 |
+| /home/gabry/progetti/free-walking-tours/app/templates/partials/flash_messages.html      | HTML             |         12 |          0 |          0 |         12 |
+| /home/gabry/progetti/free-walking-tours/app/templates/partials/footer.html              | HTML             |         31 |          0 |          2 |         33 |
+| /home/gabry/progetti/free-walking-tours/app/templates/partials/guide_languages.html     | HTML             |         30 |          0 |          2 |         32 |
+| /home/gabry/progetti/free-walking-tours/app/templates/partials/header.html              | HTML             |         80 |          0 |          8 |         88 |
+| /home/gabry/progetti/free-walking-tours/app/templates/profile.html                      | HTML             |        201 |          0 |         25 |        226 |
+| /home/gabry/progetti/free-walking-tours/app/templates/reservation_detail.html           | HTML             |        114 |          0 |         14 |        128 |
+| /home/gabry/progetti/free-walking-tours/app/templates/signup.html                       | HTML             |        165 |          0 |         34 |        199 |
+| /home/gabry/progetti/free-walking-tours/app/templates/tour_detail.html                  | HTML             |        379 |          0 |         61 |        440 |
+| /home/gabry/progetti/free-walking-tours/app/tours/dao.py                                | Python           |        527 |        220 |        189 |        936 |
+| /home/gabry/progetti/free-walking-tours/app/tours/domain.py                             | Python           |        185 |          0 |         39 |        224 |
+| /home/gabry/progetti/free-walking-tours/app/tours/routes.py                             | Python           |          6 |          0 |          6 |         12 |
+| /home/gabry/progetti/free-walking-tours/main.py                                         | Python           |          4 |          0 |          3 |          7 |
+| /home/gabry/progetti/free-walking-tours/requirements.txt                                | pip requirements |          4 |          0 |          0 |          4 |
+| /home/gabry/progetti/free-walking-tours/uv.lock                                         | toml             |        253 |          0 |         15 |        268 |
+| Total                                                                                   |                  |      6,554 |        300 |      1,715 |      8,569 |
++-----------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

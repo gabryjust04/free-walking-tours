@@ -16,7 +16,7 @@
                 </h1>
 
                 <p class="lead text-body-secondary mb-0">
-                    Search available experiences by theme, date, language or duration.
+                    Search available experiences by theme, date range, language or duration.
                 </p>
             </div>
         </div>
@@ -26,7 +26,7 @@
         <form action="{{ url_for('public.tour_listings') }}" method="GET" class="card border-0 shadow-sm rounded-5 mb-5">
             <div class="card-body p-3 p-md-4">
                 <div class="row g-3">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <label class="form-label fw-semibold">Search</label>
 
                         <div class="input-group">
@@ -44,18 +44,29 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-lg-2">
-                        <label class="form-label fw-semibold">Date</label>
+                    <div class="col-md-6 col-lg-2">
+                        <label class="form-label fw-semibold">From</label>
 
                         <input
                             type="date"
                             class="form-control"
-                            name="date"
-                            value="{{ filters.date }}"
+                            name="date_from"
+                            value="{{ filters.date_from }}"
                         >
                     </div>
 
-                    <div class="col-md-4 col-lg-2">
+                    <div class="col-md-6 col-lg-2">
+                        <label class="form-label fw-semibold">To</label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="date_to"
+                            value="{{ filters.date_to }}"
+                        >
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
                         <label class="form-label fw-semibold">Duration</label>
 
                         <select class="form-select" name="duration">
@@ -66,7 +77,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-4 col-lg-2">
+                    <div class="col-md-6 col-lg-2">
                         <label class="form-label fw-semibold">Language</label>
 
                         <select class="form-select" name="language_id">
@@ -83,15 +94,14 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 d-flex align-items-end">
-                        <button type="submit" class="btn ub-btn fw-bold w-100">
-                            <i class="bi bi-search me-1"></i>
-                            Search
+                    <div class="col-lg-1 d-flex align-items-end">
+                        <button type="submit" class="btn ub-btn fw-bold w-100" aria-label="Search tours">
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </div>
 
-                {% if filters.q or filters.date or filters.duration or filters.language_id %}
+                {% if filters.q or filters.date_from or filters.date_to or filters.duration or filters.language_id %}
                     <div class="border-top mt-4 pt-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <p class="small text-body-secondary mb-0">
                             {{ results_count }} result{% if results_count != 1 %}s{% endif %} found.

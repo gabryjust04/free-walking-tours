@@ -677,13 +677,23 @@ def cancel_reservation_for_user(reservation_id, participant_id):
 
 
 # ---------------------------------------------------------
-# Public routes
+# Public routes / Listings
 # ---------------------------------------------------------
 
 def get_listing_filters(args):
+    old_single_date = args.get("date", "").strip()
+
+    date_from = args.get("date_from", "").strip()
+    date_to = args.get("date_to", "").strip()
+
+    if old_single_date and not date_from and not date_to:
+        date_from = old_single_date
+        date_to = old_single_date
+
     return {
         "q": args.get("q", "").strip(),
-        "date": args.get("date", "").strip(),
+        "date_from": date_from,
+        "date_to": date_to,
         "duration": args.get("duration", "").strip(),
         "language_id": args.get("language_id", "").strip(),
     }
@@ -694,6 +704,37 @@ def normalize_search_text(value):
         return ""
 
     return str(value).strip().lower()
+
+
+def parse_listing_date(value):
+    if not value:
+        return None
+
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def get_listing_date_range(filters):
+    date_from = parse_listing_date(filters["date_from"])
+    date_to = parse_listing_date(filters["date_to"])
+
+    if date_from is None and date_to is None:
+        return None, None
+
+    today = get_now_in_app_timezone().date()
+
+    if date_from is None:
+        date_from = today
+
+    if date_to is None:
+        date_to = date_from + timedelta(days=BOOKING_DAYS_AHEAD)
+
+    if date_from < today:
+        date_from = today
+
+    return date_from, date_to
 
 
 def tour_matches_text_filter(tour, theme, language, query):
@@ -745,37 +786,37 @@ def tour_matches_duration_filter(tour, duration_filter):
     return True
 
 
-def tour_matches_date_filter(tour, selected_date):
-    if not selected_date:
+def tour_matches_date_range_filter(tour, filters):
+    date_from, date_to = get_listing_date_range(filters)
+
+    if date_from is None and date_to is None:
         return True
 
-    try:
-        selected_date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date()
-    except ValueError:
-        return True
-
-    now = get_now_in_app_timezone()
-    today = now.date()
-
-    if selected_date_obj < today:
+    if date_to < date_from:
         return False
 
+    now = get_now_in_app_timezone()
     weekly_slots = TourWeeklySlotsDAO.list_slots_by_tour(tour.id)
 
-    for slot in weekly_slots:
-        slot_weekday = parse_weekday_to_index(slot.day_of_week)
-        slot_time = parse_time_object(slot.start_time)
+    current_date = date_from
 
-        if slot_weekday is None or slot_time is None:
-            continue
+    while current_date <= date_to:
+        for slot in weekly_slots:
+            slot_weekday = parse_weekday_to_index(slot.day_of_week)
+            slot_time = parse_time_object(slot.start_time)
 
-        if selected_date_obj.weekday() != slot_weekday:
-            continue
+            if slot_weekday is None or slot_time is None:
+                continue
 
-        if selected_date_obj == today and slot_time <= now.time():
-            continue
+            if current_date.weekday() != slot_weekday:
+                continue
 
-        return True
+            if current_date == now.date() and slot_time <= now.time():
+                continue
+
+            return True
+
+        current_date += timedelta(days=1)
 
     return False
 
@@ -790,7 +831,7 @@ def tour_matches_listing_filters(tour, theme, language, filters):
     if not tour_matches_duration_filter(tour, filters["duration"]):
         return False
 
-    if not tour_matches_date_filter(tour, filters["date"]):
+    if not tour_matches_date_range_filter(tour, filters):
         return False
 
     return True
