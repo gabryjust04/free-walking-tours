@@ -5,18 +5,18 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="mb-4">
+        <nav class="mb-4">
             <a href="{{ url_for('guide_dashboard.dashboard') }}" class="text-decoration-none fw-bold ub-link">
                 <i class="bi bi-arrow-left me-1"></i>
                 Back to dashboard
             </a>
-        </div>
+        </nav>
 
         {% include "partials/flash_messages.html" %}
 
         <div class="row g-4 align-items-start">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                <article class="card border-0 shadow-sm rounded-5 mb-4">
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
                             <div>
@@ -117,9 +117,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </article>
 
-                <div class="card border-0 shadow-sm rounded-5">
+                <section class="card border-0 shadow-sm rounded-5">
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
                             <div>
@@ -140,7 +140,7 @@
                         {% if participants %}
                             <div class="vstack gap-3">
                                 {% for participant in participants %}
-                                    <div class="border rounded-4 bg-body-tertiary p-3">
+                                    <article class="border rounded-4 bg-body-tertiary p-3">
                                         <div class="row g-3 align-items-start">
                                             <div class="col">
                                                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
@@ -180,7 +180,7 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                    </div>
+                                    </article>
                                 {% endfor %}
                             </div>
                         {% else %}
@@ -199,12 +199,12 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
+                </section>
             </div>
 
-            <div class="col-lg-4">
+            <aside class="col-lg-4">
                 <div class="sticky-aside">
-                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 fw-black mb-3">
                                 Actions
@@ -269,9 +269,9 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4">
                             <h2 class="h5 fw-black mb-3">
                                 Good to know
@@ -294,9 +294,9 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </section>
                 </div>
-            </div>
+            </aside>
         </div>
    </div>
 </section>

@@ -5,7 +5,7 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <header class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
             <div>
                 <span class="badge rounded-pill ub-badge fw-semibold mb-3">
                     Admin area
@@ -24,19 +24,19 @@
                 <i class="bi bi-person-badge me-1"></i>
                 View guides
             </a>
-        </div>
+        </header>
 
         {% include "partials/flash_messages.html" %}
 
-        <div class="row g-4 mb-4">
+        <section class="row g-4 mb-4">
             {% for stat in stats %}
                 <div class="col-md-6 col-xl-3">
                     {% include "components/admin_stat_card.html" %}
                 </div>
             {% endfor %}
-        </div>
+        </section>
 
-        <div class="card border-0 shadow-sm rounded-5">
+        <section class="card border-0 shadow-sm rounded-5">
             <div class="card-body p-4 p-lg-5">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
                     <div>
@@ -99,7 +99,7 @@
                     </div>
                 {% endif %}
             </div>
-        </div>
+        </section>
     </div>
 </section>
 {% endblock %}

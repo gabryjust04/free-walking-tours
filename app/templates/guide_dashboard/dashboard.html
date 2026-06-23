@@ -5,7 +5,7 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="mb-4">
+        <header class="mb-4">
             <h1 class="fw-black mb-2">
                 Welcome back, {{ current_user.first_name }}! 👋
             </h1>
@@ -13,12 +13,12 @@
             <p class="text-body-secondary mb-0">
                 Here's an overview of your upcoming tours and reports.
             </p>
-        </div>
+        </header>
 
         {% include "partials/flash_messages.html" %}
 
         {% if dashboard_ongoing_events %}
-            <div class="card border-0 shadow-sm rounded-5 mb-4">
+            <section class="card border-0 shadow-sm rounded-5 mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <div>
@@ -38,10 +38,10 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
+            </section>
         {% endif %}
 
-        <div class="card border-0 shadow-sm rounded-5 mb-4">
+        <section class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 fw-black mb-0">
@@ -67,9 +67,9 @@
                     </div>
                 {% endif %}
             </div>
-        </div>
+        </section>
 
-        <div class="card border-0 shadow-sm rounded-5 mb-4">
+        <section class="card border-0 shadow-sm rounded-5 mb-4">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 fw-black mb-0">
@@ -95,9 +95,9 @@
                     </div>
                 {% endif %}
             </div>
-        </div>
+        </section>
 
-        <div class="card border-0 shadow-sm rounded-5">
+        <section class="card border-0 shadow-sm rounded-5">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 fw-black mb-0">
@@ -127,7 +127,7 @@
                     </div>
                 {% endif %}
             </div>
-        </div>
+        </section>
     </div>
 </section>
 {% endblock %}

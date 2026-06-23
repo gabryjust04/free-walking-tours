@@ -5,7 +5,7 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="row justify-content-center text-center mb-5">
+        <header class="row justify-content-center text-center mb-5">
             <div class="col-lg-8">
                 <span class="badge rounded-pill ub-badge fw-semibold mb-3">
                     Tours in {{ city_name }}
@@ -19,7 +19,7 @@
                     Search available experiences by theme, date range, language or duration.
                 </p>
             </div>
-        </div>
+        </header>
 
         {% include "partials/flash_messages.html" %}
 
@@ -102,7 +102,7 @@
                 </div>
 
                 {% if filters.q or filters.date_from or filters.date_to or filters.duration or filters.language_id %}
-                    <div class="border-top mt-4 pt-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <footer class="border-top mt-4 pt-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <p class="small text-body-secondary mb-0">
                             {{ results_count }} result{% if results_count != 1 %}s{% endif %} found.
                         </p>
@@ -110,12 +110,12 @@
                         <a href="{{ url_for('public.tour_listings') }}" class="small fw-bold text-decoration-none ub-link">
                             Clear filters
                         </a>
-                    </div>
+                    </footer>
                 {% endif %}
             </div>
         </form>
 
-        <div class="d-flex align-items-end justify-content-between gap-3 mb-4">
+        <header class="d-flex align-items-end justify-content-between gap-3 mb-4">
             <div>
                 <span class="small text-uppercase fw-bold ub-text d-block mb-1">
                     Results
@@ -129,7 +129,7 @@
             <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
                 {{ results_count }} found
             </span>
-        </div>
+        </header>
 
         {% if tours %}
             <div class="row g-4">
@@ -140,7 +140,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="card border-0 shadow-sm rounded-5">
+            <section class="card border-0 shadow-sm rounded-5">
                 <div class="card-body text-center py-5">
                     <span class="ub-icon-soft fs-5 mb-3">
                         <i class="bi bi-search"></i>
@@ -158,7 +158,7 @@
                         View all tours
                     </a>
                 </div>
-            </div>
+            </section>
         {% endif %}
     </div>
 </section>

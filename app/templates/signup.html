@@ -9,7 +9,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-9">
-                <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
+                <article class="card border-0 shadow-lg rounded-5 overflow-hidden">
                     <div class="row g-0">
                         <div class="col-lg-5 d-none d-lg-block">
                             {% set cover_title = "Start your journey." %}
@@ -19,7 +19,8 @@
 
                         <div class="col-lg-7">
                             <div class="card-body p-4 p-md-5">
-                                <ul class="nav nav-pills nav-fill bg-body-secondary rounded-pill p-1 mb-4">
+                                <nav>
+                                    <ul class="nav nav-pills nav-fill bg-body-secondary rounded-pill p-1 mb-4">
                                     <li class="nav-item">
                                         <a href="{{ url_for('auth.login') }}" class="nav-link rounded-pill fw-bold text-dark">
                                             Log In
@@ -31,7 +32,8 @@
                                             Register
                                         </a>
                                     </li>
-                                </ul>
+                                    </ul>
+                                </nav>
 
                                 <h1 class="h2 fw-black mb-1">
                                     Create account
@@ -113,7 +115,7 @@
                                         </div>
 
                                         <div class="col-12 d-none" id="guideLanguagesBox">
-                                            <div class="card border rounded-4 bg-body-tertiary">
+                                            <section class="card border rounded-4 bg-body-tertiary">
                                                 <div class="card-body p-4">
                                                     <div class="d-flex align-items-center gap-3 mb-4">
                                                         <span class="ub-icon-soft">
@@ -135,7 +137,7 @@
                                                     {% set input_disabled = true %}
                                                     {% include "partials/guide_languages.html" %}
                                                 </div>
-                                            </div>
+                                            </section>
                                         </div>
 
                                         <div class="col-12">
@@ -167,7 +169,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
         </div>
    </div>

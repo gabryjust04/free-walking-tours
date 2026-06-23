@@ -8,18 +8,18 @@
     style="--ub-primary: {{ theme_style.primary_color }}; --ub-primary-rgb: {{ theme_style.primary_rgb }}; --ub-on-primary: {{ theme_style.text_color }};"
 >
     <div class="container">
-        <div class="mb-4">
+        <nav class="mb-4">
             <a href="{{ url_for('public.home') }}" class="text-decoration-none fw-bold ub-link">
                 <i class="bi bi-arrow-left me-1"></i>
                 Back to tours
             </a>
-        </div>
+        </nav>
 
         {% include "partials/flash_messages.html" %}
 
         <div class="row g-4 align-items-start">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-4">
+                <figure class="card border-0 shadow-sm rounded-5 overflow-hidden mb-4">
                     <div class="ratio ratio-16x9 ub-bg-soft">
                         {% if cover_photo %}
                             <img
@@ -33,9 +33,9 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
+                </figure>
 
-                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                <section class="card border-0 shadow-sm rounded-5 mb-4">
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-center gap-3 mb-4">
                             <span class="ub-icon">
@@ -64,9 +64,9 @@
                             {{ tour.description }}
                         </p>
                     </div>
-                </div>
+                </section>
 
-                <div class="card border-0 shadow-sm rounded-5 mb-4">
+                <section class="card border-0 shadow-sm rounded-5 mb-4">
                     <div class="card-body p-4 p-lg-5">
                         <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
                             <div>
@@ -87,7 +87,7 @@
                         {% if stops %}
                             <div class="list-group list-group-flush">
                                 {% for stop in stops %}
-                                    <div class="list-group-item px-0 py-4">
+                                    <article class="list-group-item px-0 py-4">
                                         <div class="d-flex gap-3">
                                             <div>
                                                 <span class="badge rounded-pill ub-badge">
@@ -111,11 +111,11 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                    </div>
+                                    </article>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="border rounded-4 p-4 bg-body-tertiary">
+                            <section class="border rounded-4 p-4 bg-body-tertiary">
                                 <div class="d-flex gap-3 align-items-start">
                                     <span class="ub-icon">
                                         <i class="bi bi-map"></i>
@@ -131,13 +131,13 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
                         {% endif %}
                     </div>
-                </div>
+                </section>
 
                 {% if photos and photos|length > 1 %}
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4 p-lg-5">
                             <span class="small text-uppercase fw-bold ub-text d-block mb-2">
                                 Gallery
@@ -161,13 +161,13 @@
                                 {% endfor %}
                             </div>
                         </div>
-                    </div>
+                    </section>
                 {% endif %}
             </div>
 
-            <div class="col-lg-4">
+            <aside class="col-lg-4">
                 <div class="sticky-aside">
-                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <span class="badge rounded-pill ub-badge fw-bold mb-3">
                                 Free walking tour in {{ city_name }}
@@ -270,9 +270,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div id="booking" class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section id="booking" class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">
                                 <span class="ub-icon">
@@ -354,9 +354,9 @@
                                 </p>
                             {% endif %}
                         </div>
-                    </div>
+                    </section>
 
-                    <div id="schedule" class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section id="schedule" class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">
                                 <span class="ub-icon">
@@ -377,7 +377,7 @@
                             {% if schedule %}
                                 <div class="list-group list-group-flush">
                                     {% for item in schedule %}
-                                        <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                        <article class="list-group-item px-0 d-flex justify-content-between align-items-center">
                                             <span class="fw-bold">
                                                 {{ item.day }}
                                             </span>
@@ -385,7 +385,7 @@
                                             <span class="badge rounded-pill ub-badge-soft">
                                                 {{ item.time }}
                                             </span>
-                                        </div>
+                                        </article>
                                     {% endfor %}
                                 </div>
                             {% else %}
@@ -394,9 +394,9 @@
                                 </p>
                             {% endif %}
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-3">
                                 <span class="ub-icon">
@@ -430,9 +430,9 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </section>
                 </div>
-            </div>
+            </aside>
 
         </div>
     </div>

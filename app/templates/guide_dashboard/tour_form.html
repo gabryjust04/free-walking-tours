@@ -5,7 +5,7 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+        <header class="d-flex align-items-center justify-content-between gap-3 mb-4">
             <div>
                 <a href="{{ url_for('guide_dashboard.dashboard') }}" class="small text-decoration-none fw-bold ub-link">
                     <i class="bi bi-arrow-left me-1"></i>
@@ -20,14 +20,14 @@
                     Manage the tour information, schedule, stops and photos.
                 </p>
             </div>
-        </div>
+        </header>
 
         {% include "partials/flash_messages.html" %}
 
         <form method="POST" enctype="multipart/form-data">
             <div class="row g-4">
                 <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4 p-lg-5">
                             <div class="d-flex align-items-center gap-3 mb-4">
                                 <span class="ub-icon-soft">
@@ -148,9 +148,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <section class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4 p-lg-5">
                             <div class="d-flex align-items-center gap-3 mb-4">
                                 <span class="ub-icon-soft">
@@ -204,9 +204,9 @@
                                 {% endfor %}
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4 p-lg-5">
                             <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
                                 <div class="d-flex align-items-center gap-3">
@@ -233,7 +233,7 @@
 
                             <div id="stops-list" class="vstack gap-3">
                                 {% for stop in stop_data %}
-                                    <div class="card border rounded-4 bg-body-tertiary shadow-none stop-row">
+                                    <article class="card border rounded-4 bg-body-tertiary shadow-none stop-row">
                                         <div class="card-body p-3 p-md-4">
                                             <div class="d-flex align-items-center justify-content-between mb-3">
                                                 <span class="badge rounded-pill bg-white text-dark border fw-bold stop-order-label">
@@ -269,12 +269,12 @@
                                                 >{{ stop.description }}</textarea>
                                             </div>
                                         </div>
-                                    </div>
+                                    </article>
                                 {% endfor %}
                             </div>
 
                             <template id="stop-template">
-                                <div class="card border rounded-4 bg-body-tertiary shadow-none stop-row">
+                                <article class="card border rounded-4 bg-body-tertiary shadow-none stop-row">
                                     <div class="card-body p-3 p-md-4">
                                         <div class="d-flex align-items-center justify-content-between mb-3">
                                             <span class="badge rounded-pill bg-white text-dark border fw-bold stop-order-label">
@@ -309,19 +309,19 @@
                                             ></textarea>
                                         </div>
                                     </div>
-                                </div>
+                                </article>
                             </template>
 
                             <p class="small text-body-secondary mt-3 mb-0">
                                 Add at least 4 stops. Empty stops will be ignored when saving. Coordinates will be added later.
                             </p>
                         </div>
-                    </div>
+                    </section>
                 </div>
 
-                <div class="col-lg-4">
+                <aside class="col-lg-4">
                     <div class="sticky-aside">
-                        <div class="card border-0 shadow-sm rounded-5 mb-4">
+                        <section class="card border-0 shadow-sm rounded-5 mb-4">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center gap-3 mb-4">
                                     <span class="ub-icon-soft">
@@ -393,9 +393,9 @@
                                     Upload at least 5 photos. JPG, PNG or WEBP. Minimum size: 400x200px.
                                 </p>
                             </div>
-                        </div>
+                        </section>
 
-                        <div class="card border-0 shadow-sm rounded-5">
+                        <section class="card border-0 shadow-sm rounded-5">
                             <div class="card-body p-4">
                                 <h2 class="h5 fw-black mb-3">
                                     Actions
@@ -410,9 +410,9 @@
                                     Cancel
                                 </a>
                             </div>
-                        </div>
+                        </section>
                     </div>
-                </div>
+                </aside>
             </div>
         </form>
 

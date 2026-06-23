@@ -5,19 +5,19 @@
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <div class="mb-4">
+        <nav class="mb-4">
             <a href="{{ url_for('admin.guides') }}" class="text-decoration-none fw-bold ub-link">
                 <i class="bi bi-arrow-left me-1"></i>
                 Back to guides
             </a>
-        </div>
+        </nav>
 
         {% include "partials/flash_messages.html" %}
 
         <div class="row g-4 align-items-start">
-            <div class="col-lg-4">
+            <aside class="col-lg-4">
                 <div class="sticky-aside">
-                    <div class="card border-0 shadow-sm rounded-5 mb-4">
+                    <article class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4 text-center">
                             {% if guide.profile_photo %}
                                 <img
@@ -75,9 +75,9 @@
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body p-4">
                             <h2 class="h5 fw-black mb-2">
                                 Guide summary
@@ -91,12 +91,12 @@
                                 {{ tours_count }} tour{% if tours_count != 1 %}s{% endif %}
                             </span>
                         </div>
-                    </div>
+                    </section>
                 </div>
-            </div>
+            </aside>
 
             <div class="col-lg-8">
-                <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+                <header class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
                     <div>
                         <span class="small text-uppercase fw-bold ub-text d-block mb-2">
                             Created tours
@@ -110,12 +110,12 @@
                     <span class="badge rounded-pill bg-white text-dark border px-3 py-2">
                         {{ tours_count }} total
                     </span>
-                </div>
+                </header>
 
                 {% if tours %}
                     <div class="accordion vstack gap-3" id="guideToursAccordion">
                         {% for tour in tours %}
-                            <div class="accordion-item border-0 shadow-sm rounded-5 overflow-hidden">
+                            <article class="accordion-item border-0 shadow-sm rounded-5 overflow-hidden">
                                 <h3 class="accordion-header" id="tourHeading-{{ tour.id }}">
                                     <button
                                         class="accordion-button collapsed fw-bold bg-white"
@@ -288,11 +288,11 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div>
+                            </article>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="card border-0 shadow-sm rounded-5">
+                    <section class="card border-0 shadow-sm rounded-5">
                         <div class="card-body text-center py-5">
                             <span class="ub-icon-soft fs-5 mb-3">
                                 <i class="bi bi-map"></i>
@@ -306,7 +306,7 @@
                                 This guide has not created any tours yet.
                             </p>
                         </div>
-                    </div>
+                    </section>
                 {% endif %}
             </div>
         </div>
