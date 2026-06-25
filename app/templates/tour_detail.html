@@ -272,6 +272,53 @@
                         </div>
                     </section>
 
+                    {% if guide %}
+                        <section class="card border-0 shadow-sm rounded-5 mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    {% if guide.profile_photo %}
+                                        <img
+                                            src="{{ url_for('static', filename='uploads/pics/' ~ guide.profile_photo) }}"
+                                            alt="{{ guide.full_name }}"
+                                            class="rounded-circle object-fit-cover border border-3 ub-border"
+                                            style="width: 64px; height: 64px;"
+                                        >
+                                    {% else %}
+                                        <span class="ub-icon-soft ub-icon-lg fs-3">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                    {% endif %}
+
+                                    <div class="min-w-0">
+                                        <span class="small text-uppercase fw-bold ub-text d-block mb-1">
+                                            Your guide
+                                        </span>
+
+                                        <h2 class="h5 fw-black mb-1">
+                                            {{ guide.full_name }}
+                                        </h2>
+
+                                        {% if guide.username %}
+                                            <p class="small text-body-secondary mb-0">
+                                                @{{ guide.username }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if guide.languages %}
+                                    <div class="d-flex flex-wrap gap-2 mt-3">
+                                        {% for guide_language in guide.languages %}
+                                            <span class="badge rounded-pill ub-badge-soft px-3 py-2">
+                                                {{ guide_language }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </section>
+                    {% endif %}
+
                     <section id="booking" class="card border-0 shadow-sm rounded-5 mb-4">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">

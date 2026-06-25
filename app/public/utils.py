@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from flask import abort
 
+from app.auth.dao import UsersDAO
 from app.core.db import get_db
 from app.core.utils import (
     CITY_NAME,
@@ -224,6 +225,35 @@ def build_upcoming_occurrences(slots):
     return occurrences[:BOOKING_MAX_OCCURRENCES]
 
 
+def get_public_user_display_name(user):
+    if user is None:
+        return "Local guide"
+
+    full_name = f"{user.first_name} {user.last_name}".strip()
+
+    if full_name:
+        return full_name
+
+    if user.username:
+        return user.username
+
+    return "Local guide"
+
+
+def build_public_guide_card(guide):
+    if guide is None:
+        return None
+
+    languages = LanguagesDAO.list_languages_by_guide(guide.id)
+
+    return {
+        "full_name": get_public_user_display_name(guide),
+        "username": guide.username,
+        "profile_photo": guide.profile_photo,
+        "languages": [get_language_label(language) for language in languages],
+    }
+
+
 def build_public_tour_detail_data(tour, photos, stops, weekly_slots, theme, language):
     cover_photo = None
 
@@ -231,10 +261,12 @@ def build_public_tour_detail_data(tour, photos, stops, weekly_slots, theme, lang
         cover_photo = photos[0]
 
     theme_style = build_theme_style(theme)
+    guide = UsersDAO.get_user_by_id(tour.guide_id)
 
     return {
         "city_name": CITY_NAME,
         "tour": tour,
+        "guide": build_public_guide_card(guide),
         "photos": photos,
         "cover_photo": cover_photo,
         "stops": stops,

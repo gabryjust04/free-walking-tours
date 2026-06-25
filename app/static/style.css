@@ -168,6 +168,10 @@
     overflow: hidden;
 }
 
+.min-w-0 {
+    min-width: 0;
+}
+
 /* Sticky sidebar below navbar */
 .sticky-aside {
     position: sticky;
