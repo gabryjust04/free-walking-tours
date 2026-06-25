@@ -128,6 +128,20 @@
     object-fit: cover;
 }
 
+.guide-new-tour-btn {
+    min-width: 160px;
+    min-height: 54px;
+    border-width: 2px;
+    box-shadow: 0 0.5rem 1rem rgba(var(--ub-primary-rgb), 0.24) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.guide-new-tour-btn:hover,
+.guide-new-tour-btn:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 0.75rem 1.25rem rgba(var(--ub-primary-rgb), 0.32) !important;
+}
+
 .ub-brand {
     color: var(--ub-primary) !important;
 }
@@ -172,6 +186,26 @@
 .tour-card:hover {
     transform: translateY(-3px);
     box-shadow: var(--bs-box-shadow) !important;
+}
+
+.tour-card-image-link {
+    display: block;
+    color: inherit;
+    overflow: hidden;
+}
+
+.tour-card-image-link:focus-visible {
+    outline: 0.25rem solid rgba(var(--ub-primary-rgb), 0.55);
+    outline-offset: -0.25rem;
+}
+
+.tour-card-image-link > img {
+    transition: transform 0.2s ease;
+}
+
+.tour-card:hover .tour-card-image-link > img,
+.tour-card-image-link:focus-visible > img {
+    transform: scale(1.03);
 }
 
 /* Card selezionabili con .btn-check */

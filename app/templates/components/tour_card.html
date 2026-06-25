@@ -1,6 +1,10 @@
 <article class="card tour-card border-0 shadow-sm rounded-5 h-100 overflow-hidden">
     <div class="position-relative">
-        <div class="ratio ratio-16x9 ub-bg-soft">
+        <a
+            href="{{ url_for('public.tour_detail', tour_id=tour.id) }}"
+            class="tour-card-image-link ratio ratio-16x9 ub-bg-soft text-decoration-none"
+            aria-label="View details for {{ tour.title }}"
+        >
             {% if tour.cover_filename %}
                 <img
                     src="{{ url_for('static', filename='uploads/tours/' ~ tour.cover_filename) }}"
@@ -12,7 +16,7 @@
                     {{ city_name|default("Stockholm") }}
                 </div>
             {% endif %}
-        </div>
+        </a>
 
         {% if card_variant is defined and card_variant == "dashboard" %}
             <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">

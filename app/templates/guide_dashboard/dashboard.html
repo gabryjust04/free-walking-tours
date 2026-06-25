@@ -99,13 +99,13 @@
 
         <section class="card border-0 shadow-sm rounded-5">
             <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4">
                     <h2 class="h4 fw-black mb-0">
                         Active Tours Management
                     </h2>
 
-                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn ub-btn btn-sm fw-bold rounded-pill px-3">
-                        <i class="bi bi-plus-lg me-1"></i>
+                    <a href="{{ url_for('guide_dashboard.create_tour') }}" class="btn ub-btn guide-new-tour-btn d-inline-flex align-items-center justify-content-center fw-black rounded-pill px-4 py-3 shadow-sm">
+                        <i class="bi bi-plus-lg fs-5 me-2"></i>
                         New Tour
                     </a>
                 </div>
