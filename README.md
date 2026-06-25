@@ -4,21 +4,23 @@
 
 | Role | Email / Username | Password |
 | --- | --- | --- |
-| Admin | admin.stockholm@urbanbuddy.test / admin_stockholm | Demo2026! |
-| Guide | ingrid.bergstrom@urbanbuddy.test / ingrid_bergstrom | Demo2026! |
-| Guide | mateo.carvalho@urbanbuddy.test / mateo_carvalho | Demo2026! |
-| Participant | clara.rossi@urbanbuddy.test / clara_rossi | Demo2026! |
-| Participant | tommaso.bianchi@urbanbuddy.test / tommaso_bianchi | Demo2026! |
-| Participant | sofia.almeida@urbanbuddy.test / sofia_almeida | Demo2026! |
+| Admin | alex.morgan@urbanbuddy.test / alex_morgan | Stockholm2026! |
+| Guide | maya.chen@urbanbuddy.test / maya_chen | Stockholm2026! |
+| Guide | diego.alvarez@urbanbuddy.test / diego_alvarez | Stockholm2026! |
+| Guide | amina.diop@urbanbuddy.test / amina_diop | Stockholm2026! |
+| Guide | noah.williams@urbanbuddy.test / noah_williams | Stockholm2026! |
+| Participant | emma.johnson@urbanbuddy.test / emma_johnson | Stockholm2026! |
+| Participant | liam.novak@urbanbuddy.test / liam_novak | Stockholm2026! |
+| Participant | priya.patel@urbanbuddy.test / priya_patel | Stockholm2026! |
 
-The submitted SQLite database contains curated Stockholm demo data: 2 guides, 3 participants, 7 active tours, 35 tour photos, 35 stops, scheduled and completed events, active and cancelled reservations, and one completed-event evidence photo.
+The submitted SQLite database contains curated Stockholm demo data: 4 guides, 3 participants, 9 active tours, 45 tour photos, 45 stops, scheduled and completed events, active and cancelled reservations, and one completed-event evidence photo.
 
 Useful demo checks:
 
-- Log in as Clara Rossi and try to book `Stockholm Underground Art Safari` on `2026-07-08` at `11:00`; it is rejected because it overlaps with her `Gamla Stan` booking.
+- Log in as Emma Johnson and try to book `Stockholm Underground Art Safari` on `2026-07-08` at `11:00`; it is rejected because it overlaps with her `Gamla Stan` booking.
 - Try to book `Fika, Markets and Swedish Rituals` on `2026-07-04` at `11:00`; it is already full.
-- Log in as Ingrid Bergstrom and edit `Djurgarden Nature and Archipelago Stories`; it has no active bookings and remains editable.
-- Log in as Mateo Carvalho and open the past `Sodermalm Nordic Noir Walk` event from `2026-06-21`; it is ready for evidence upload.
+- Log in as Maya Chen and edit `Djurgarden Nature and Archipelago Stories`; it has no active bookings and remains editable.
+- Log in as Diego Alvarez and open the past `Sodermalm Nordic Noir Walk` event from `2026-06-21`; it is ready for evidence upload.
 
 ## Testing instructions
 
@@ -59,11 +61,15 @@ flask --app app run --debug
 http://127.0.0.1:5000
 ```
 
-6. To process pending email queue records manually, run:
+6. To process pending email queue records manually, make sure the `.env` file contains valid mail settings (`MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM`), then run the script from the project root while the virtual environment is active:
 
 ```bash
+cd /home/gabry/progetti/free-walking-tours
+source .venv/bin/activate
 python app/notifications/send_pending_emails.py
 ```
+
+The script runs once, sends only due `pending` rows from `email_queue`, marks each row as `sent` or `failed`, and then exits. Run the same command again whenever you want to process the queue manually.
 
 ## Project structure
 
