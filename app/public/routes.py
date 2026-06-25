@@ -83,8 +83,11 @@ def tour_detail(tour_id):
 def book_tour(tour_id):
     tour = get_public_tour_or_404(tour_id)
 
-    if getattr(current_user, "role", None) == "guide":
-        flash("Guides cannot book tours.", "warning")
+    role = getattr(current_user, "role", "")
+    role_lower = str(role).lower()
+
+    if role_lower in ("guide", "admin"):
+        flash(f"{str(role).capitalize()}s cannot book tours.", "warning")
         return redirect(url_for("public.tour_detail", tour_id=tour.id))
 
     booking_payload = build_booking_payload(request.form)
