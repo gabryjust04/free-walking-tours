@@ -106,7 +106,7 @@ class UsersDAO:
             return True
 
         except Exception as e:
-            print(f"Errore DB durante registrazione: {e}")
+            print(f"DB error during registration: {e}")
             db.rollback()
             return False
 
@@ -143,7 +143,7 @@ class UsersDAO:
             return True
 
         except Exception as e:
-            print(f"Errore DB durante aggiornamento utente: {e}")
+            print(f"DB error while updating user: {e}")
             db.rollback()
             return False
 
@@ -174,7 +174,7 @@ class UsersDAO:
             return True
 
         except Exception as e:
-            print(f"Errore DB durante aggiornamento lingue guida: {e}")
+            print(f"DB error while updating guide languages: {e}")
             db.rollback()
             return False
         
@@ -205,7 +205,7 @@ class UsersDAO:
             return True
 
         except Exception as e:
-            print(f"Errore DB durante aggiornamento lingue guida: {e}")
+            print(f"DB error while updating guide languages: {e}")
             db.rollback()
             return False
         
@@ -241,4 +241,3 @@ class UsersDAO:
 
         return int(row["total"])
             
-

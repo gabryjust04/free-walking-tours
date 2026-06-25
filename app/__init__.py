@@ -12,20 +12,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent # Base directory
 
 
 def create_app():
-    # Carica le variabili dal file .env
+    # Load variables from the .env file
     load_dotenv()
     
-    # Crea oggetto app
+    # Create the app object
     app = Flask(__name__)
     
 
-    # Configurazione
+    # Configuration
 
     database_path = os.getenv("DATABASE_PATH")
     database_path = Path(database_path)
     
     app.config.from_mapping(
-        SECRET_KEY=os.getenv('SECRET_KEY', 'dev-key-super-segreta'),
+        SECRET_KEY=os.getenv('SECRET_KEY', 'dev-key-super-secret'),
         DATABASE=str(database_path)
     )
     

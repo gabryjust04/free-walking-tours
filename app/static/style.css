@@ -1,7 +1,7 @@
 /* ============================================================
-   UrbanBuddy — CSS minimo.
-   Bootstrap gestisce layout, spacing, card, grid, form, ecc.
-   Qui teniamo solo brand, micro-utility e tema dinamico.
+   UrbanBuddy — minimal CSS.
+   Bootstrap handles layout, spacing, cards, grid, forms, etc.
+   Keep only brand, micro-utility, and dynamic theme styles here.
    ============================================================ */
 
 :root {
@@ -13,7 +13,7 @@
     --ub-primary-soft-opacity: 0.18;
 }
 
-/* Peso 900 per titoli */
+/* 900 weight for headings */
 .fw-black {
     font-weight: 900;
     letter-spacing: -0.02em;
@@ -152,7 +152,7 @@
 
 /* ================================
    Dynamic theme scope
-   Usato soprattutto in tour_detail.html
+   Mainly used in tour_detail.html
 ================================ */
 
 .theme-scope {
@@ -172,13 +172,13 @@
     overflow: hidden;
 }
 
-/* Sidebar sticky sotto navbar */
+/* Sticky sidebar below navbar */
 .sticky-aside {
     position: sticky;
     top: 90px;
 }
 
-/* Card tour */
+/* Tour card */
 .tour-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -208,7 +208,7 @@
     transform: scale(1.03);
 }
 
-/* Card selezionabili con .btn-check */
+/* Selectable cards with .btn-check */
 .pick-card {
     background-color: var(--bs-body-bg);
 }

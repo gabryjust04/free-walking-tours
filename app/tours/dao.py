@@ -276,7 +276,7 @@ class TourStopsDAO:
             return True
 
         except Exception as e:
-            print(f"Errore DB durante aggiornamento stops: {e}")
+            print(f"DB error while updating stops: {e}")
             db.rollback()
             return False
     
@@ -386,7 +386,7 @@ class TourWeeklySlotsDAO:
             db.commit()
             return True
         except Exception as e:
-            print(f"Errore DB durante aggiornamento schedule: {e}")
+            print(f"DB error while updating schedule: {e}")
             db.rollback()
             return False
         
