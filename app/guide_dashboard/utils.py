@@ -641,12 +641,47 @@ def weekly_times_overlap(first_day, first_start, first_duration, second_day, sec
     )
 
 
+def validate_schedule_self_overlaps(schedule_items, duration):
+    errors = []
+    duration = parse_positive_int(duration)
+
+    if duration is None:
+        return errors
+
+    for first_index, first_slot in enumerate(schedule_items):
+        for second_slot in schedule_items[first_index + 1:]:
+            if not weekly_times_overlap(
+                first_slot["day_of_week"],
+                first_slot["start_time"],
+                duration,
+                second_slot["day_of_week"],
+                second_slot["start_time"],
+                duration,
+            ):
+                continue
+
+            first_day_label = format_weekday(first_slot["day_of_week"])
+            second_day_label = format_weekday(second_slot["day_of_week"])
+            first_time_range = format_event_time_range(first_slot["start_time"], duration)
+            second_time_range = format_event_time_range(second_slot["start_time"], duration)
+
+            errors.append(
+                f"Schedule conflict in this tour: "
+                f"{second_day_label} {second_time_range} overlaps with "
+                f"{first_day_label} {first_time_range}."
+            )
+
+    return errors
+
+
 def validate_guide_schedule_overlaps(guide_id, schedule_items, duration, current_tour_id=None):
     errors = []
     duration = parse_positive_int(duration)
 
     if duration is None:
         return errors
+
+    errors.extend(validate_schedule_self_overlaps(schedule_items, duration))
 
     guide_tours = ToursDAO.list_tours_by_guide(guide_id)
 
