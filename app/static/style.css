@@ -1,8 +1,4 @@
-/* ============================================================
-   UrbanBuddy — minimal CSS.
-   Bootstrap handles layout, spacing, cards, grid, forms, etc.
-   Keep only brand, micro-utility, and dynamic theme styles here.
-   ============================================================ */
+
 
 :root {
     --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
