@@ -557,6 +557,7 @@ class TourEventsDAO:
             ),
             updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
+              AND status != 'completed'
             """,
             (event_id, event_id)
         )
@@ -591,7 +592,7 @@ class TourEventsDAO:
     
 
     @staticmethod
-    def complete_event_with_evidence_photo(event_id: str, evidence_photo: str):
+    def complete_event_with_evidence_photo(event_id: str, evidence_photo: str, actual_participants: int):
         db = get_db()
 
         db.execute(
@@ -599,16 +600,11 @@ class TourEventsDAO:
             UPDATE tour_events
             SET status = 'completed',
                 evidence_photo = ?,
-                actual_participants = (
-                    SELECT COALESCE(SUM(total_people), 0)
-                    FROM tour_reservations
-                    WHERE event_id = ?
-                    AND status = 'active'
-                ),
+                actual_participants = ?,
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """,
-            (evidence_photo, event_id, event_id)
+            (evidence_photo, actual_participants, event_id)
         )
 
         db.commit()
@@ -929,4 +925,3 @@ class TourReservationsDAO:
 
         return rows
     
-

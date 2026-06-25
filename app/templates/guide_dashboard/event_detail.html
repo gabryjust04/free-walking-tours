@@ -85,8 +85,14 @@
                                     </div>
 
                                     <div class="fw-bold">
-                                        {{ event.active_people }} / {{ event.max_participants }}
+                                        {{ event.shown_participants }} / {{ event.max_participants }}
                                     </div>
+
+                                    {% if event.status_label == "Completed" %}
+                                        <div class="small text-body-secondary mt-1">
+                                            {{ event.active_people }} booked
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -225,7 +231,7 @@
                                     </h3>
 
                                     <p class="small text-body-secondary mb-3">
-                                        Upload an evidence photo to confirm that the tour took place.
+                                        Upload an evidence photo and enter how many people attended.
                                     </p>
 
                                     <form
@@ -233,9 +239,27 @@
                                         action="{{ url_for('guide_dashboard.upload_event_evidence_photo', event_id=event.id) }}"
                                         enctype="multipart/form-data"
                                     >
+                                        <label for="actualParticipantsInput" class="form-label fw-semibold">
+                                            Participants attended
+                                        </label>
+                                        <input
+                                            type="number"
+                                            class="form-control mb-3"
+                                            id="actualParticipantsInput"
+                                            name="actual_participants"
+                                            min="0"
+                                            max="{{ event.max_participants }}"
+                                            value="{{ event.active_people }}"
+                                            required
+                                        >
+
+                                        <label for="evidencePhotoInput" class="form-label fw-semibold">
+                                            Evidence photo
+                                        </label>
                                         <input
                                             type="file"
                                             class="form-control mb-3"
+                                            id="evidencePhotoInput"
                                             name="evidence_photo"
                                             accept="image/png, image/jpeg, image/jpg, image/webp"
                                             required
@@ -258,9 +282,19 @@
                                     </div>
 
                                     <div class="p-3">
-                                        <span class="badge rounded-pill text-bg-success">
-                                            Evidence uploaded
-                                        </span>
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                            <span class="badge rounded-pill text-bg-success">
+                                                Evidence uploaded
+                                            </span>
+
+                                            <span class="badge rounded-pill ub-badge-soft">
+                                                {{ event.actual_participants }} attended
+                                            </span>
+                                        </div>
+
+                                        <p class="small text-body-secondary mb-0">
+                                            {{ event.active_people }} people were booked for this event.
+                                        </p>
                                     </div>
                                 </div>
                             {% else %}
@@ -280,12 +314,12 @@
                             <ul class="list-unstyled vstack gap-3 mb-0 text-body-secondary">
                                 <li class="d-flex gap-2">
                                     <i class="bi bi-check-circle ub-text"></i>
-                                    <span>Only active reservations count as participants.</span>
+                                    <span>Before completion, active reservations count as participants.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">
                                     <i class="bi bi-check-circle ub-text"></i>
-                                    <span>Cancelled reservations stay visible for reference.</span>
+                                    <span>Completed events show the attendance number entered with evidence.</span>
                                 </li>
 
                                 <li class="d-flex gap-2">

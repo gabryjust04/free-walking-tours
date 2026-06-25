@@ -95,6 +95,7 @@ def upload_event_evidence_photo(event_id):
     flash_category, flash_message = save_event_evidence_photo(
         event=event,
         photo_file=request.files.get("evidence_photo"),
+        actual_participants=request.form.get("actual_participants"),
     )
 
     flash(flash_message, flash_category)

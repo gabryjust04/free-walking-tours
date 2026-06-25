@@ -170,6 +170,18 @@ def can_upload_evidence_photo(event):
     return has_event_started(event)
 
 
+def parse_non_negative_int(value):
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return None
+
+    if number < 0:
+        return None
+
+    return number
+
+
 def build_dashboard_tours(tours):
     dashboard_tours = []
 
@@ -260,6 +272,8 @@ def build_event_detail_page_data(event):
 
     max_participants = parse_positive_int(tour.max_participants) or 0
     available_places = max(max_participants - active_people, 0)
+    actual_participants = parse_non_negative_int(getattr(event, "actual_participants", 0)) or 0
+    shown_participants = actual_participants if event.status == "completed" else active_people
 
     return {
         "event": {
@@ -276,6 +290,8 @@ def build_event_detail_page_data(event):
             "status_label": get_event_status_label(event),
             "status_class": get_event_status_class(event),
             "active_people": active_people,
+            "actual_participants": actual_participants,
+            "shown_participants": shown_participants,
             "max_participants": max_participants,
             "available_places": available_places,
             "can_upload_evidence": can_upload_evidence_photo(event),
@@ -412,12 +428,22 @@ def process_evidence_photo(photo_file):
     )
 
 
-def save_event_evidence_photo(event, photo_file):
+def save_event_evidence_photo(event, photo_file, actual_participants):
     if photo_file is None or photo_file.filename == "":
         return "warning", "Upload an evidence photo."
 
     if not can_upload_evidence_photo(event):
         return "warning", "You can upload evidence only after the event has started."
+
+    actual_participants = parse_non_negative_int(actual_participants)
+
+    if actual_participants is None:
+        return "warning", "Enter the number of participants who attended."
+
+    max_participants = parse_positive_int(getattr(event.tour, "max_participants", None))
+
+    if max_participants is not None and actual_participants > max_participants:
+        return "warning", f"Participants who attended cannot be greater than {max_participants}."
 
     is_valid, error = validate_uploaded_image(
         photo_file,
@@ -433,7 +459,7 @@ def save_event_evidence_photo(event, photo_file):
     except Exception:
         return "danger", "Error processing evidence photo."
 
-    TourEventsDAO.complete_event_with_evidence_photo(event.id, filename)
+    TourEventsDAO.complete_event_with_evidence_photo(event.id, filename, actual_participants)
 
     return "success", "Evidence photo uploaded. Event marked as completed."
 
