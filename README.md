@@ -4,9 +4,21 @@
 
 | Role | Email / Username | Password |
 | --- | --- | --- |
-| Admin |  |  |
-| Guide |  |  |
-| Participant |  |  |
+| Admin | admin.stockholm@urbanbuddy.test / admin_stockholm | Demo2026! |
+| Guide | ingrid.bergstrom@urbanbuddy.test / ingrid_bergstrom | Demo2026! |
+| Guide | mateo.carvalho@urbanbuddy.test / mateo_carvalho | Demo2026! |
+| Participant | clara.rossi@urbanbuddy.test / clara_rossi | Demo2026! |
+| Participant | tommaso.bianchi@urbanbuddy.test / tommaso_bianchi | Demo2026! |
+| Participant | sofia.almeida@urbanbuddy.test / sofia_almeida | Demo2026! |
+
+The submitted SQLite database contains curated Stockholm demo data: 2 guides, 3 participants, 7 active tours, 35 tour photos, 35 stops, scheduled and completed events, active and cancelled reservations, and one completed-event evidence photo.
+
+Useful demo checks:
+
+- Log in as Clara Rossi and try to book `Stockholm Underground Art Safari` on `2026-07-08` at `11:00`; it is rejected because it overlaps with her `Gamla Stan` booking.
+- Try to book `Fika, Markets and Swedish Rituals` on `2026-07-04` at `11:00`; it is already full.
+- Log in as Ingrid Bergstrom and edit `Djurgarden Nature and Archipelago Stories`; it has no active bookings and remains editable.
+- Log in as Mateo Carvalho and open the past `Sodermalm Nordic Noir Walk` event from `2026-06-21`; it is ready for evidence upload.
 
 ## Testing instructions
 
