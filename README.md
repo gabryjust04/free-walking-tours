@@ -99,4 +99,4 @@ The script `app/notifications/send_pending_emails.py` sends queued emails whose 
 
 ## Deployed application URL
 
-https://ggiusti.pythonanywhere.com/
+https://ggiusti.pythonanywhere.com/ 
