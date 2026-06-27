@@ -98,3 +98,5 @@ When a reservation is cancelled, pending emails linked to that reservation are m
 The script `app/notifications/send_pending_emails.py` sends queued emails whose `status` is `pending` and whose `send_at` is due. After each attempt, it marks the row as `sent` or `failed`. The script waits one second between emails.
 
 ## Deployed application URL
+
+https://ggiusti.pythonanywhere.com/
