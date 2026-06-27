@@ -31,6 +31,13 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
+On Windows PowerShell:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
 2. Install the project dependencies:
 
 ```bash
@@ -67,6 +74,14 @@ http://127.0.0.1:5000
 cd /home/gabry/progetti/free-walking-tours
 source .venv/bin/activate
 python app/notifications/send_pending_emails.py
+```
+
+On Windows PowerShell:
+
+```powershell
+cd C:\path\to\free-walking-tours
+.\.venv\Scripts\Activate.ps1
+python app\notifications\send_pending_emails.py
 ```
 
 The script runs once, sends only due `pending` rows from `email_queue`, marks each row as `sent` or `failed`, and then exits. Run the same command again whenever you want to process the queue manually.
